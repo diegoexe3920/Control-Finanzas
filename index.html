@@ -68,7 +68,7 @@
 <body class="bg-gray-100 text-gray-800 dark:bg-slate-950 dark:text-gray-100 min-h-screen transition-colors duration-200">
     <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col bg-white dark:bg-slate-900 shadow-2xl relative pb-24">
         
-        <!-- ADMIN MODE NOTICE BANNER -->
+        <!-- BANNER MODO ADMIN -->
         <div id="adminNotice" class="hidden bg-amber-500 text-slate-950 px-3 py-1.5 text-[11px] font-bold text-center flex justify-between items-center z-50 sticky top-0 shadow-md">
             <span class="flex items-center gap-1.5">
                 <i class="fa-solid fa-wand-magic-sparkles text-slate-950"></i> Modo ADMIN activo: Toca cualquier texto resaltado para editarlo
@@ -76,7 +76,7 @@
             <button onclick="toggleAdminMode()" class="bg-slate-950 text-white px-2 py-0.5 rounded text-[10px] font-semibold hover:bg-slate-800 transition">Desactivar</button>
         </div>
 
-        <!-- TOP NAVBAR -->
+        <!-- CABECERA SUPERIOR -->
         <header class="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div onclick="openAvatarModal()" class="relative cursor-pointer group">
@@ -102,12 +102,12 @@
             </div>
         </header>
 
-        <!-- MAIN CONTENT AREA -->
+        <!-- CONTENIDO PRINCIPAL -->
         <main class="flex-1 p-4 overflow-y-auto space-y-5">
 
-            <!-- SECTION: DASHBOARD -->
+            <!-- PANTALLA 1: DASHBOARD / INICIO -->
             <section id="sec-dashboard" class="space-y-5">
-                <!-- BALANCE CARD -->
+                <!-- TARJETA DE SALDO TOTAL -->
                 <div class="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-950 text-white rounded-3xl p-5 shadow-xl relative overflow-hidden">
                     <div class="absolute -right-6 -top-6 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl pointer-events-none"></div>
                     
@@ -148,27 +148,32 @@
                     </div>
                 </div>
 
-                <!-- QUICK ACTIONS BAR -->
-                <div class="grid grid-cols-4 gap-2">
-                    <button onclick="openModal('addTxModal', 'income')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50 hover:opacity-90 active:scale-95 transition">
-                        <i class="fa-solid fa-circle-plus text-lg mb-1"></i>
-                        <span class="text-xs font-medium admin-editable" id="txt_btnQuickIncome" onclick="editAdminText('btnQuickIncome', 'Boton Ingreso')">Ingreso</span>
+                <!-- ALERTAS DE PRÓXIMOS VENCIMIENTOS Y GASTOS FIJOS -->
+                <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 p-4 rounded-2xl space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-xs text-amber-800 dark:text-amber-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-bell text-amber-600"></i> Próximos Vencimientos y Gastos Fijos
+                        </h3>
+                        <span class="text-[10px] bg-amber-500 text-slate-950 font-bold px-2 py-0.5 rounded-full" id="alertsCount">0 fijos</span>
+                    </div>
+                    <div id="alertsList" class="space-y-1.5">
+                        <!-- Alertas dinámicas -->
+                    </div>
+                </div>
+
+                <!-- BARRA DE ACCIONES RÁPIDAS -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="openModal('addTxModal', 'income')" class="flex items-center justify-center gap-2 p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50 hover:opacity-90 active:scale-95 transition">
+                        <i class="fa-solid fa-circle-plus text-lg"></i>
+                        <span class="text-xs font-bold admin-editable" id="txt_btnQuickIncome" onclick="editAdminText('btnQuickIncome', 'Boton Ingreso')">Nuevo Ingreso</span>
                     </button>
-                    <button onclick="openModal('addTxModal', 'expense')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50 hover:opacity-90 active:scale-95 transition">
-                        <i class="fa-solid fa-circle-minus text-lg mb-1"></i>
-                        <span class="text-xs font-medium admin-editable" id="txt_btnQuickExpense" onclick="editAdminText('btnQuickExpense', 'Boton Gasto')">Gasto</span>
-                    </button>
-                    <button onclick="switchTab('supermarket')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border border-amber-100 dark:border-amber-900/50 hover:opacity-90 active:scale-95 transition">
-                        <i class="fa-solid fa-cart-shopping text-lg mb-1"></i>
-                        <span class="text-xs font-medium admin-editable" id="txt_btnQuickSuper" onclick="editAdminText('btnQuickSuper', 'Boton Super')">Super</span>
-                    </button>
-                    <button onclick="switchTab('travels')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-sky-50 dark:bg-sky-950/30 text-sky-700 dark:text-sky-400 border border-sky-100 dark:border-sky-900/50 hover:opacity-90 active:scale-95 transition">
-                        <i class="fa-solid fa-plane text-lg mb-1"></i>
-                        <span class="text-xs font-medium admin-editable" id="txt_btnQuickTravel" onclick="editAdminText('btnQuickTravel', 'Boton Viajes')">Viajes</span>
+                    <button onclick="openModal('addTxModal', 'expense')" class="flex items-center justify-center gap-2 p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50 hover:opacity-90 active:scale-95 transition">
+                        <i class="fa-solid fa-circle-minus text-lg"></i>
+                        <span class="text-xs font-bold admin-editable" id="txt_btnQuickExpense" onclick="editAdminText('btnQuickExpense', 'Boton Gasto')">Nuevo Gasto</span>
                     </button>
                 </div>
 
-                <!-- NECESSITY ANALYTICS -->
+                <!-- ANÁLISIS DE CALIDAD DE GASTOS (NECESARIO VS INNECESARIO) -->
                 <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-3">
                     <div class="flex justify-between items-center">
                         <h3 class="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
@@ -194,61 +199,113 @@
                         </div>
                     </div>
 
-                    <!-- Progress Bar -->
+                    <!-- Barra de Progreso -->
                     <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden flex">
                         <div id="barNeeded" class="bg-emerald-500 h-full transition-all" style="width: 50%"></div>
                         <div id="barUnneeded" class="bg-rose-500 h-full transition-all" style="width: 50%"></div>
                     </div>
                 </div>
 
-                <!-- RECENT TRANSACTIONS -->
+                <!-- ÚLTIMOS MOVIMIENTOS -->
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
                         <h3 class="font-bold text-sm text-gray-900 dark:text-white admin-editable" id="txt_lblRecentTx" onclick="editAdminText('lblRecentTx', 'Titulo Recientes')">Últimos Movimientos</h3>
-                        <button onclick="switchTab('history')" class="text-xs text-brand-600 dark:text-brand-400 font-semibold hover:underline">Ver todo</button>
+                        <button onclick="switchTab('expenses')" class="text-xs text-brand-600 dark:text-brand-400 font-semibold hover:underline">Ver todo</button>
                     </div>
 
                     <div id="recentTxList" class="space-y-2">
-                        <!-- Dynamic items -->
+                        <!-- Elementos dinámicos -->
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION: SUPERMARKET -->
-            <section id="sec-supermarket" class="hidden space-y-4">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="font-bold text-base text-gray-900 dark:text-white admin-editable" id="txt_lblSuperTitle" onclick="editAdminText('lblSuperTitle', 'Titulo Supermercado')">Gastos de Supermercado</h2>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Agrega el total y desglosa tus compras producto por producto</p>
-                    </div>
-                    <button onclick="openModal('addTxModal', 'expense', 'Supermercado')" class="px-3 py-1.5 bg-amber-500 text-white rounded-xl text-xs font-semibold hover:bg-amber-600 transition flex items-center gap-1.5 shadow">
-                        <i class="fa-solid fa-plus"></i> Cargar Ticket
+            <!-- PANTALLA 2: SECCIÓN PRINCIPAL DE GASTOS (CON SUBMENÚS Y FILTROS AVANZADOS) -->
+            <section id="sec-expenses" class="hidden space-y-4">
+                <!-- PESTAÑAS / SUBMENÚS DE GASTOS -->
+                <div class="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-2xl gap-1 border border-gray-200/60 dark:border-slate-700">
+                    <button onclick="switchExpenseSubtab('all')" id="subnav-all" class="flex-1 py-2 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm">
+                        <i class="fa-solid fa-list mr-1"></i> Todos
+                    </button>
+                    <button onclick="switchExpenseSubtab('supermarket')" id="subnav-supermarket" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-500 hover:text-gray-700 dark:hover:text-gray-200">
+                        <i class="fa-solid fa-cart-shopping mr-1"></i> Súper
+                    </button>
+                    <button onclick="switchExpenseSubtab('travels')" id="subnav-travels" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-500 hover:text-gray-700 dark:hover:text-gray-200">
+                        <i class="fa-solid fa-plane mr-1"></i> Viajes
                     </button>
                 </div>
 
-                <div id="supermarketList" class="space-y-3">
-                    <!-- Dynamic Supermarket Transactions -->
-                </div>
-            </section>
-
-            <!-- SECTION: TRAVELS -->
-            <section id="sec-travels" class="hidden space-y-4">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="font-bold text-base text-gray-900 dark:text-white admin-editable" id="txt_lblTravelTitle" onclick="editAdminText('lblTravelTitle', 'Titulo Viajes')">Mis Viajes y Gastos</h2>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Analiza lo que gastaste en cada destino</p>
+                <!-- VISTA 1 SUBMENÚ: TODOS LOS GASTOS CON FILTROS AVANZADOS -->
+                <div id="exp-sub-all" class="space-y-3">
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-center">
+                            <h2 class="font-bold text-sm text-gray-900 dark:text-white">Historial y Filtros</h2>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <select id="historyFilter" onchange="renderHistory()" class="text-xs bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-medium text-gray-800 dark:text-gray-200">
+                                <option value="all">🔍 Todos</option>
+                                <option value="income">🟢 Ingresos</option>
+                                <option value="expense">🔴 Gastos Totales</option>
+                                <option value="needed">✔️ Necesarios</option>
+                                <option value="unneeded">❌ Innecesarios</option>
+                                <option value="recurring">📌 Gastos Fijos</option>
+                                <option value="installment">💳 Gastos en Cuotas</option>
+                            </select>
+                            <select id="historyMonthFilter" onchange="renderHistory()" class="text-xs bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-medium text-gray-800 dark:text-gray-200">
+                                <option value="all">📅 Todos los meses</option>
+                                <option value="0">Enero</option>
+                                <option value="1">Febrero</option>
+                                <option value="2">Marzo</option>
+                                <option value="3">Abril</option>
+                                <option value="4">Mayo</option>
+                                <option value="5">Junio</option>
+                                <option value="6">Julio</option>
+                                <option value="7">Agosto</option>
+                                <option value="8">Septiembre</option>
+                                <option value="9">Octubre</option>
+                                <option value="10">Noviembre</option>
+                                <option value="11">Diciembre</option>
+                            </select>
+                        </div>
                     </div>
-                    <button onclick="openNewTravelModal()" class="px-3 py-1.5 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition flex items-center gap-1.5 shadow">
-                        <i class="fa-solid fa-plane-departure"></i> Nuevo Viaje
-                    </button>
+                    <div id="fullHistoryList" class="space-y-2 pt-1">
+                        <!-- Lista dinámica -->
+                    </div>
                 </div>
 
-                <div id="travelsList" class="grid grid-cols-1 gap-3">
-                    <!-- Dynamic Travel Cards -->
+                <!-- VISTA 2 SUBMENÚ: SUPERMERCADO -->
+                <div id="exp-sub-supermarket" class="hidden space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="font-bold text-sm text-gray-900 dark:text-white">Gastos de Supermercado</h2>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400">Desglosa tus tickets producto por producto</p>
+                        </div>
+                        <button onclick="openModal('addTxModal', 'expense', 'Supermercado')" class="px-3 py-1.5 bg-amber-500 text-white rounded-xl text-xs font-semibold hover:bg-amber-600 transition flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-plus"></i> Cargar Ticket
+                        </button>
+                    </div>
+                    <div id="supermarketList" class="space-y-3">
+                        <!-- Compras dinámicas -->
+                    </div>
+                </div>
+
+                <!-- VISTA 3 SUBMENÚ: VIAJES -->
+                <div id="exp-sub-travels" class="hidden space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="font-bold text-sm text-gray-900 dark:text-white">Mis Viajes</h2>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400">Control de presupuesto por viaje</p>
+                        </div>
+                        <button onclick="openNewTravelModal()" class="px-3 py-1.5 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-plane-departure"></i> Nuevo Viaje
+                        </button>
+                    </div>
+                    <div id="travelsList" class="grid grid-cols-1 gap-3">
+                        <!-- Tarjetas de Viajes dinámicas -->
+                    </div>
                 </div>
             </section>
 
-            <!-- SECTION: ACCOUNTS & SAVINGS -->
+            <!-- PANTALLA 3: CUENTAS Y RESERVAS -->
             <section id="sec-accounts" class="hidden space-y-5">
                 <div>
                     <div class="flex justify-between items-center mb-3">
@@ -256,7 +313,7 @@
                         <button onclick="openAddAccountModal()" class="text-xs text-brand-600 font-semibold hover:underline">+ Agregar Medio</button>
                     </div>
                     <div id="accountsGrid" class="grid grid-cols-2 gap-3">
-                        <!-- Dynamic Accounts -->
+                        <!-- Medios dinámicos -->
                     </div>
                 </div>
 
@@ -266,28 +323,12 @@
                         <button onclick="openAddSavingModal()" class="text-xs text-brand-600 font-semibold hover:underline">+ Nueva Meta</button>
                     </div>
                     <div id="savingsList" class="space-y-3">
-                        <!-- Dynamic Savings Goals -->
+                        <!-- Metas dinámicas -->
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION: HISTORY -->
-            <section id="sec-history" class="hidden space-y-4">
-                <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-base text-gray-900 dark:text-white admin-editable" id="txt_lblHistoryTitle" onclick="editAdminText('lblHistoryTitle', 'Titulo Historial')">Historial Completo</h2>
-                    <select id="historyFilter" onchange="renderHistory()" class="text-xs bg-gray-100 dark:bg-slate-800 border-none rounded-lg px-2.5 py-1.5 font-medium text-gray-800 dark:text-gray-200">
-                        <option value="all">Todos</option>
-                        <option value="income">Ingresos</option>
-                        <option value="expense">Gastos</option>
-                    </select>
-                </div>
-
-                <div id="fullHistoryList" class="space-y-2">
-                    <!-- Dynamic Full List -->
-                </div>
-            </section>
-
-            <!-- SECTION: SETTINGS & ADMIN -->
+            <!-- PANTALLA 4: CONFIGURACIÓN Y MODO ADMIN -->
             <section id="sec-settings" class="hidden space-y-5">
                 <div class="bg-gradient-to-br from-brand-500 to-brand-700 text-white rounded-2xl p-4 shadow-md space-y-3">
                     <div class="flex items-center gap-2">
@@ -314,7 +355,7 @@
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700 space-y-4">
                     <h3 class="font-bold text-sm text-gray-900 dark:text-white border-b dark:border-slate-700 pb-2 admin-editable" id="txt_lblSettingsTitle" onclick="editAdminText('lblSettingsTitle', 'Titulo Ajustes')">Configuración del Perfil</h3>
                     
-                    <!-- Profile Name Input -->
+                    <!-- Nombre del Perfil -->
                     <div>
                         <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Nombre de Perfil</label>
                         <div class="flex gap-2">
@@ -323,7 +364,7 @@
                         </div>
                     </div>
 
-                    <!-- Theme Toggle -->
+                    <!-- Modo Oscuro / Claro -->
                     <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
                         <div>
                             <p class="text-xs font-bold text-gray-900 dark:text-white">Modo Claro / Oscuro</p>
@@ -334,7 +375,7 @@
                         </button>
                     </div>
 
-                    <!-- Profile Photo Selection -->
+                    <!-- Foto de Perfil -->
                     <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
                         <div>
                             <p class="text-xs font-bold text-gray-900 dark:text-white">Foto de Perfil</p>
@@ -344,9 +385,16 @@
                             Cambiar
                         </button>
                     </div>
+
+                    <!-- Limpiar todo el contenido / Reiniciar -->
+                    <div class="pt-2 border-t dark:border-slate-700">
+                        <button onclick="resetAllData()" class="w-full py-2 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-trash-can"></i> Borrar Todo y Empezar de Cero
+                        </button>
+                    </div>
                 </div>
 
-                <!-- ADMIN MODE TOGGLE CARD -->
+                <!-- TARJETA MODO ADMINISTRADOR -->
                 <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 space-y-3">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
@@ -361,7 +409,7 @@
                         </button>
                     </div>
 
-                    <!-- ADMIN PANEL CONTROLS -->
+                    <!-- CONTROLES MODO ADMIN -->
                     <div id="adminPanel" class="hidden pt-3 border-t border-amber-500/20 space-y-3">
                         <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold uppercase tracking-wider">Opciones de Administración</p>
                         
@@ -372,30 +420,25 @@
                                 <button onclick="addCustomCategory()" class="px-3 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-xl hover:bg-amber-600 transition">Añadir</button>
                             </div>
                         </div>
-
-                        <div class="pt-2">
-                            <button onclick="resetAllData()" class="w-full py-2 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition">
-                                Resetear Todo al Estado Inicial
-                            </button>
-                        </div>
                     </div>
                 </div>
             </section>
 
         </main>
 
-        <!-- BOTTOM NAVIGATION BAR -->
-        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-md w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-100 dark:border-slate-800 px-4 py-2 flex justify-between items-center z-40">
+        <!-- BARRA DE NAVEGACIÓN INFERIOR (LOS 4 MENÚS PRINCIPALES) -->
+        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-md w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-100 dark:border-slate-800 px-6 py-2 flex justify-between items-center z-40">
             <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 text-brand-600 dark:text-brand-500 font-bold">
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px] admin-editable" id="txt_navHome" onclick="editAdminText('navHome', 'Navegacion Inicio')">Inicio</span>
             </button>
-            <button onclick="switchTab('supermarket')" id="nav-supermarket" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
-                <i class="fa-solid fa-cart-shopping text-lg"></i>
-                <span class="text-[10px] admin-editable" id="txt_navSuper" onclick="editAdminText('navSuper', 'Navegacion Super')">Super</span>
-            </button>
             
-            <!-- Central FAB Add Button -->
+            <button onclick="switchTab('expenses')" id="nav-expenses" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
+                <i class="fa-solid fa-receipt text-lg"></i>
+                <span class="text-[10px] admin-editable" id="txt_navExpenses" onclick="editAdminText('navExpenses', 'Navegacion Gastos')">Gastos</span>
+            </button>
+
+            <!-- Botón flotante central (+) -->
             <div class="-mt-6">
                 <button onclick="openModal('addTxModal')" class="w-12 h-12 bg-gradient-to-r from-brand-500 to-brand-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-brand-500/40 hover:scale-105 active:scale-95 transition">
                     <i class="fa-solid fa-plus text-xl"></i>
@@ -406,15 +449,16 @@
                 <i class="fa-solid fa-wallet text-lg"></i>
                 <span class="text-[10px] admin-editable" id="txt_navAccounts" onclick="editAdminText('navAccounts', 'Navegacion Cuentas')">Cuentas</span>
             </button>
+            
             <button onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
                 <i class="fa-solid fa-gear text-lg"></i>
                 <span class="text-[10px] admin-editable" id="txt_navSettings" onclick="editAdminText('navSettings', 'Navegacion Ajustes')">Ajustes</span>
             </button>
         </nav>
 
-        <!-- MODALS -->
+        <!-- VENTANAS MODALES -->
 
-        <!-- MODAL: ADD TRANSACTION -->
+        <!-- MODAL 1: REGISTRAR TRANSACCIÓN -->
         <div id="addTxModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
@@ -450,7 +494,7 @@
 
                     <div>
                         <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Detalle / Nota</label>
-                        <input type="text" id="txNote" placeholder="Ej: Compra Coto o Sueldo Mes" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm">
+                        <input type="text" id="txNote" placeholder="Ej: Luz, Alquiler o Sueldo" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm">
                     </div>
 
                     <div id="necessityOptionWrapper" class="p-3 bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-gray-100 dark:border-slate-700 space-y-2">
@@ -467,16 +511,33 @@
                         </div>
                     </div>
 
+                    <!-- OPCIONES AVANZADAS: FIJOS Y CUOTAS -->
+                    <div id="advancedExpenseOptions" class="p-3 bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-gray-100 dark:border-slate-700 space-y-2.5">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="txRecurring" class="rounded text-brand-600 focus:ring-brand-500">
+                            <label for="txRecurring" class="text-xs text-gray-700 dark:text-gray-300 font-semibold">📌 Es un gasto fijo / recurrente (Vencimiento)</label>
+                        </div>
+                        <div class="flex items-center gap-2 pt-1 border-t border-gray-200 dark:border-slate-700">
+                            <input type="checkbox" id="txIsInstallment" onchange="toggleInstallmentInputs(this)" class="rounded text-brand-600 focus:ring-brand-500">
+                            <label for="txIsInstallment" class="text-xs text-gray-700 dark:text-gray-300 font-semibold">💳 Es una compra en cuotas</label>
+                        </div>
+                        <div id="installmentWrapper" class="hidden grid grid-cols-2 gap-2 pt-1">
+                            <div>
+                                <label class="block text-[10px] text-gray-500">Cuota Actual</label>
+                                <input type="number" id="txCurrentInstallment" value="1" min="1" class="w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500">Total Cuotas</label>
+                                <input type="number" id="txTotalInstallments" value="3" min="1" class="w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs">
+                            </div>
+                        </div>
+                    </div>
+
                     <div>
                         <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Asociar a Viaje (Opcional)</label>
                         <select id="txTravelLink" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm">
                             <option value="">Ninguno</option>
                         </select>
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        <input type="checkbox" id="txRecurring" class="rounded text-brand-600 focus:ring-brand-500">
-                        <label for="txRecurring" class="text-xs text-gray-700 dark:text-gray-300">Es un movimiento recurrente (fijo)</label>
                     </div>
 
                     <button type="submit" class="w-full py-3 bg-brand-600 text-white rounded-xl font-bold shadow-lg shadow-brand-500/30 hover:bg-brand-700 transition">
@@ -486,7 +547,7 @@
             </div>
         </div>
 
-        <!-- MODAL: ITEMIZE SUPERMARKET ITEMS -->
+        <!-- MODAL 2: DESGLOSE DE TICKET DE SUPERMERCADO -->
         <div id="superItemsModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
@@ -528,7 +589,7 @@
             </div>
         </div>
 
-        <!-- MODAL: AVATAR / PROFILE PHOTO SELECTOR -->
+        <!-- MODAL 3: SELECCIÓN DE PERFIL Y AVATAR -->
         <div id="avatarModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
                 <div class="flex justify-between items-center">
@@ -556,7 +617,7 @@
             </div>
         </div>
 
-        <!-- MODAL: ADD TRAVEL -->
+        <!-- MODAL 4: CREAR NUEVO VIAJE -->
         <div id="newTravelModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
@@ -582,7 +643,7 @@
             </div>
         </div>
 
-        <!-- MODAL: ADD ACCOUNT / PAYMENT METHOD -->
+        <!-- MODAL 5: NUEVO MEDIO DE PAGO -->
         <div id="newAccountModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
@@ -617,7 +678,7 @@
             </div>
         </div>
 
-        <!-- MODAL: ADD SAVING GOAL -->
+        <!-- MODAL 6: NUEVA META DE AHORRO -->
         <div id="newSavingModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
@@ -649,8 +710,9 @@
 
     </div>
 
+    <!-- CÓDIGO Y LÓGICA DE LA APLICACIÓN -->
     <script>
-        // APP DEFAULT STATE
+        // ESTADO INICIAL COMPLETAMENTE EN CERO
         const defaultState = {
             balanceHidden: false,
             adminMode: false,
@@ -661,64 +723,53 @@
                 lblNetBalance: 'Dinero Total',
                 lblIncome: 'Ingresos del Mes',
                 lblExpense: 'Gastos del Mes',
-                btnQuickIncome: 'Ingreso',
-                btnQuickExpense: 'Gasto',
-                btnQuickSuper: 'Super',
-                btnQuickTravel: 'Viajes',
+                btnQuickIncome: 'Nuevo Ingreso',
+                btnQuickExpense: 'Nuevo Gasto',
                 lblQualityTitle: 'Gastos Necesarios vs. Innecesarios',
                 lblRecentTx: 'Últimos Movimientos',
-                lblSuperTitle: 'Gastos de Supermercado',
-                lblTravelTitle: 'Mis Viajes y Gastos',
                 lblAccountsTitle: 'Mis Medios de Pago',
                 lblSavingsTitle: 'Ahorros y Reservas',
-                lblHistoryTitle: 'Historial Completo',
                 lblSettingsTitle: 'Configuración del Perfil',
                 navHome: 'Inicio',
-                navSuper: 'Super',
+                navExpenses: 'Gastos',
                 navAccounts: 'Cuentas',
                 navSettings: 'Ajustes'
             },
             accounts: [
-                { id: 'acc1', name: 'Efectivo', type: 'cash', balance: 25000, icon: 'fa-money-bill-wave' },
-                { id: 'acc2', name: 'Banco Santander', type: 'bank', balance: 140000, icon: 'fa-building-columns' },
-                { id: 'acc3', name: 'Mercado Pago', type: 'wallet', balance: 42000, icon: 'fa-mobile-screen' }
+                { id: 'acc1', name: 'Efectivo', type: 'cash', balance: 0, icon: 'fa-money-bill-wave' },
+                { id: 'acc2', name: 'Banco / Débito', type: 'bank', balance: 0, icon: 'fa-building-columns' }
             ],
             categories: {
                 income: ['Sueldo', 'Ventas', 'Trabajos', 'Reintegros', 'Otros'],
                 expense: ['Servicios', 'Casa/Alquiler', 'Combustible auto', 'Supermercado', 'Panadería', 'Comida', 'Verdulería', 'Carnicería', 'Kiosco', 'Ropa', 'Regalo', 'Arreglo', 'Transporte', 'Ferreteria', 'Viajes', 'Otros']
             },
-            transactions: [
-                { id: 'tx1', type: 'income', amount: 350000, category: 'Sueldo', accountId: 'acc2', note: 'Cobro Mensual', date: new Date().toISOString(), recurring: true, necessity: 'needed' },
-                { id: 'tx2', type: 'expense', amount: 18500, category: 'Supermercado', accountId: 'acc3', note: 'Compra en Coto', date: new Date().toISOString(), recurring: false, necessity: 'needed', items: [
-                    { id: 'item1', name: 'Leche y Queso', price: 6500, necessity: 'needed' },
-                    { id: 'item2', name: 'Golosinas', price: 4000, necessity: 'unneeded' },
-                    { id: 'item3', name: 'Carne y Verduras', price: 8000, necessity: 'needed' }
-                ]},
-                { id: 'tx3', type: 'expense', amount: 12000, category: 'Combustible auto', accountId: 'acc1', note: 'Nafta YPF', date: new Date().toISOString(), recurring: false, necessity: 'needed' }
-            ],
-            travels: [
-                { id: 'trv1', name: 'Bariloche 2026', budget: 200000 }
-            ],
-            savings: [
-                { id: 'svg1', title: 'Fondo de Emergencia', target: 500000, current: 150000 }
-            ]
+            transactions: [],
+            travels: [],
+            savings: []
         };
 
         let state = JSON.parse(localStorage.getItem('financeAppState')) || defaultState;
         if (!state.customTexts) state.customTexts = { ...defaultState.customTexts };
         if (!state.categories) state.categories = { ...defaultState.categories };
+        if (!state.transactions) state.transactions = [];
 
-        // SAVE STATE
+        // GUARDAR ESTADO LOCAL
         function saveState() {
             localStorage.setItem('financeAppState', JSON.stringify(state));
             renderApp();
         }
 
-        // INIT
+        // INICIALIZACIÓN
         window.onload = function() {
             const now = new Date();
             const options = { weekday: 'short', day: 'numeric', month: 'short' };
             document.getElementById('currentDateStr').innerText = now.toLocaleDateString('es-ES', options);
+
+            // Seleccionar mes actual por defecto en el filtro
+            const monthFilter = document.getElementById('historyMonthFilter');
+            if (monthFilter) {
+                monthFilter.value = now.getMonth().toString();
+            }
 
             if (state.theme === 'dark') {
                 document.documentElement.classList.add('dark');
@@ -726,7 +777,6 @@
                 document.documentElement.classList.remove('dark');
             }
 
-            // Sync profile inputs
             if (document.getElementById('profileNameInput')) {
                 document.getElementById('profileNameInput').value = state.customTexts.userGreeting || '';
             }
@@ -735,7 +785,7 @@
         };
 
         function renderApp() {
-            // Apply custom texts to UI elements
+            // Aplicar textos personalizados
             Object.keys(state.customTexts).forEach(key => {
                 const el = document.getElementById(`txt_${key}`);
                 if (el) {
@@ -743,13 +793,13 @@
                 }
             });
 
-            // Sync Header Avatar
+            // Sincronizar Avatar
             const avatarEl = document.getElementById('headerAvatar');
             if (avatarEl && state.avatar) {
                 avatarEl.src = state.avatar;
             }
 
-            // Calculate balances and summary metrics
+            // Calculo de balances
             const netBalance = state.accounts.reduce((sum, acc) => sum + parseFloat(acc.balance || 0), 0);
             
             const now = new Date();
@@ -786,8 +836,8 @@
             document.getElementById('necessityUnneededAmount').innerText = state.balanceHidden ? '••••' : `$${unneededExp.toLocaleString('es-AR')}`;
 
             const totalMonthExp = neededExp + unneededExp;
-            const neededPct = totalMonthExp > 0 ? Math.round((neededExp / totalMonthExp) * 100) : 50;
-            const unneededPct = totalMonthExp > 0 ? Math.round((unneededExp / totalMonthExp) * 100) : 50;
+            const neededPct = totalMonthExp > 0 ? Math.round((neededExp / totalMonthExp) * 100) : 0;
+            const unneededPct = totalMonthExp > 0 ? Math.round((unneededExp / totalMonthExp) * 100) : 0;
 
             document.getElementById('necessityNeededPct').innerText = `${neededPct}% del total`;
             document.getElementById('necessityUnneededPct').innerText = `${unneededPct}% del total`;
@@ -795,21 +845,22 @@
             document.getElementById('barNeeded').style.width = `${neededPct}%`;
             document.getElementById('barUnneeded').style.width = `${unneededPct}%`;
 
-            // Recent Transactions Dashboard
+            // Movimientos recientes
             const recentList = document.getElementById('recentTxList');
             recentList.innerHTML = '';
             
             const sorted = [...state.transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
 
             if (sorted.length === 0) {
-                recentList.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">No hay movimientos registrados.</p>`;
+                recentList.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">Sin movimientos registrados. Toca + para agregar uno.</p>`;
             } else {
                 sorted.forEach(tx => {
-                    const acc = state.accounts.find(a => a.id === tx.accountId) || { name: 'Gasto' };
+                    const acc = state.accounts.find(a => a.id === tx.accountId) || { name: 'Cuenta' };
                     recentList.appendChild(createTxElement(tx, acc));
                 });
             }
 
+            renderAlerts();
             renderAdminPanel();
             renderSupermarket();
             renderTravels();
@@ -817,41 +868,111 @@
             renderHistory();
         }
 
-        // CREATE TX DOM ITEM
+        // RENDER ALERTAS DE VENCIMIENTOS / GASTOS FIJOS
+        function renderAlerts() {
+            const list = document.getElementById('alertsList');
+            const countEl = document.getElementById('alertsCount');
+            if (!list) return;
+            list.innerHTML = '';
+
+            const recurringTxs = state.transactions.filter(t => t.recurring && t.type === 'expense');
+            countEl.innerText = `${recurringTxs.length} fijos`;
+
+            if (recurringTxs.length === 0) {
+                list.innerHTML = `<p class="text-[11px] text-amber-700 dark:text-amber-300">No hay gastos fijos o vencimientos registrados.</p>`;
+                return;
+            }
+
+            recurringTxs.slice(0, 3).forEach(tx => {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center bg-white/80 dark:bg-slate-900/50 p-2 rounded-xl text-xs border border-amber-200/50 dark:border-amber-900/30';
+                div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days text-amber-600"></i>
+                        <div>
+                            <span class="font-bold text-gray-900 dark:text-white">${tx.category}</span>
+                            <p class="text-[10px] text-gray-500">${tx.note || 'Gasto fijo recurrente'}</p>
+                        </div>
+                    </div>
+                    <span class="font-extrabold text-rose-600 dark:text-rose-400">-$${parseFloat(tx.amount).toLocaleString('es-AR')}</span>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // GENERAR ELEMENTO DE TRANSACCIÓN EN DOM (CON ETIQUETAS DE CUOTAS/FIJOS)
         function createTxElement(tx, acc) {
             const div = document.createElement('div');
-            div.className = 'flex justify-between items-center p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700/60 shadow-sm';
+            div.className = 'flex justify-between items-center p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700/60 shadow-sm group';
             
             const isIncome = tx.type === 'income';
             const iconBg = isIncome ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400';
             const iconClass = isIncome ? 'fa-arrow-down' : 'fa-arrow-up';
             
-            const necessityTag = !isIncome ? (tx.necessity === 'unneeded' ? '<span class="text-[9px] bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-300 font-bold px-1.5 py-0.5 rounded ml-1">Innecesario</span>' : '<span class="text-[9px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 font-bold px-1.5 py-0.5 rounded ml-1">Necesario</span>') : '';
+            let tagsHTML = '';
+            if (!isIncome) {
+                if (tx.necessity === 'unneeded') {
+                    tagsHTML += '<span class="text-[9px] bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-300 font-bold px-1.5 py-0.5 rounded ml-1">Innecesario</span>';
+                } else {
+                    tagsHTML += '<span class="text-[9px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 font-bold px-1.5 py-0.5 rounded ml-1">Necesario</span>';
+                }
+                if (tx.recurring) {
+                    tagsHTML += '<span class="text-[9px] bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 font-bold px-1.5 py-0.5 rounded ml-1">Fijo</span>';
+                }
+                if (tx.isInstallment) {
+                    tagsHTML += `<span class="text-[9px] bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 font-bold px-1.5 py-0.5 rounded ml-1">Cuota ${tx.currentInstallment}/${tx.totalInstallments}</span>`;
+                }
+            }
 
             div.innerHTML = `
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl ${iconBg} flex items-center justify-center text-xs">
+                    <div class="w-9 h-9 rounded-xl ${iconBg} flex items-center justify-center text-xs flex-shrink-0">
                         <i class="fa-solid ${iconClass}"></i>
                     </div>
                     <div>
-                        <div class="flex items-center">
+                        <div class="flex items-center flex-wrap gap-y-1">
                             <p class="text-xs font-bold text-gray-900 dark:text-white">${tx.category}</p>
-                            ${necessityTag}
+                            ${tagsHTML}
                         </div>
                         <p class="text-[11px] text-gray-400">${tx.note || acc.name}</p>
                     </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-xs font-bold ${isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'}">
-                        ${isIncome ? '+' : '-'}$${parseFloat(tx.amount).toLocaleString('es-AR')}
-                    </p>
-                    <p class="text-[10px] text-gray-400">${new Date(tx.date).toLocaleDateString('es-ES')}</p>
+                <div class="flex items-center gap-2">
+                    <div class="text-right">
+                        <p class="text-xs font-bold ${isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'}">
+                            ${isIncome ? '+' : '-'}$${parseFloat(tx.amount).toLocaleString('es-AR')}
+                        </p>
+                        <p class="text-[10px] text-gray-400">${new Date(tx.date).toLocaleDateString('es-ES')}</p>
+                    </div>
+                    <button onclick="deleteTx('${tx.id}')" title="Eliminar" class="text-gray-300 hover:text-rose-500 p-1.5 transition">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
                 </div>
             `;
             return div;
         }
 
-        // SUPERMARKET TAB RENDER
+        // ELIMINAR TRANSACCIÓN Y AJUSTAR BALANCES
+        function deleteTx(txId) {
+            const index = state.transactions.findIndex(t => t.id === txId);
+            if (index === -1) return;
+
+            const tx = state.transactions[index];
+            const accIndex = state.accounts.findIndex(a => a.id === tx.accountId);
+            
+            if (accIndex !== -1) {
+                if (tx.type === 'income') {
+                    state.accounts[accIndex].balance -= parseFloat(tx.amount);
+                } else {
+                    state.accounts[accIndex].balance += parseFloat(tx.amount);
+                }
+            }
+
+            state.transactions.splice(index, 1);
+            saveState();
+        }
+
+        // RENDER PANTALLA SUPERMERCADO
         function renderSupermarket() {
             const list = document.getElementById('supermarketList');
             if (!list) return;
@@ -860,7 +981,7 @@
             const superTxs = state.transactions.filter(t => t.category === 'Supermercado' || t.category === 'Panadería' || t.category === 'Verdulería' || t.category === 'Carnicería');
 
             if (superTxs.length === 0) {
-                list.innerHTML = `<div class="p-6 text-center text-xs text-gray-400">No hay gastos de supermercado aún.</div>`;
+                list.innerHTML = `<div class="p-6 text-center text-xs text-gray-400">No hay gastos de supermercado aún registrados.</div>`;
                 return;
             }
 
@@ -875,8 +996,11 @@
                             <span class="text-xs font-bold text-gray-900 dark:text-white">${tx.note || tx.category}</span>
                             <p class="text-[10px] text-gray-400">${new Date(tx.date).toLocaleDateString('es-ES')}</p>
                         </div>
-                        <div class="text-right">
+                        <div class="text-right flex items-center gap-2">
                             <span class="text-sm font-extrabold text-rose-600 dark:text-rose-400">-$${parseFloat(tx.amount).toLocaleString('es-AR')}</span>
+                            <button onclick="deleteTx('${tx.id}')" title="Eliminar Ticket" class="text-gray-300 hover:text-rose-500 p-1 transition">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -891,14 +1015,14 @@
             });
         }
 
-        // TRAVELS TAB RENDER
+        // RENDER PANTALLA VIAJES
         function renderTravels() {
             const list = document.getElementById('travelsList');
             if (!list) return;
             list.innerHTML = '';
 
             if (state.travels.length === 0) {
-                list.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">No tienes viajes planificados.</p>`;
+                list.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">No tienes viajes registrados. Haz clic en "Nuevo Viaje" para agregar uno.</p>`;
                 return;
             }
 
@@ -907,7 +1031,7 @@
                     .filter(t => t.travelId === trv.id)
                     .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
-                const pct = Math.min(100, Math.round((spent / trv.budget) * 100));
+                const pct = trv.budget > 0 ? Math.min(100, Math.round((spent / trv.budget) * 100)) : 0;
 
                 const card = document.createElement('div');
                 card.className = 'bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700 space-y-3 shadow-sm';
@@ -922,7 +1046,12 @@
                                 <p class="text-[10px] text-gray-400">Presupuesto: $${parseFloat(trv.budget).toLocaleString('es-AR')}</p>
                             </div>
                         </div>
-                        <span class="text-xs font-bold text-sky-600 dark:text-sky-400">$${spent.toLocaleString('es-AR')} gastados</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-sky-600 dark:text-sky-400">$${spent.toLocaleString('es-AR')} gastados</span>
+                            <button onclick="deleteTravel('${trv.id}')" title="Eliminar Viaje" class="text-gray-300 hover:text-rose-500 p-1 transition">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="space-y-1">
@@ -939,18 +1068,28 @@
             });
         }
 
-        // ACCOUNTS AND SAVINGS RENDER
+        function deleteTravel(travelId) {
+            state.travels = state.travels.filter(t => t.id !== travelId);
+            saveState();
+        }
+
+        // RENDER CUENTAS Y RESERVAS
         function renderAccountsAndSavings() {
             const grid = document.getElementById('accountsGrid');
             if (grid) {
                 grid.innerHTML = '';
                 state.accounts.forEach(acc => {
                     const div = document.createElement('div');
-                    div.className = 'p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 flex flex-col justify-between shadow-sm';
+                    div.className = 'p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 flex flex-col justify-between shadow-sm relative group';
                     div.innerHTML = `
-                        <div class="flex items-center gap-2 mb-2">
-                            <i class="fa-solid ${acc.icon || 'fa-wallet'} text-brand-600 text-sm"></i>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white truncate">${acc.name}</span>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <div class="flex items-center gap-2 truncate">
+                                <i class="fa-solid ${acc.icon || 'fa-wallet'} text-brand-600 text-sm"></i>
+                                <span class="text-xs font-bold text-gray-900 dark:text-white truncate">${acc.name}</span>
+                            </div>
+                            <button onclick="deleteAccount('${acc.id}')" title="Eliminar Cuenta" class="text-gray-300 hover:text-rose-500 transition">
+                                <i class="fa-solid fa-trash-can text-[10px]"></i>
+                            </button>
                         </div>
                         <p class="text-sm font-extrabold text-gray-900 dark:text-white">$${parseFloat(acc.balance).toLocaleString('es-AR')}</p>
                     `;
@@ -961,41 +1100,79 @@
             const sList = document.getElementById('savingsList');
             if (sList) {
                 sList.innerHTML = '';
-                state.savings.forEach(svg => {
-                    const pct = Math.min(100, Math.round((svg.current / svg.target) * 100));
-                    const div = document.createElement('div');
-                    div.className = 'p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 space-y-2 shadow-sm';
-                    div.innerHTML = `
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="font-bold text-gray-900 dark:text-white">${svg.title}</span>
-                            <span class="font-semibold text-brand-600 dark:text-brand-400">$${svg.current.toLocaleString('es-AR')} / $${svg.target.toLocaleString('es-AR')}</span>
-                        </div>
-                        <div class="w-full bg-gray-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
-                            <div class="bg-brand-500 h-full" style="width: ${pct}%"></div>
-                        </div>
-                    `;
-                    sList.appendChild(div);
-                });
+                if (state.savings.length === 0) {
+                    sList.innerHTML = `<p class="text-xs text-gray-400 text-center py-3">No hay metas de ahorro guardadas.</p>`;
+                } else {
+                    state.savings.forEach(svg => {
+                        const pct = svg.target > 0 ? Math.min(100, Math.round((svg.current / svg.target) * 100)) : 0;
+                        const div = document.createElement('div');
+                        div.className = 'p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 space-y-2 shadow-sm';
+                        div.innerHTML = `
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-bold text-gray-900 dark:text-white">${svg.title}</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-semibold text-brand-600 dark:text-brand-400">$${svg.current.toLocaleString('es-AR')} / $${svg.target.toLocaleString('es-AR')}</span>
+                                    <button onclick="deleteSaving('${svg.id}')" title="Eliminar Meta" class="text-gray-300 hover:text-rose-500 transition">
+                                        <i class="fa-solid fa-trash-can text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                                <div class="bg-brand-500 h-full" style="width: ${pct}%"></div>
+                            </div>
+                        `;
+                        sList.appendChild(div);
+                    });
+                }
             }
         }
 
-        // HISTORY TAB RENDER
+        function deleteAccount(accId) {
+            if (state.accounts.length <= 1) {
+                alert('Debes mantener al menos un medio de pago.');
+                return;
+            }
+            state.accounts = state.accounts.filter(a => a.id !== accId);
+            saveState();
+        }
+
+        function deleteSaving(svgId) {
+            state.savings = state.savings.filter(s => s.id !== svgId);
+            saveState();
+        }
+
+        // RENDER HISTORIAL CON FILTROS AVANZADOS (NECESARIOS, INNECESARIOS, FIJOS, CUOTAS, MES)
         function renderHistory() {
             const filterEl = document.getElementById('historyFilter');
-            if (!filterEl) return;
+            const monthEl = document.getElementById('historyMonthFilter');
+            if (!filterEl || !monthEl) return;
+
             const filter = filterEl.value;
+            const monthFilter = monthEl.value;
             const container = document.getElementById('fullHistoryList');
             if (!container) return;
             container.innerHTML = '';
 
             let filtered = [...state.transactions];
+
+            // Filtro por tipo o categoría especial
             if (filter === 'income') filtered = filtered.filter(t => t.type === 'income');
             if (filter === 'expense') filtered = filtered.filter(t => t.type === 'expense');
+            if (filter === 'needed') filtered = filtered.filter(t => t.type === 'expense' && t.necessity === 'needed');
+            if (filter === 'unneeded') filtered = filtered.filter(t => t.type === 'expense' && t.necessity === 'unneeded');
+            if (filter === 'recurring') filtered = filtered.filter(t => t.recurring);
+            if (filter === 'installment') filtered = filtered.filter(t => t.isInstallment);
+
+            // Filtro por mes
+            if (monthFilter !== 'all') {
+                const targetMonth = parseInt(monthFilter);
+                filtered = filtered.filter(t => new Date(t.date).getMonth() === targetMonth);
+            }
 
             filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">No hay transacciones.</p>`;
+                container.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">No hay transacciones que coincidan con los filtros seleccionados.</p>`;
                 return;
             }
 
@@ -1005,7 +1182,56 @@
             });
         }
 
-        // ADMIN PANEL RENDER & TOGGLE
+        // CAMBIO ENTRE LOS MENÚS PRINCIPALES (CON TOGGLE DE AJUSTES A INICIO)
+        function switchTab(tabId) {
+            const targetSec = document.getElementById(`sec-${tabId}`);
+            
+            // Si ya estamos en ajustes y volvemos a tocar el icono, vuelve al inicio
+            if (tabId === 'settings' && targetSec && !targetSec.classList.contains('hidden')) {
+                switchTab('dashboard');
+                return;
+            }
+
+            ['dashboard', 'expenses', 'accounts', 'settings'].forEach(t => {
+                const sec = document.getElementById(`sec-${t}`);
+                if (sec) sec.classList.add('hidden');
+
+                const navBtn = document.getElementById(`nav-${t}`);
+                if (navBtn) {
+                    navBtn.className = 'flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600';
+                }
+            });
+
+            if (targetSec) targetSec.classList.remove('hidden');
+
+            const targetNav = document.getElementById(`nav-${tabId}`);
+            if (targetNav) {
+                targetNav.className = 'flex flex-col items-center gap-1 text-brand-600 dark:text-brand-500 font-bold';
+            }
+        }
+
+        // CAMBIO DE SUBMENÚS DENTRO DE "GASTOS"
+        function switchExpenseSubtab(subtabId) {
+            ['all', 'supermarket', 'travels'].forEach(st => {
+                const subView = document.getElementById(`exp-sub-${st}`);
+                if (subView) subView.classList.add('hidden');
+
+                const subNavBtn = document.getElementById(`subnav-${st}`);
+                if (subNavBtn) {
+                    subNavBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-500 hover:text-gray-700 dark:hover:text-gray-200';
+                }
+            });
+
+            const targetSubView = document.getElementById(`exp-sub-${subtabId}`);
+            if (targetSubView) targetSubView.classList.remove('hidden');
+
+            const targetSubNav = document.getElementById(`subnav-${subtabId}`);
+            if (targetSubNav) {
+                targetSubNav.className = 'flex-1 py-2 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm';
+            }
+        }
+
+        // PANEL DE ADMINISTRADOR
         function renderAdminPanel() {
             const badge = document.getElementById('adminBadge');
             const panel = document.getElementById('adminPanel');
@@ -1040,7 +1266,6 @@
             saveState();
         }
 
-        // EDIT TEXT IN ADMIN MODE
         function editAdminText(key, label) {
             if (!state.adminMode) return;
             const current = state.customTexts[key] || '';
@@ -1051,34 +1276,13 @@
             }
         }
 
-        // TAB SWITCHING
-        function switchTab(tabId) {
-            ['dashboard', 'supermarket', 'travels', 'accounts', 'history', 'settings'].forEach(t => {
-                const sec = document.getElementById(`sec-${t}`);
-                if (sec) sec.classList.add('hidden');
-
-                const navBtn = document.getElementById(`nav-${t}`);
-                if (navBtn) {
-                    navBtn.className = 'flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600';
-                }
-            });
-
-            const targetSec = document.getElementById(`sec-${tabId}`);
-            if (targetSec) targetSec.classList.remove('hidden');
-
-            const targetNav = document.getElementById(`nav-${tabId}`);
-            if (targetNav) {
-                targetNav.className = 'flex flex-col items-center gap-1 text-brand-600 dark:text-brand-500 font-bold';
-            }
-        }
-
-        // BALANCE EYE TOGGLE
+        // MOSTRAR/OCULTAR SALDO
         function toggleBalanceVisibility() {
             state.balanceHidden = !state.balanceHidden;
             saveState();
         }
 
-        // MODAL HELPERS
+        // FUNCIONES DE MODALES
         function openModal(id, type = 'expense', category = null) {
             const modal = document.getElementById(id);
             if (modal) modal.classList.remove('hidden');
@@ -1100,23 +1304,35 @@
             if (modal) modal.classList.add('hidden');
         }
 
-        // TRANSACTION MODAL LOGIC
+        // TIPO DE MOVIMIENTO
         function setTxType(type) {
             document.getElementById('txType').value = type;
             const expenseBtn = document.getElementById('typeExpenseBtn');
             const incomeBtn = document.getElementById('typeIncomeBtn');
             const necessityWrapper = document.getElementById('necessityOptionWrapper');
+            const advancedOptions = document.getElementById('advancedExpenseOptions');
 
             if (type === 'expense') {
                 expenseBtn.className = 'py-2 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-700 text-rose-600 shadow';
                 incomeBtn.className = 'py-2 text-xs font-bold rounded-lg transition text-gray-500';
                 if (necessityWrapper) necessityWrapper.classList.remove('hidden');
+                if (advancedOptions) advancedOptions.classList.remove('hidden');
             } else {
                 incomeBtn.className = 'py-2 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-700 text-emerald-600 shadow';
                 expenseBtn.className = 'py-2 text-xs font-bold rounded-lg transition text-gray-500';
                 if (necessityWrapper) necessityWrapper.classList.add('hidden');
+                if (advancedOptions) advancedOptions.classList.add('hidden');
             }
             populateCategories();
+        }
+
+        function toggleInstallmentInputs(checkbox) {
+            const wrapper = document.getElementById('installmentWrapper');
+            if (checkbox.checked) {
+                wrapper.classList.remove('hidden');
+            } else {
+                wrapper.classList.add('hidden');
+            }
         }
 
         function populateCategories() {
@@ -1158,7 +1374,7 @@
             });
         }
 
-        // SAVE TX HANDLER
+        // GUARDAR MOVIMIENTO
         function handleSaveTx(e) {
             e.preventDefault();
             const type = document.getElementById('txType').value;
@@ -1168,6 +1384,9 @@
             const note = document.getElementById('txNote').value;
             const travelId = document.getElementById('txTravelLink').value;
             const recurring = document.getElementById('txRecurring').checked;
+            const isInstallment = document.getElementById('txIsInstallment').checked;
+            const currentInstallment = parseInt(document.getElementById('txCurrentInstallment').value) || 1;
+            const totalInstallments = parseInt(document.getElementById('txTotalInstallments').value) || 1;
 
             if (isNaN(amount) || amount <= 0) return;
 
@@ -1186,6 +1405,9 @@
                 note,
                 travelId: travelId || null,
                 recurring,
+                isInstallment,
+                currentInstallment,
+                totalInstallments,
                 necessity: type === 'expense' ? necessity : 'needed',
                 date: new Date().toISOString(),
                 items: []
@@ -1203,10 +1425,11 @@
             state.transactions.unshift(newTx);
             closeModal('addTxModal');
             document.getElementById('txForm').reset();
+            document.getElementById('installmentWrapper').classList.add('hidden');
             saveState();
         }
 
-        // SUPERMARKET ITEMIZATION MODAL LOGIC
+        // DESGLOSE SUPERMERCADO
         function openSuperItemsModal(txId) {
             const tx = state.transactions.find(t => t.id === txId);
             if (!tx) return;
@@ -1229,7 +1452,7 @@
             if (items.length === 0) {
                 list.innerHTML = `<p class="text-xs text-gray-400 text-center py-3">No hay productos en este ticket aún.</p>`;
             } else {
-                items.forEach(item => {
+                items.forEach((item, idx) => {
                     sum += parseFloat(item.price);
                     const div = document.createElement('div');
                     div.className = 'flex justify-between items-center p-2 bg-gray-50 dark:bg-slate-800 rounded-xl text-xs';
@@ -1240,13 +1463,27 @@
                             <span class="font-bold text-gray-900 dark:text-white">${item.name}</span>
                             <div>${tag}</div>
                         </div>
-                        <span class="font-bold text-gray-900 dark:text-white">$${parseFloat(item.price).toLocaleString('es-AR')}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-gray-900 dark:text-white">$${parseFloat(item.price).toLocaleString('es-AR')}</span>
+                            <button onclick="deleteSuperItem('${tx.id}', ${idx})" class="text-gray-300 hover:text-rose-500 p-1">
+                                <i class="fa-solid fa-trash-can text-[10px]"></i>
+                            </button>
+                        </div>
                     `;
                     list.appendChild(div);
                 });
             }
 
             document.getElementById('superItemsTotalSum').innerText = `Sumatoria: $${sum.toLocaleString('es-AR')}`;
+        }
+
+        function deleteSuperItem(txId, itemIdx) {
+            const txIndex = state.transactions.findIndex(t => t.id === txId);
+            if (txIndex !== -1 && state.transactions[txIndex].items) {
+                state.transactions[txIndex].items.splice(itemIdx, 1);
+                saveState();
+                renderSuperItemsList(state.transactions[txIndex]);
+            }
         }
 
         function handleAddItemToSuper(e) {
@@ -1277,7 +1514,7 @@
             }
         }
 
-        // TRAVEL CREATION LOGIC
+        // NUEVO VIAJE
         function openNewTravelModal() {
             openModal('newTravelModal');
         }
@@ -1301,7 +1538,7 @@
             saveState();
         }
 
-        // PAYMENT METHOD CREATION
+        // NUEVO MEDIO DE PAGO
         function openAddAccountModal() {
             openModal('newAccountModal');
         }
@@ -1331,7 +1568,7 @@
             saveState();
         }
 
-        // SAVINGS CREATION
+        // NUEVA META DE AHORRO
         function openAddSavingModal() {
             openModal('newSavingModal');
         }
@@ -1358,7 +1595,7 @@
             saveState();
         }
 
-        // PROFILE NAME SAVE
+        // PERFIL
         function saveProfileName() {
             const val = document.getElementById('profileNameInput').value.trim();
             if (val) {
@@ -1367,7 +1604,6 @@
             }
         }
 
-        // THEME & AVATAR SETTINGS
         function toggleTheme() {
             if (document.documentElement.classList.contains('dark')) {
                 document.documentElement.classList.remove('dark');
@@ -1402,7 +1638,7 @@
             }
         }
 
-        // CUSTOM CATEGORIES
+        // CATEGORÍAS PERSONALIZADAS
         function addCustomCategory() {
             const input = document.getElementById('newCategoryInput');
             const catName = input.value.trim();
@@ -1413,12 +1649,24 @@
             }
         }
 
-        // RESET
+        // RESETEAR DATOS AL ESTADO INICIAL VACÍO
         function resetAllData() {
-            if (confirm('¿Estás seguro de que deseas resetear todos los datos?')) {
-                state = defaultState;
-                saveState();
-            }
+            state = {
+                balanceHidden: false,
+                adminMode: false,
+                theme: 'light',
+                avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+                customTexts: { ...defaultState.customTexts },
+                accounts: [
+                    { id: 'acc1', name: 'Efectivo', type: 'cash', balance: 0, icon: 'fa-money-bill-wave' },
+                    { id: 'acc2', name: 'Banco / Débito', type: 'bank', balance: 0, icon: 'fa-building-columns' }
+                ],
+                categories: { ...defaultState.categories },
+                transactions: [],
+                travels: [],
+                savings: []
+            };
+            saveState();
         }
     </script>
 </body>
