@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#16a34a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mi Dinero">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2953/2953363.png">
+    <title>Control de Finanzas Personales</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        /* Admin Mode Editable Highlight */
+        .admin-editable {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .admin-active .admin-editable:hover {
+            outline: 2px dashed #f59e0b !important;
+            outline-offset: 3px;
+            border-radius: 6px;
+            background-color: rgba(245, 158, 11, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 dark:bg-slate-950 dark:text-gray-100 min-h-screen transition-colors duration-200">
+    <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col bg-white dark:bg-slate-900 shadow-2xl relative pb-24">
+        
+        <!-- ADMIN MODE NOTICE BANNER -->
+        <div id="adminNotice" class="hidden bg-amber-500 text-slate-950 px-3 py-1.5 text-[11px] font-bold text-center flex justify-between items-center z-50 sticky top-0 shadow-md">
+            <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-wand-magic-sparkles text-slate-950"></i> Modo ADMIN activo: Toca cualquier texto resaltado para editarlo
+            </span>
+            <button onclick="toggleAdminMode()" class="bg-slate-950 text-white px-2 py-0.5 rounded text-[10px] font-semibold hover:bg-slate-800 transition">Desactivar</button>
+        </div>
+
+        <!-- TOP NAVBAR -->
+        <header class="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div onclick="openAvatarModal()" class="relative cursor-pointer group">
+                    <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-brand-500/30 group-hover:ring-brand-500 transition-all">
+                    <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-brand-500 rounded-full border-2 border-white dark:border-slate-900"></div>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm leading-tight text-gray-900 dark:text-white flex items-center gap-1">
+                        <span id="txt_userGreeting" class="admin-editable" onclick="editAdminText('userGreeting', 'Saludo del usuario')">Hola, Mi Dinero</span> 👋
+                        <i class="fa-solid fa-pencil text-[9px] text-amber-500 admin-pencil hidden"></i>
+                    </h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400" id="currentDateStr">Cargando fecha...</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button onclick="toggleBalanceVisibility()" title="Ocultar/Mostrar saldo" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition">
+                    <i id="eyeIcon" class="fa-solid fa-eye text-sm"></i>
+                </button>
+                <button onclick="switchTab('settings')" title="Configuración" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 p-4 overflow-y-auto space-y-5">
+
+            <!-- SECTION: DASHBOARD -->
+            <section id="sec-dashboard" class="space-y-5">
+                <!-- BALANCE CARD -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-950 text-white rounded-3xl p-5 shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-6 -top-6 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                    
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs uppercase tracking-wider text-slate-400 font-medium flex items-center gap-1">
+                            <span id="txt_lblNetBalance" class="admin-editable" onclick="editAdminText('lblNetBalance', 'Etiqueta Saldo Total')">Dinero Total</span>
+                            <i class="fa-solid fa-pencil text-[9px] text-amber-500 admin-pencil hidden"></i>
+                        </span>
+                        <span id="adminBadge" class="hidden text-[10px] bg-amber-500/20 text-amber-300 font-semibold px-2 py-0.5 rounded-full border border-amber-500/30">
+                            <i class="fa-solid fa-shield-halved mr-1"></i>ADMIN
+                        </span>
+                    </div>
+
+                    <div class="flex items-baseline gap-2 mb-4">
+                        <span class="text-2xl font-semibold text-slate-400">$</span>
+                        <h2 id="totalBalance" class="text-3xl font-extrabold tracking-tight transition-all">0.00</h2>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-700/50">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-arrow-down"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-slate-400 admin-editable" id="txt_lblIncome" onclick="editAdminText('lblIncome', 'Etiqueta Ingresos')">Ingresos del Mes</p>
+                                <p id="monthlyIncome" class="text-sm font-semibold text-emerald-400">$0.00</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-arrow-up"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-slate-400 admin-editable" id="txt_lblExpense" onclick="editAdminText('lblExpense', 'Etiqueta Gastos')">Gastos del Mes</p>
+                                <p id="monthlyExpenses" class="text-sm font-semibold text-rose-400">$0.00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUICK ACTIONS BAR -->
+                <div class="grid grid-cols-4 gap-2">
+                    <button onclick="openModal('addTxModal', 'income')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50 hover:opacity-90 active:scale-95 transition">
+                        <i class="fa-solid fa-circle-plus text-lg mb-1"></i>
+                        <span class="text-xs font-medium admin-editable" id="txt_btnQuickIncome" onclick="editAdminText('btnQuickIncome', 'Boton Ingreso')">Ingreso</span>
+                    </button>
+                    <button onclick="openModal('addTxModal', 'expense')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50 hover:opacity-90 active:scale-95 transition">
+                        <i class="fa-solid fa-circle-minus text-lg mb-1"></i>
+                        <span class="text-xs font-medium admin-editable" id="txt_btnQuickExpense" onclick="editAdminText('btnQuickExpense', 'Boton Gasto')">Gasto</span>
+                    </button>
+                    <button onclick="switchTab('supermarket')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border border-amber-100 dark:border-amber-900/50 hover:opacity-90 active:scale-95 transition">
+                        <i class="fa-solid fa-cart-shopping text-lg mb-1"></i>
+                        <span class="text-xs font-medium admin-editable" id="txt_btnQuickSuper" onclick="editAdminText('btnQuickSuper', 'Boton Super')">Super</span>
+                    </button>
+                    <button onclick="switchTab('travels')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-sky-50 dark:bg-sky-950/30 text-sky-700 dark:text-sky-400 border border-sky-100 dark:border-sky-900/50 hover:opacity-90 active:scale-95 transition">
+                        <i class="fa-solid fa-plane text-lg mb-1"></i>
+                        <span class="text-xs font-medium admin-editable" id="txt_btnQuickTravel" onclick="editAdminText('btnQuickTravel', 'Boton Viajes')">Viajes</span>
+                    </button>
+                </div>
+
+                <!-- NECESSITY ANALYTICS -->
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie text-brand-600"></i>
+                            <span id="txt_lblQualityTitle" class="admin-editable" onclick="editAdminText('lblQualityTitle', 'Titulo Calidad de Gastos')">Gastos Necesarios vs. Innecesarios</span>
+                        </h3>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
+                            <div class="flex items-center gap-1.5 text-xs text-emerald-700 dark:text-emerald-400 font-semibold mb-1">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Necesario
+                            </div>
+                            <p id="necessityNeededAmount" class="text-base font-bold text-gray-900 dark:text-white">$0.00</p>
+                            <p id="necessityNeededPct" class="text-[10px] text-gray-500 dark:text-gray-400">0% del total</p>
+                        </div>
+                        <div class="p-3 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-100 dark:border-rose-800/30">
+                            <div class="flex items-center gap-1.5 text-xs text-rose-700 dark:text-rose-400 font-semibold mb-1">
+                                <span class="w-2 h-2 rounded-full bg-rose-500"></span> Innecesario
+                            </div>
+                            <p id="necessityUnneededAmount" class="text-base font-bold text-gray-900 dark:text-white">$0.00</p>
+                            <p id="necessityUnneededPct" class="text-[10px] text-gray-500 dark:text-gray-400">0% del total</p>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden flex">
+                        <div id="barNeeded" class="bg-emerald-500 h-full transition-all" style="width: 50%"></div>
+                        <div id="barUnneeded" class="bg-rose-500 h-full transition-all" style="width: 50%"></div>
+                    </div>
+                </div>
+
+                <!-- RECENT TRANSACTIONS -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white admin-editable" id="txt_lblRecentTx" onclick="editAdminText('lblRecentTx', 'Titulo Recientes')">Últimos Movimientos</h3>
+                        <button onclick="switchTab('history')" class="text-xs text-brand-600 dark:text-brand-400 font-semibold hover:underline">Ver todo</button>
+                    </div>
+
+                    <div id="recentTxList" class="space-y-2">
+                        <!-- Dynamic items -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: SUPERMARKET -->
+            <section id="sec-supermarket" class="hidden space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="font-bold text-base text-gray-900 dark:text-white admin-editable" id="txt_lblSuperTitle" onclick="editAdminText('lblSuperTitle', 'Titulo Supermercado')">Gastos de Supermercado</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Agrega el total y desglosa tus compras producto por producto</p>
+                    </div>
+                    <button onclick="openModal('addTxModal', 'expense', 'Supermercado')" class="px-3 py-1.5 bg-amber-500 text-white rounded-xl text-xs font-semibold hover:bg-amber-600 transition flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-plus"></i> Cargar Ticket
+                    </button>
+                </div>
+
+                <div id="supermarketList" class="space-y-3">
+                    <!-- Dynamic Supermarket Transactions -->
+                </div>
+            </section>
+
+            <!-- SECTION: TRAVELS -->
+            <section id="sec-travels" class="hidden space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="font-bold text-base text-gray-900 dark:text-white admin-editable" id="txt_lblTravelTitle" onclick="editAdminText('lblTravelTitle', 'Titulo Viajes')">Mis Viajes y Gastos</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Analiza lo que gastaste en cada destino</p>
+                    </div>
+                    <button onclick="openNewTravelModal()" class="px-3 py-1.5 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-plane-departure"></i> Nuevo Viaje
+                    </button>
+                </div>
+
+                <div id="travelsList" class="grid grid-cols-1 gap-3">
+                    <!-- Dynamic Travel Cards -->
+                </div>
+            </section>
+
+            <!-- SECTION: ACCOUNTS & SAVINGS -->
+            <section id="sec-accounts" class="hidden space-y-5">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="font-bold text-base text-gray-900 dark:text-white admin-editable" id="txt_lblAccountsTitle" onclick="editAdminText('lblAccountsTitle', 'Titulo Medios de Pago')">Mis Medios de Pago</h2>
+                        <button onclick="openAddAccountModal()" class="text-xs text-brand-600 font-semibold hover:underline">+ Agregar Medio</button>
+                    </div>
+                    <div id="accountsGrid" class="grid grid-cols-2 gap-3">
+                        <!-- Dynamic Accounts -->
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="font-bold text-base text-gray-900 dark:text-white admin-editable" id="txt_lblSavingsTitle" onclick="editAdminText('lblSavingsTitle', 'Titulo Ahorros')">Ahorros y Reservas</h2>
+                        <button onclick="openAddSavingModal()" class="text-xs text-brand-600 font-semibold hover:underline">+ Nueva Meta</button>
+                    </div>
+                    <div id="savingsList" class="space-y-3">
+                        <!-- Dynamic Savings Goals -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: HISTORY -->
+            <section id="sec-history" class="hidden space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-bold text-base text-gray-900 dark:text-white admin-editable" id="txt_lblHistoryTitle" onclick="editAdminText('lblHistoryTitle', 'Titulo Historial')">Historial Completo</h2>
+                    <select id="historyFilter" onchange="renderHistory()" class="text-xs bg-gray-100 dark:bg-slate-800 border-none rounded-lg px-2.5 py-1.5 font-medium text-gray-800 dark:text-gray-200">
+                        <option value="all">Todos</option>
+                        <option value="income">Ingresos</option>
+                        <option value="expense">Gastos</option>
+                    </select>
+                </div>
+
+                <div id="fullHistoryList" class="space-y-2">
+                    <!-- Dynamic Full List -->
+                </div>
+            </section>
+
+            <!-- SECTION: SETTINGS & ADMIN -->
+            <section id="sec-settings" class="hidden space-y-5">
+                <div class="bg-gradient-to-br from-brand-500 to-brand-700 text-white rounded-2xl p-4 shadow-md space-y-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-mobile-screen-button text-xl"></i>
+                        <h3 class="font-bold text-sm">Instalar como App en tu Celular</h3>
+                    </div>
+                    <p class="text-xs text-brand-100">
+                        Puedes instalar esta webapp en la pantalla de inicio de tu iPhone o Android para abrirla sin navegador y usarla a pantalla completa.
+                    </p>
+                    <div class="bg-white/10 p-3 rounded-xl backdrop-blur-xs text-[11px] space-y-2">
+                        <p class="font-bold border-b border-white/20 pb-1">📱 En iPhone (Safari):</p>
+                        <ol class="list-decimal list-inside space-y-0.5 text-brand-50">
+                            <li>Toca el botón <b>Compartir</b> (<i class="fa-solid fa-share-nodes"></i>) en Safari.</li>
+                            <li>Selecciona <b>"Agregar a inicio"</b> (<i class="fa-solid fa-plus-square"></i>).</li>
+                        </ol>
+                        <p class="font-bold border-b border-white/20 pb-1 pt-1">🤖 En Android (Chrome / Edge):</p>
+                        <ol class="list-decimal list-inside space-y-0.5 text-brand-50">
+                            <li>Toca los <b>3 puntos</b> arriba a la derecha.</li>
+                            <li>Toca <b>"Agregar a la pantalla principal"</b> o <b>"Instalar aplicación"</b>.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700 space-y-4">
+                    <h3 class="font-bold text-sm text-gray-900 dark:text-white border-b dark:border-slate-700 pb-2 admin-editable" id="txt_lblSettingsTitle" onclick="editAdminText('lblSettingsTitle', 'Titulo Ajustes')">Configuración del Perfil</h3>
+                    
+                    <!-- Profile Name Input -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Nombre de Perfil</label>
+                        <div class="flex gap-2">
+                            <input id="profileNameInput" type="text" placeholder="Tu Nombre" class="flex-1 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <button onclick="saveProfileName()" class="px-3 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition">Guardar</button>
+                        </div>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
+                        <div>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">Modo Claro / Oscuro</p>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400">Alternar contraste claro u oscuro</p>
+                        </div>
+                        <button onclick="toggleTheme()" class="w-12 h-6 bg-gray-300 dark:bg-brand-600 rounded-full p-1 transition duration-200">
+                            <div class="w-4 h-4 bg-white rounded-full shadow-md transform dark:translate-x-6 transition"></div>
+                        </button>
+                    </div>
+
+                    <!-- Profile Photo Selection -->
+                    <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
+                        <div>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">Foto de Perfil</p>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400">Subir foto o seleccionar avatar</p>
+                        </div>
+                        <button onclick="openAvatarModal()" class="px-3 py-1.5 bg-gray-100 dark:bg-slate-700 text-xs font-semibold rounded-lg hover:bg-gray-200 transition">
+                            Cambiar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ADMIN MODE TOGGLE CARD -->
+                <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-amber-500 text-lg"></i>
+                            <div>
+                                <p class="text-xs font-bold text-gray-900 dark:text-white">Modo Administrador</p>
+                                <p class="text-[11px] text-gray-500 dark:text-gray-400">Permite editar cualquier texto tocándolo directamente</p>
+                            </div>
+                        </div>
+                        <button onclick="toggleAdminMode()" id="adminToggleBtn" class="w-12 h-6 bg-gray-300 rounded-full p-1 transition duration-200">
+                            <div id="adminDot" class="w-4 h-4 bg-white rounded-full shadow-md transition"></div>
+                        </button>
+                    </div>
+
+                    <!-- ADMIN PANEL CONTROLS -->
+                    <div id="adminPanel" class="hidden pt-3 border-t border-amber-500/20 space-y-3">
+                        <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold uppercase tracking-wider">Opciones de Administración</p>
+                        
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Agregar Nueva Categoría de Gasto</label>
+                            <div class="flex gap-2">
+                                <input id="newCategoryInput" type="text" placeholder="Ej: Mascotas" class="flex-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs">
+                                <button onclick="addCustomCategory()" class="px-3 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-xl hover:bg-amber-600 transition">Añadir</button>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button onclick="resetAllData()" class="w-full py-2 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition">
+                                Resetear Todo al Estado Inicial
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- BOTTOM NAVIGATION BAR -->
+        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-md w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-100 dark:border-slate-800 px-4 py-2 flex justify-between items-center z-40">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 text-brand-600 dark:text-brand-500 font-bold">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] admin-editable" id="txt_navHome" onclick="editAdminText('navHome', 'Navegacion Inicio')">Inicio</span>
+            </button>
+            <button onclick="switchTab('supermarket')" id="nav-supermarket" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
+                <i class="fa-solid fa-cart-shopping text-lg"></i>
+                <span class="text-[10px] admin-editable" id="txt_navSuper" onclick="editAdminText('navSuper', 'Navegacion Super')">Super</span>
+            </button>
+            
+            <!-- Central FAB Add Button -->
+            <div class="-mt-6">
+                <button onclick="openModal('addTxModal')" class="w-12 h-12 bg-gradient-to-r from-brand-500 to-brand-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-brand-500/40 hover:scale-105 active:scale-95 transition">
+                    <i class="fa-solid fa-plus text-xl"></i>
+                </button>
+            </div>
+
+            <button onclick="switchTab('accounts')" id="nav-accounts" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
+                <i class="fa-solid fa-wallet text-lg"></i>
+                <span class="text-[10px] admin-editable" id="txt_navAccounts" onclick="editAdminText('navAccounts', 'Navegacion Cuentas')">Cuentas</span>
+            </button>
+            <button onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
+                <i class="fa-solid fa-gear text-lg"></i>
+                <span class="text-[10px] admin-editable" id="txt_navSettings" onclick="editAdminText('navSettings', 'Navegacion Ajustes')">Ajustes</span>
+            </button>
+        </nav>
+
+        <!-- MODALS -->
+
+        <!-- MODAL: ADD TRANSACTION -->
+        <div id="addTxModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 class="font-bold text-base text-gray-900 dark:text-white" id="txModalTitle">Nuevo Movimiento</h3>
+                    <button onclick="closeModal('addTxModal')" class="text-gray-400 hover:text-gray-600 text-lg">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form id="txForm" onsubmit="handleSaveTx(event)" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-gray-100 dark:bg-slate-800 rounded-xl">
+                        <button type="button" id="typeExpenseBtn" onclick="setTxType('expense')" class="py-2 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-700 text-rose-600 shadow">Gasto</button>
+                        <button type="button" id="typeIncomeBtn" onclick="setTxType('income')" class="py-2 text-xs font-bold rounded-lg transition text-gray-500">Ingreso</button>
+                    </div>
+                    <input type="hidden" id="txType" value="expense">
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Monto ($)</label>
+                        <input type="number" step="0.01" id="txAmount" required placeholder="0.00" class="w-full text-2xl font-bold bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Categoría</label>
+                        <select id="txCategory" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Medio de Pago / Cuenta</label>
+                        <select id="txAccount" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Detalle / Nota</label>
+                        <input type="text" id="txNote" placeholder="Ej: Compra Coto o Sueldo Mes" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm">
+                    </div>
+
+                    <div id="necessityOptionWrapper" class="p-3 bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-gray-100 dark:border-slate-700 space-y-2">
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400">¿Es un gasto necesario o innecesario?</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600">
+                                <input type="radio" name="txNecessity" value="needed" checked class="text-emerald-600 focus:ring-emerald-500">
+                                <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">🟢 Necesario</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600">
+                                <input type="radio" name="txNecessity" value="unneeded" class="text-rose-600 focus:ring-rose-500">
+                                <span class="text-xs font-semibold text-rose-600 dark:text-rose-400">🔴 Innecesario</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Asociar a Viaje (Opcional)</label>
+                        <select id="txTravelLink" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm">
+                            <option value="">Ninguno</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="txRecurring" class="rounded text-brand-600 focus:ring-brand-500">
+                        <label for="txRecurring" class="text-xs text-gray-700 dark:text-gray-300">Es un movimiento recurrente (fijo)</label>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-brand-600 text-white rounded-xl font-bold shadow-lg shadow-brand-500/30 hover:bg-brand-700 transition">
+                        Guardar Movimiento
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: ITEMIZE SUPERMARKET ITEMS -->
+        <div id="superItemsModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <div>
+                        <h3 class="font-bold text-base text-gray-900 dark:text-white">Desglosar Ticket Supermercado</h3>
+                        <p class="text-xs text-gray-400" id="superItemTxDate">Ticket de Super</p>
+                    </div>
+                    <button onclick="closeModal('superItemsModal')" class="text-gray-400 hover:text-gray-600 text-lg">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form onsubmit="handleAddItemToSuper(event)" class="space-y-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700">
+                    <input type="hidden" id="activeSuperTxId">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="itemName" placeholder="Ej: Leche o Pan" required class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-2.5 py-2 text-xs">
+                        <input type="number" step="0.01" id="itemPrice" placeholder="Precio ($)" required class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-2.5 py-2 text-xs">
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <select id="itemNecessity" class="flex-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-2.5 py-2 text-xs font-semibold">
+                            <option value="needed" class="text-emerald-600">🟢 Necesario</option>
+                            <option value="unneeded" class="text-rose-600">🔴 Innecesario</option>
+                        </select>
+                        <button type="submit" class="px-4 py-2 bg-brand-600 text-white rounded-lg text-xs font-bold hover:bg-brand-700 transition">
+                            + Agregar Producto
+                        </button>
+                    </div>
+                </form>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-xs text-gray-400 font-medium px-1">
+                        <span>Productos del Ticket</span>
+                        <span id="superItemsTotalSum">Total $0.00</span>
+                    </div>
+                    <div id="superItemsList" class="space-y-1.5 max-h-48 overflow-y-auto">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL: AVATAR / PROFILE PHOTO SELECTOR -->
+        <div id="avatarModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-sm text-gray-900 dark:text-white">Foto de Perfil</h3>
+                    <button onclick="closeModal('avatarModal')" class="text-gray-400 hover:text-gray-600">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <label class="block w-full py-2.5 px-4 bg-brand-50 dark:bg-brand-950/40 border border-dashed border-brand-500 rounded-xl text-center text-xs font-bold text-brand-600 dark:text-brand-400 cursor-pointer hover:bg-brand-100 transition">
+                    <i class="fa-solid fa-image mr-1.5"></i> Elegir Foto de la Galería
+                    <input type="file" accept="image/*" onchange="handleFileUpload(event)" class="hidden">
+                </label>
+
+                <p class="text-center text-[11px] text-gray-400 font-medium">O elige un avatar de la lista:</p>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
+                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
+                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
+                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
+                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
+                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL: ADD TRAVEL -->
+        <div id="newTravelModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
+                    <h3 class="font-bold text-sm text-gray-900 dark:text-white">Nuevo Viaje</h3>
+                    <button onclick="closeModal('newTravelModal')" class="text-gray-400 hover:text-gray-600">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form onsubmit="handleCreateTravel(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Destino / Nombre</label>
+                        <input type="text" id="travelName" required placeholder="Ej: Bariloche 2026" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Presupuesto Estimado ($)</label>
+                        <input type="number" id="travelBudget" required placeholder="150000" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-sky-600 text-white font-bold text-xs rounded-xl hover:bg-sky-700 transition">
+                        Crear Viaje
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: ADD ACCOUNT / PAYMENT METHOD -->
+        <div id="newAccountModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
+                    <h3 class="font-bold text-sm text-gray-900 dark:text-white">Nuevo Medio de Pago</h3>
+                    <button onclick="closeModal('newAccountModal')" class="text-gray-400 hover:text-gray-600">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form onsubmit="handleCreateAccount(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Nombre (Banco / Billetera)</label>
+                        <input type="text" id="accName" required placeholder="Ej: Banco Galicia o Naranja X" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Saldo Inicial ($)</label>
+                        <input type="number" id="accBalance" required placeholder="0.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Tipo</label>
+                        <select id="accType" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <option value="bank">Banco / Débito</option>
+                            <option value="wallet">Billetera Virtual</option>
+                            <option value="credit">Tarjeta de Crédito</option>
+                            <option value="cash">Efectivo</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-brand-600 text-white font-bold text-xs rounded-xl hover:bg-brand-700 transition">
+                        Guardar Medio
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: ADD SAVING GOAL -->
+        <div id="newSavingModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
+                    <h3 class="font-bold text-sm text-gray-900 dark:text-white">Nueva Meta de Ahorro</h3>
+                    <button onclick="closeModal('newSavingModal')" class="text-gray-400 hover:text-gray-600">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form onsubmit="handleCreateSaving(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Nombre de la Meta</label>
+                        <input type="text" id="svgTitle" required placeholder="Ej: Fondo de Emergencia" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Monto Objetivo ($)</label>
+                        <input type="number" id="svgTarget" required placeholder="500000" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Ahorrado Inicial ($)</label>
+                        <input type="number" id="svgCurrent" placeholder="0.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-brand-600 text-white font-bold text-xs rounded-xl hover:bg-brand-700 transition">
+                        Guardar Meta
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // APP DEFAULT STATE
+        const defaultState = {
+            balanceHidden: false,
+            adminMode: false,
+            theme: 'light',
+            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+            customTexts: {
+                userGreeting: 'Hola, Mi Dinero',
+                lblNetBalance: 'Dinero Total',
+                lblIncome: 'Ingresos del Mes',
+                lblExpense: 'Gastos del Mes',
+                btnQuickIncome: 'Ingreso',
+                btnQuickExpense: 'Gasto',
+                btnQuickSuper: 'Super',
+                btnQuickTravel: 'Viajes',
+                lblQualityTitle: 'Gastos Necesarios vs. Innecesarios',
+                lblRecentTx: 'Últimos Movimientos',
+                lblSuperTitle: 'Gastos de Supermercado',
+                lblTravelTitle: 'Mis Viajes y Gastos',
+                lblAccountsTitle: 'Mis Medios de Pago',
+                lblSavingsTitle: 'Ahorros y Reservas',
+                lblHistoryTitle: 'Historial Completo',
+                lblSettingsTitle: 'Configuración del Perfil',
+                navHome: 'Inicio',
+                navSuper: 'Super',
+                navAccounts: 'Cuentas',
+                navSettings: 'Ajustes'
+            },
+            accounts: [
+                { id: 'acc1', name: 'Efectivo', type: 'cash', balance: 25000, icon: 'fa-money-bill-wave' },
+                { id: 'acc2', name: 'Banco Santander', type: 'bank', balance: 140000, icon: 'fa-building-columns' },
+                { id: 'acc3', name: 'Mercado Pago', type: 'wallet', balance: 42000, icon: 'fa-mobile-screen' }
+            ],
+            categories: {
+                income: ['Sueldo', 'Ventas', 'Trabajos', 'Reintegros', 'Otros'],
+                expense: ['Servicios', 'Casa/Alquiler', 'Combustible auto', 'Supermercado', 'Panadería', 'Comida', 'Verdulería', 'Carnicería', 'Kiosco', 'Ropa', 'Regalo', 'Arreglo', 'Transporte', 'Ferreteria', 'Viajes', 'Otros']
+            },
+            transactions: [
+                { id: 'tx1', type: 'income', amount: 350000, category: 'Sueldo', accountId: 'acc2', note: 'Cobro Mensual', date: new Date().toISOString(), recurring: true, necessity: 'needed' },
+                { id: 'tx2', type: 'expense', amount: 18500, category: 'Supermercado', accountId: 'acc3', note: 'Compra en Coto', date: new Date().toISOString(), recurring: false, necessity: 'needed', items: [
+                    { id: 'item1', name: 'Leche y Queso', price: 6500, necessity: 'needed' },
+                    { id: 'item2', name: 'Golosinas', price: 4000, necessity: 'unneeded' },
+                    { id: 'item3', name: 'Carne y Verduras', price: 8000, necessity: 'needed' }
+                ]},
+                { id: 'tx3', type: 'expense', amount: 12000, category: 'Combustible auto', accountId: 'acc1', note: 'Nafta YPF', date: new Date().toISOString(), recurring: false, necessity: 'needed' }
+            ],
+            travels: [
+                { id: 'trv1', name: 'Bariloche 2026', budget: 200000 }
+            ],
+            savings: [
+                { id: 'svg1', title: 'Fondo de Emergencia', target: 500000, current: 150000 }
+            ]
+        };
+
+        let state = JSON.parse(localStorage.getItem('financeAppState')) || defaultState;
+        if (!state.customTexts) state.customTexts = { ...defaultState.customTexts };
+        if (!state.categories) state.categories = { ...defaultState.categories };
+
+        // SAVE STATE
+        function saveState() {
+            localStorage.setItem('financeAppState', JSON.stringify(state));
+            renderApp();
+        }
+
+        // INIT
+        window.onload = function() {
+            const now = new Date();
+            const options = { weekday: 'short', day: 'numeric', month: 'short' };
+            document.getElementById('currentDateStr').innerText = now.toLocaleDateString('es-ES', options);
+
+            if (state.theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            // Sync profile inputs
+            if (document.getElementById('profileNameInput')) {
+                document.getElementById('profileNameInput').value = state.customTexts.userGreeting || '';
+            }
+
+            renderApp();
+        };
+
+        function renderApp() {
+            // Apply custom texts to UI elements
+            Object.keys(state.customTexts).forEach(key => {
+                const el = document.getElementById(`txt_${key}`);
+                if (el) {
+                    el.innerText = state.customTexts[key];
+                }
+            });
+
+            // Sync Header Avatar
+            const avatarEl = document.getElementById('headerAvatar');
+            if (avatarEl && state.avatar) {
+                avatarEl.src = state.avatar;
+            }
+
+            // Calculate balances and summary metrics
+            const netBalance = state.accounts.reduce((sum, acc) => sum + parseFloat(acc.balance || 0), 0);
+            
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            let monthlyInc = 0;
+            let monthlyExp = 0;
+            let neededExp = 0;
+            let unneededExp = 0;
+
+            state.transactions.forEach(tx => {
+                const txDate = new Date(tx.date);
+                if (txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear) {
+                    const amt = parseFloat(tx.amount || 0);
+                    if (tx.type === 'income') {
+                        monthlyInc += amt;
+                    } else if (tx.type === 'expense') {
+                        monthlyExp += amt;
+                        if (tx.necessity === 'unneeded') {
+                            unneededExp += amt;
+                        } else {
+                            neededExp += amt;
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('totalBalance').innerText = state.balanceHidden ? '••••••' : netBalance.toLocaleString('es-AR', { minimumFractionDigits: 2 });
+            document.getElementById('monthlyIncome').innerText = state.balanceHidden ? '••••' : `$${monthlyInc.toLocaleString('es-AR')}`;
+            document.getElementById('monthlyExpenses').innerText = state.balanceHidden ? '••••' : `$${monthlyExp.toLocaleString('es-AR')}`;
+
+            document.getElementById('necessityNeededAmount').innerText = state.balanceHidden ? '••••' : `$${neededExp.toLocaleString('es-AR')}`;
+            document.getElementById('necessityUnneededAmount').innerText = state.balanceHidden ? '••••' : `$${unneededExp.toLocaleString('es-AR')}`;
+
+            const totalMonthExp = neededExp + unneededExp;
+            const neededPct = totalMonthExp > 0 ? Math.round((neededExp / totalMonthExp) * 100) : 50;
+            const unneededPct = totalMonthExp > 0 ? Math.round((unneededExp / totalMonthExp) * 100) : 50;
+
+            document.getElementById('necessityNeededPct').innerText = `${neededPct}% del total`;
+            document.getElementById('necessityUnneededPct').innerText = `${unneededPct}% del total`;
+
+            document.getElementById('barNeeded').style.width = `${neededPct}%`;
+            document.getElementById('barUnneeded').style.width = `${unneededPct}%`;
+
+            // Recent Transactions Dashboard
+            const recentList = document.getElementById('recentTxList');
+            recentList.innerHTML = '';
+            
+            const sorted = [...state.transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
+
+            if (sorted.length === 0) {
+                recentList.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">No hay movimientos registrados.</p>`;
+            } else {
+                sorted.forEach(tx => {
+                    const acc = state.accounts.find(a => a.id === tx.accountId) || { name: 'Gasto' };
+                    recentList.appendChild(createTxElement(tx, acc));
+                });
+            }
+
+            renderAdminPanel();
+            renderSupermarket();
+            renderTravels();
+            renderAccountsAndSavings();
+            renderHistory();
+        }
+
+        // CREATE TX DOM ITEM
+        function createTxElement(tx, acc) {
+            const div = document.createElement('div');
+            div.className = 'flex justify-between items-center p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700/60 shadow-sm';
+            
+            const isIncome = tx.type === 'income';
+            const iconBg = isIncome ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400';
+            const iconClass = isIncome ? 'fa-arrow-down' : 'fa-arrow-up';
+            
+            const necessityTag = !isIncome ? (tx.necessity === 'unneeded' ? '<span class="text-[9px] bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-300 font-bold px-1.5 py-0.5 rounded ml-1">Innecesario</span>' : '<span class="text-[9px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 font-bold px-1.5 py-0.5 rounded ml-1">Necesario</span>') : '';
+
+            div.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl ${iconBg} flex items-center justify-center text-xs">
+                        <i class="fa-solid ${iconClass}"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center">
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">${tx.category}</p>
+                            ${necessityTag}
+                        </div>
+                        <p class="text-[11px] text-gray-400">${tx.note || acc.name}</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs font-bold ${isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'}">
+                        ${isIncome ? '+' : '-'}$${parseFloat(tx.amount).toLocaleString('es-AR')}
+                    </p>
+                    <p class="text-[10px] text-gray-400">${new Date(tx.date).toLocaleDateString('es-ES')}</p>
+                </div>
+            `;
+            return div;
+        }
+
+        // SUPERMARKET TAB RENDER
+        function renderSupermarket() {
+            const list = document.getElementById('supermarketList');
+            if (!list) return;
+            list.innerHTML = '';
+
+            const superTxs = state.transactions.filter(t => t.category === 'Supermercado' || t.category === 'Panadería' || t.category === 'Verdulería' || t.category === 'Carnicería');
+
+            if (superTxs.length === 0) {
+                list.innerHTML = `<div class="p-6 text-center text-xs text-gray-400">No hay gastos de supermercado aún.</div>`;
+                return;
+            }
+
+            superTxs.forEach(tx => {
+                const itemsCount = tx.items ? tx.items.length : 0;
+                const card = document.createElement('div');
+                card.className = 'bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700 space-y-3 shadow-sm';
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-center border-b dark:border-slate-700 pb-2">
+                        <div>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white">${tx.note || tx.category}</span>
+                            <p class="text-[10px] text-gray-400">${new Date(tx.date).toLocaleDateString('es-ES')}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-sm font-extrabold text-rose-600 dark:text-rose-400">-$${parseFloat(tx.amount).toLocaleString('es-AR')}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-gray-500">${itemsCount} productos en ticket</span>
+                        <button onclick="openSuperItemsModal('${tx.id}')" class="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold rounded-lg hover:bg-amber-500/20 transition">
+                            <i class="fa-solid fa-list-check mr-1"></i> Desglosar Productos
+                        </button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // TRAVELS TAB RENDER
+        function renderTravels() {
+            const list = document.getElementById('travelsList');
+            if (!list) return;
+            list.innerHTML = '';
+
+            if (state.travels.length === 0) {
+                list.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">No tienes viajes planificados.</p>`;
+                return;
+            }
+
+            state.travels.forEach(trv => {
+                const spent = state.transactions
+                    .filter(t => t.travelId === trv.id)
+                    .reduce((sum, t) => sum + parseFloat(t.amount), 0);
+
+                const pct = Math.min(100, Math.round((spent / trv.budget) * 100));
+
+                const card = document.createElement('div');
+                card.className = 'bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700 space-y-3 shadow-sm';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-900/40 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+                                <i class="fa-solid fa-plane"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-gray-900 dark:text-white">${trv.name}</h3>
+                                <p class="text-[10px] text-gray-400">Presupuesto: $${parseFloat(trv.budget).toLocaleString('es-AR')}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold text-sky-600 dark:text-sky-400">$${spent.toLocaleString('es-AR')} gastados</span>
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="w-full bg-gray-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                            <div class="bg-sky-500 h-full" style="width: ${pct}%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-gray-400">
+                            <span>${pct}% ejecutado</span>
+                            <span>Disponible: $${Math.max(0, trv.budget - spent).toLocaleString('es-AR')}</span>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // ACCOUNTS AND SAVINGS RENDER
+        function renderAccountsAndSavings() {
+            const grid = document.getElementById('accountsGrid');
+            if (grid) {
+                grid.innerHTML = '';
+                state.accounts.forEach(acc => {
+                    const div = document.createElement('div');
+                    div.className = 'p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 flex flex-col justify-between shadow-sm';
+                    div.innerHTML = `
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fa-solid ${acc.icon || 'fa-wallet'} text-brand-600 text-sm"></i>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white truncate">${acc.name}</span>
+                        </div>
+                        <p class="text-sm font-extrabold text-gray-900 dark:text-white">$${parseFloat(acc.balance).toLocaleString('es-AR')}</p>
+                    `;
+                    grid.appendChild(div);
+                });
+            }
+
+            const sList = document.getElementById('savingsList');
+            if (sList) {
+                sList.innerHTML = '';
+                state.savings.forEach(svg => {
+                    const pct = Math.min(100, Math.round((svg.current / svg.target) * 100));
+                    const div = document.createElement('div');
+                    div.className = 'p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 space-y-2 shadow-sm';
+                    div.innerHTML = `
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-bold text-gray-900 dark:text-white">${svg.title}</span>
+                            <span class="font-semibold text-brand-600 dark:text-brand-400">$${svg.current.toLocaleString('es-AR')} / $${svg.target.toLocaleString('es-AR')}</span>
+                        </div>
+                        <div class="w-full bg-gray-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                            <div class="bg-brand-500 h-full" style="width: ${pct}%"></div>
+                        </div>
+                    `;
+                    sList.appendChild(div);
+                });
+            }
+        }
+
+        // HISTORY TAB RENDER
+        function renderHistory() {
+            const filterEl = document.getElementById('historyFilter');
+            if (!filterEl) return;
+            const filter = filterEl.value;
+            const container = document.getElementById('fullHistoryList');
+            if (!container) return;
+            container.innerHTML = '';
+
+            let filtered = [...state.transactions];
+            if (filter === 'income') filtered = filtered.filter(t => t.type === 'income');
+            if (filter === 'expense') filtered = filtered.filter(t => t.type === 'expense');
+
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">No hay transacciones.</p>`;
+                return;
+            }
+
+            filtered.forEach(tx => {
+                const acc = state.accounts.find(a => a.id === tx.accountId) || { name: 'Cuenta' };
+                container.appendChild(createTxElement(tx, acc));
+            });
+        }
+
+        // ADMIN PANEL RENDER & TOGGLE
+        function renderAdminPanel() {
+            const badge = document.getElementById('adminBadge');
+            const panel = document.getElementById('adminPanel');
+            const notice = document.getElementById('adminNotice');
+            const appContainer = document.getElementById('app');
+            const adminDot = document.getElementById('adminDot');
+            const adminToggleBtn = document.getElementById('adminToggleBtn');
+
+            const pencils = document.querySelectorAll('.admin-pencil');
+
+            if (state.adminMode) {
+                if (badge) badge.classList.remove('hidden');
+                if (panel) panel.classList.remove('hidden');
+                if (notice) notice.classList.remove('hidden');
+                if (appContainer) appContainer.classList.add('admin-active');
+                if (adminToggleBtn) adminToggleBtn.className = 'w-12 h-6 bg-amber-500 rounded-full p-1 transition duration-200';
+                if (adminDot) adminDot.className = 'w-4 h-4 bg-white rounded-full shadow-md transform translate-x-6 transition';
+                pencils.forEach(p => p.classList.remove('hidden'));
+            } else {
+                if (badge) badge.classList.add('hidden');
+                if (panel) panel.classList.add('hidden');
+                if (notice) notice.classList.add('hidden');
+                if (appContainer) appContainer.classList.remove('admin-active');
+                if (adminToggleBtn) adminToggleBtn.className = 'w-12 h-6 bg-gray-300 rounded-full p-1 transition duration-200';
+                if (adminDot) adminDot.className = 'w-4 h-4 bg-white rounded-full shadow-md transition';
+                pencils.forEach(p => p.classList.add('hidden'));
+            }
+        }
+
+        function toggleAdminMode() {
+            state.adminMode = !state.adminMode;
+            saveState();
+        }
+
+        // EDIT TEXT IN ADMIN MODE
+        function editAdminText(key, label) {
+            if (!state.adminMode) return;
+            const current = state.customTexts[key] || '';
+            const updated = prompt(`[Modo ADMIN] Editar ${label}:`, current);
+            if (updated !== null && updated.trim() !== '') {
+                state.customTexts[key] = updated.trim();
+                saveState();
+            }
+        }
+
+        // TAB SWITCHING
+        function switchTab(tabId) {
+            ['dashboard', 'supermarket', 'travels', 'accounts', 'history', 'settings'].forEach(t => {
+                const sec = document.getElementById(`sec-${t}`);
+                if (sec) sec.classList.add('hidden');
+
+                const navBtn = document.getElementById(`nav-${t}`);
+                if (navBtn) {
+                    navBtn.className = 'flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600';
+                }
+            });
+
+            const targetSec = document.getElementById(`sec-${tabId}`);
+            if (targetSec) targetSec.classList.remove('hidden');
+
+            const targetNav = document.getElementById(`nav-${tabId}`);
+            if (targetNav) {
+                targetNav.className = 'flex flex-col items-center gap-1 text-brand-600 dark:text-brand-500 font-bold';
+            }
+        }
+
+        // BALANCE EYE TOGGLE
+        function toggleBalanceVisibility() {
+            state.balanceHidden = !state.balanceHidden;
+            saveState();
+        }
+
+        // MODAL HELPERS
+        function openModal(id, type = 'expense', category = null) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.remove('hidden');
+
+            if (id === 'addTxModal') {
+                setTxType(type);
+                populateCategories();
+                populateAccounts();
+                populateTravelLinks();
+                if (category) {
+                    const catSelect = document.getElementById('txCategory');
+                    if (catSelect) catSelect.value = category;
+                }
+            }
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // TRANSACTION MODAL LOGIC
+        function setTxType(type) {
+            document.getElementById('txType').value = type;
+            const expenseBtn = document.getElementById('typeExpenseBtn');
+            const incomeBtn = document.getElementById('typeIncomeBtn');
+            const necessityWrapper = document.getElementById('necessityOptionWrapper');
+
+            if (type === 'expense') {
+                expenseBtn.className = 'py-2 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-700 text-rose-600 shadow';
+                incomeBtn.className = 'py-2 text-xs font-bold rounded-lg transition text-gray-500';
+                if (necessityWrapper) necessityWrapper.classList.remove('hidden');
+            } else {
+                incomeBtn.className = 'py-2 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-700 text-emerald-600 shadow';
+                expenseBtn.className = 'py-2 text-xs font-bold rounded-lg transition text-gray-500';
+                if (necessityWrapper) necessityWrapper.classList.add('hidden');
+            }
+            populateCategories();
+        }
+
+        function populateCategories() {
+            const type = document.getElementById('txType').value;
+            const select = document.getElementById('txCategory');
+            if (!select) return;
+            select.innerHTML = '';
+
+            const list = state.categories[type] || [];
+            list.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.innerText = cat;
+                select.appendChild(opt);
+            });
+        }
+
+        function populateAccounts() {
+            const select = document.getElementById('txAccount');
+            if (!select) return;
+            select.innerHTML = '';
+            state.accounts.forEach(acc => {
+                const opt = document.createElement('option');
+                opt.value = acc.id;
+                opt.innerText = `${acc.name} ($${parseFloat(acc.balance).toLocaleString('es-AR')})`;
+                select.appendChild(opt);
+            });
+        }
+
+        function populateTravelLinks() {
+            const select = document.getElementById('txTravelLink');
+            if (!select) return;
+            select.innerHTML = '<option value="">Ninguno</option>';
+            state.travels.forEach(trv => {
+                const opt = document.createElement('option');
+                opt.value = trv.id;
+                opt.innerText = trv.name;
+                select.appendChild(opt);
+            });
+        }
+
+        // SAVE TX HANDLER
+        function handleSaveTx(e) {
+            e.preventDefault();
+            const type = document.getElementById('txType').value;
+            const amount = parseFloat(document.getElementById('txAmount').value);
+            const category = document.getElementById('txCategory').value;
+            const accountId = document.getElementById('txAccount').value;
+            const note = document.getElementById('txNote').value;
+            const travelId = document.getElementById('txTravelLink').value;
+            const recurring = document.getElementById('txRecurring').checked;
+
+            if (isNaN(amount) || amount <= 0) return;
+
+            const necessityRadios = document.getElementsByName('txNecessity');
+            let necessity = 'needed';
+            for (let r of necessityRadios) {
+                if (r.checked) necessity = r.value;
+            }
+
+            const newTx = {
+                id: 'tx_' + Date.now(),
+                type,
+                amount,
+                category,
+                accountId,
+                note,
+                travelId: travelId || null,
+                recurring,
+                necessity: type === 'expense' ? necessity : 'needed',
+                date: new Date().toISOString(),
+                items: []
+            };
+
+            const accIndex = state.accounts.findIndex(a => a.id === accountId);
+            if (accIndex !== -1) {
+                if (type === 'income') {
+                    state.accounts[accIndex].balance += amount;
+                } else {
+                    state.accounts[accIndex].balance -= amount;
+                }
+            }
+
+            state.transactions.unshift(newTx);
+            closeModal('addTxModal');
+            document.getElementById('txForm').reset();
+            saveState();
+        }
+
+        // SUPERMARKET ITEMIZATION MODAL LOGIC
+        function openSuperItemsModal(txId) {
+            const tx = state.transactions.find(t => t.id === txId);
+            if (!tx) return;
+
+            document.getElementById('activeSuperTxId').value = txId;
+            document.getElementById('superItemTxDate').innerText = `Ticket $${parseFloat(tx.amount).toLocaleString('es-AR')} - ${new Date(tx.date).toLocaleDateString('es-ES')}`;
+            
+            renderSuperItemsList(tx);
+            openModal('superItemsModal');
+        }
+
+        function renderSuperItemsList(tx) {
+            const list = document.getElementById('superItemsList');
+            if (!list) return;
+            list.innerHTML = '';
+            
+            const items = tx.items || [];
+            let sum = 0;
+
+            if (items.length === 0) {
+                list.innerHTML = `<p class="text-xs text-gray-400 text-center py-3">No hay productos en este ticket aún.</p>`;
+            } else {
+                items.forEach(item => {
+                    sum += parseFloat(item.price);
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center p-2 bg-gray-50 dark:bg-slate-800 rounded-xl text-xs';
+                    const tag = item.necessity === 'unneeded' ? '<span class="text-[9px] text-rose-500 font-bold">🔴 Innecesario</span>' : '<span class="text-[9px] text-emerald-500 font-bold">🟢 Necesario</span>';
+                    
+                    div.innerHTML = `
+                        <div>
+                            <span class="font-bold text-gray-900 dark:text-white">${item.name}</span>
+                            <div>${tag}</div>
+                        </div>
+                        <span class="font-bold text-gray-900 dark:text-white">$${parseFloat(item.price).toLocaleString('es-AR')}</span>
+                    `;
+                    list.appendChild(div);
+                });
+            }
+
+            document.getElementById('superItemsTotalSum').innerText = `Sumatoria: $${sum.toLocaleString('es-AR')}`;
+        }
+
+        function handleAddItemToSuper(e) {
+            e.preventDefault();
+            const txId = document.getElementById('activeSuperTxId').value;
+            const name = document.getElementById('itemName').value;
+            const price = parseFloat(document.getElementById('itemPrice').value);
+            const necessity = document.getElementById('itemNecessity').value;
+
+            if (isNaN(price) || price <= 0) return;
+
+            const txIndex = state.transactions.findIndex(t => t.id === txId);
+            if (txIndex !== -1) {
+                if (!state.transactions[txIndex].items) {
+                    state.transactions[txIndex].items = [];
+                }
+                state.transactions[txIndex].items.push({
+                    id: 'item_' + Date.now(),
+                    name,
+                    price,
+                    necessity
+                });
+
+                saveState();
+                renderSuperItemsList(state.transactions[txIndex]);
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemPrice').value = '';
+            }
+        }
+
+        // TRAVEL CREATION LOGIC
+        function openNewTravelModal() {
+            openModal('newTravelModal');
+        }
+
+        function handleCreateTravel(e) {
+            e.preventDefault();
+            const name = document.getElementById('travelName').value;
+            const budget = parseFloat(document.getElementById('travelBudget').value);
+
+            if (isNaN(budget) || budget <= 0) return;
+
+            state.travels.push({
+                id: 'trv_' + Date.now(),
+                name,
+                budget
+            });
+
+            closeModal('newTravelModal');
+            document.getElementById('travelName').value = '';
+            document.getElementById('travelBudget').value = '';
+            saveState();
+        }
+
+        // PAYMENT METHOD CREATION
+        function openAddAccountModal() {
+            openModal('newAccountModal');
+        }
+
+        function handleCreateAccount(e) {
+            e.preventDefault();
+            const name = document.getElementById('accName').value;
+            const balance = parseFloat(document.getElementById('accBalance').value) || 0;
+            const type = document.getElementById('accType').value;
+
+            let icon = 'fa-wallet';
+            if (type === 'bank') icon = 'fa-building-columns';
+            if (type === 'wallet') icon = 'fa-mobile-screen';
+            if (type === 'credit') icon = 'fa-credit-card';
+
+            state.accounts.push({
+                id: 'acc_' + Date.now(),
+                name,
+                balance,
+                type,
+                icon
+            });
+
+            closeModal('newAccountModal');
+            document.getElementById('accName').value = '';
+            document.getElementById('accBalance').value = '';
+            saveState();
+        }
+
+        // SAVINGS CREATION
+        function openAddSavingModal() {
+            openModal('newSavingModal');
+        }
+
+        function handleCreateSaving(e) {
+            e.preventDefault();
+            const title = document.getElementById('svgTitle').value;
+            const target = parseFloat(document.getElementById('svgTarget').value) || 0;
+            const current = parseFloat(document.getElementById('svgCurrent').value) || 0;
+
+            if (target <= 0) return;
+
+            state.savings.push({
+                id: 'svg_' + Date.now(),
+                title,
+                target,
+                current
+            });
+
+            closeModal('newSavingModal');
+            document.getElementById('svgTitle').value = '';
+            document.getElementById('svgTarget').value = '';
+            document.getElementById('svgCurrent').value = '';
+            saveState();
+        }
+
+        // PROFILE NAME SAVE
+        function saveProfileName() {
+            const val = document.getElementById('profileNameInput').value.trim();
+            if (val) {
+                state.customTexts.userGreeting = val;
+                saveState();
+            }
+        }
+
+        // THEME & AVATAR SETTINGS
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                state.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                state.theme = 'dark';
+            }
+            saveState();
+        }
+
+        function openAvatarModal() {
+            openModal('avatarModal');
+        }
+
+        function selectAvatar(url) {
+            state.avatar = url;
+            closeModal('avatarModal');
+            saveState();
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    state.avatar = e.target.result;
+                    closeModal('avatarModal');
+                    saveState();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // CUSTOM CATEGORIES
+        function addCustomCategory() {
+            const input = document.getElementById('newCategoryInput');
+            const catName = input.value.trim();
+            if (catName) {
+                state.categories.expense.push(catName);
+                input.value = '';
+                saveState();
+            }
+        }
+
+        // RESET
+        function resetAllData() {
+            if (confirm('¿Estás seguro de que deseas resetear todos los datos?')) {
+                state = defaultState;
+                saveState();
+            }
+        }
+    </script>
+</body>
+</html>
