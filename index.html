@@ -41,11 +41,30 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        .admin-editable {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .admin-active .admin-editable:hover {
+            outline: 2px dashed #f59e0b !important;
+            outline-offset: 2px;
+            border-radius: 4px;
+            background-color: rgba(245, 158, 11, 0.15);
+        }
     </style>
 </head>
 <body class="bg-[#fafafa] text-gray-900 dark:bg-slate-950 dark:text-gray-100 min-h-screen transition-colors duration-200">
     <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col bg-white dark:bg-slate-900 shadow-xl relative pb-24 border-x border-gray-200/50 dark:border-slate-800">
         
+        <!-- BANNER MODO ADMIN -->
+        <div id="adminNotice" class="hidden bg-amber-500 text-slate-950 px-3 py-1.5 text-[11px] font-bold text-center flex justify-between items-center z-50 sticky top-0 shadow-md">
+            <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-wand-magic-sparkles text-slate-950"></i> Modo ADMIN: Toca cualquier texto resaltado para editar
+            </span>
+            <button onclick="toggleAdminMode()" class="bg-slate-950 text-white px-2 py-0.5 rounded text-[10px] font-semibold hover:bg-slate-800 transition">Desactivar</button>
+        </div>
+
         <!-- CABECERA SUPERIOR -->
         <header class="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -55,13 +74,17 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-sm leading-tight text-gray-900 dark:text-white">
-                        <span id="txt_userGreeting">Hola, Mi Dinero</span> 👋
+                        <span id="txt_userGreeting" class="admin-editable" onclick="editAdminText('userGreeting', 'Saludo')">Hola, Mi Dinero</span> 👋
                     </h1>
                     <p class="text-xs text-gray-500 dark:text-gray-400" id="currentDateStr">Cargando fecha...</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-2">
+                <button onclick="switchTab('bills')" title="Notificaciones de Vencimientos" class="relative w-9 h-9 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center hover:bg-amber-100 transition">
+                    <i class="fa-solid fa-bell text-sm"></i>
+                    <span id="notificationBadge" class="hidden absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-white dark:ring-slate-900">0</span>
+                </button>
                 <button onclick="toggleBalanceVisibility()" title="Ocultar/Mostrar saldo" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 transition">
                     <i id="eyeIcon" class="fa-solid fa-eye text-sm"></i>
                 </button>
@@ -74,13 +97,13 @@
         <!-- CONTENIDO PRINCIPAL -->
         <main class="flex-1 p-4 overflow-y-auto space-y-5">
 
-            <!-- PANTALLA INICIO (RESUMEN GENERAL Y ALERTAS) -->
+            <!-- PANTALLA INICIO (RESUMEN GENERAL, ALERTAS, GRÁFICO Y MEDIOS DE PAGO) -->
             <section id="sec-dashboard" class="space-y-4">
                 <!-- TARJETA CAPITAL ACTIVO -->
                 <div class="bg-gradient-to-br from-gray-900 to-gray-800 dark:from-slate-800 dark:to-slate-950 text-white rounded-3xl p-5 shadow-xl relative overflow-hidden">
                     <div class="absolute -right-6 -top-6 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl pointer-events-none"></div>
                     <div class="flex justify-between items-start mb-1">
-                        <span class="text-xs uppercase tracking-wider text-slate-300 font-medium">Capital Activo Disponible</span>
+                        <span id="txt_lblCapital" class="text-xs uppercase tracking-wider text-slate-300 font-medium admin-editable" onclick="editAdminText('lblCapital', 'Titulo Capital')">Capital Activo Disponible</span>
                     </div>
                     <div class="flex items-baseline gap-2 mb-3">
                         <span class="text-2xl font-semibold text-slate-300">$</span>
@@ -91,14 +114,14 @@
                         <div class="flex items-center gap-2">
                             <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs"><i class="fa-solid fa-arrow-down"></i></div>
                             <div>
-                                <p class="text-[10px] text-slate-300">Ingresos Mes</p>
+                                <p id="txt_lblIncome" class="text-[10px] text-slate-300 admin-editable" onclick="editAdminText('lblIncome', 'Etiqueta Ingresos')">Ingresos Mes</p>
                                 <p id="monthlyIncome" class="text-xs font-bold text-emerald-400">$0.00</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
                             <div class="w-7 h-7 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs"><i class="fa-solid fa-arrow-up"></i></div>
                             <div>
-                                <p class="text-[10px] text-slate-300">Gastos Mes</p>
+                                <p id="txt_lblExpense" class="text-[10px] text-slate-300 admin-editable" onclick="editAdminText('lblExpense', 'Etiqueta Gastos')">Gastos Mes</p>
                                 <p id="monthlyExpenses" class="text-xs font-bold text-rose-400">$0.00</p>
                             </div>
                         </div>
@@ -109,17 +132,17 @@
                 <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 p-4 rounded-2xl space-y-2">
                     <div class="flex items-center justify-between">
                         <h3 class="font-bold text-xs text-amber-800 dark:text-amber-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-bell text-amber-600"></i> Alertas de Vencimiento
+                            <i class="fa-solid fa-bell text-amber-600"></i> <span id="txt_lblAlertsTitle" class="admin-editable" onclick="editAdminText('lblAlertsTitle', 'Titulo Alertas')">Alertas de Vencimiento</span>
                         </h3>
                         <button onclick="switchTab('bills')" class="text-[10px] text-amber-700 dark:text-amber-400 font-bold underline">Ver todos</button>
                     </div>
                     <div id="dashboardBillsAlerts" class="space-y-1.5"></div>
                 </div>
 
-                <!-- CALIDAD DE GASTOS NECESARIO VS INNECESARIO -->
+                <!-- CALIDAD DE GASTOS MES -->
                 <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-3">
                     <h3 class="font-bold text-xs text-gray-900 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-brand-600"></i> Gastos Necesarios vs. Innecesarios
+                        <i class="fa-solid fa-chart-pie text-brand-600"></i> <span id="txt_lblQuality" class="admin-editable" onclick="editAdminText('lblQuality', 'Titulo Calidad')">Calidad de Gastos (Mes Actual)</span>
                     </h3>
                     <div class="grid grid-cols-2 gap-3">
                         <div class="p-2.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
@@ -130,6 +153,36 @@
                             <p class="text-[11px] text-rose-700 dark:text-rose-400 font-semibold">❌ Innecesario</p>
                             <p id="necessityUnneededAmount" class="text-sm font-bold">$0.00</p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- GRÁFICO ANUAL -->
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-xs text-gray-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-chart-column text-sky-500"></i> <span id="txt_lblAnnualChart" class="admin-editable" onclick="editAdminText('lblAnnualChart', 'Titulo Grafico')">Evolución Anual de Gastos</span>
+                        </h3>
+                        <span class="text-[10px] text-gray-400 font-medium">Comparativa mensual</span>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-4 text-[10px] pt-1">
+                        <span class="flex items-center gap-1 font-semibold text-emerald-600"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Necesario</span>
+                        <span class="flex items-center gap-1 font-semibold text-rose-600"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Innecesario</span>
+                    </div>
+
+                    <div id="annualChartBars" class="h-36 flex items-end justify-between gap-1 pt-4 pb-2 border-b border-gray-100 dark:border-slate-700"></div>
+                </div>
+
+                <!-- SECCIÓN DE CUENTAS Y MEDIOS DE PAGO (PANTALLA PRINCIPAL) -->
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-xs text-gray-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-wallet text-brand-600"></i> <span id="txt_lblAccountsTitle" class="admin-editable" onclick="editAdminText('lblAccountsTitle', 'Titulo Medios')">Mis Cuentas y Medios de Pago</span>
+                        </h3>
+                        <button onclick="addNewAccount()" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 rounded-lg text-[11px] font-bold hover:bg-brand-100 transition">+ Agregar</button>
+                    </div>
+                    <div id="dashboardAccountsList" class="grid grid-cols-2 gap-2.5">
+                        <!-- Cuentas renderizadas aquí -->
                     </div>
                 </div>
             </section>
@@ -151,7 +204,7 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN 2: GASTOS (REGISTRO, FILTROS, VIAJES, CUOTAS) -->
+            <!-- SECCIÓN 2: GASTOS -->
             <section id="sec-expenses" class="hidden space-y-4">
                 <div class="flex justify-between items-center bg-rose-50 dark:bg-slate-800 p-3 rounded-2xl border border-rose-200 dark:border-slate-700">
                     <div>
@@ -169,7 +222,6 @@
                     <button onclick="switchExpenseSubtab('travels')" id="subnav-travels" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-500">✈️ Viajes</button>
                 </div>
 
-                <!-- SUBTAB: TODOS / HISTORIAL Y FILTROS -->
                 <div id="exp-sub-all" class="space-y-3">
                     <div class="grid grid-cols-2 gap-2">
                         <select id="historyFilter" onchange="renderHistory()" class="text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-medium">
@@ -193,7 +245,6 @@
                     <div id="fullHistoryList" class="space-y-2 pt-1"></div>
                 </div>
 
-                <!-- SUBTAB: SUPERMERCADO -->
                 <div id="exp-sub-supermarket" class="hidden space-y-3">
                     <div class="flex justify-between items-center bg-emerald-50 dark:bg-emerald-950/20 p-3 rounded-2xl border border-emerald-200 dark:border-emerald-900/40">
                         <div>
@@ -207,7 +258,6 @@
                     <div id="supermarketList" class="space-y-3"></div>
                 </div>
 
-                <!-- SUBTAB: VIAJES -->
                 <div id="exp-sub-travels" class="hidden space-y-3">
                     <div class="flex justify-between items-center">
                         <div>
@@ -222,7 +272,7 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN 3: AHORROS (FRASCOS INDEPENDIENTES) -->
+            <!-- SECCIÓN 3: AHORROS -->
             <section id="sec-savings" class="hidden space-y-4">
                 <div class="flex justify-between items-center bg-brand-50 dark:bg-slate-800 p-4 rounded-2xl border border-brand-100 dark:border-slate-700">
                     <div>
@@ -236,7 +286,7 @@
                 <div id="savingsJarsList" class="space-y-3"></div>
             </section>
 
-            <!-- SECCIÓN 4: VENCIMIENTOS Y FACTURAS -->
+            <!-- SECCIÓN 4: VENCIMIENTOS -->
             <section id="sec-bills" class="hidden space-y-4">
                 <div class="flex justify-between items-center bg-amber-50 dark:bg-slate-800 p-4 rounded-2xl border border-amber-200 dark:border-slate-700">
                     <div>
@@ -252,7 +302,7 @@
 
         </main>
 
-        <!-- BARRA DE NAVEGACIÓN INFERIOR (LOS 4 MENÚS PRINCIPALES + INICIO) -->
+        <!-- BARRA DE NAVEGACIÓN INFERIOR -->
         <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-md w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-200 dark:border-slate-800 px-3 py-2 flex justify-between items-center z-40">
             <button onclick="switchTab('incomes')" id="nav-incomes" class="flex flex-col items-center gap-1 text-gray-400 hover:text-emerald-600 transition">
                 <i class="fa-solid fa-circle-arrow-down text-lg"></i>
@@ -279,7 +329,7 @@
             </button>
         </nav>
 
-        <!-- MODAL: REGISTRAR TRANSACCIÓN (GASTO / INGRESO) -->
+        <!-- MODAL: REGISTRAR TRANSACCIÓN -->
         <div id="addTxModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
@@ -300,20 +350,13 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold mb-1">Cuenta / Medio de Pago</label>
-                        <select id="txAccount" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                            <option value="Efectivo">💵 Efectivo</option>
-                            <option value="Mercado Pago">📱 Mercado Pago</option>
-                            <option value="Banco">🏦 Banco / Tarjeta</option>
-                        </select>
+                        <select id="txAccount" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs"></select>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold mb-1">Categoría</label>
-                        <select id="txCategory" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                            <!-- Dinámico -->
-                        </select>
+                        <select id="txCategory" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs"></select>
                     </div>
                     
-                    <!-- CAMPOS EXCLUSIVOS DE GASTOS -->
                     <div id="expenseExtraOptions" class="space-y-3">
                         <div>
                             <label class="block text-xs font-semibold mb-1">Calidad del gasto</label>
@@ -337,7 +380,6 @@
                                 </select>
                             </div>
                         </div>
-                        <!-- CUOTAS -->
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-xs font-semibold mb-1">¿Es en Cuotas?</label>
@@ -418,14 +460,15 @@
             </div>
         </div>
 
-        <!-- MODAL: AJUSTES -->
+        <!-- MODAL: AJUSTES Y CONFIGURACIÓN MODO ADMIN -->
         <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
-                    <h3 class="font-bold text-base">Configuración</h3>
+                    <h3 class="font-bold text-base">Ajustes y Configuración</h3>
                     <button onclick="closeModal('settingsModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <div class="space-y-3">
+                <div class="space-y-4">
+                    <!-- NOMBRE PERFIL -->
                     <div>
                         <label class="block text-xs font-medium mb-1">Nombre de Perfil</label>
                         <div class="flex gap-2">
@@ -433,30 +476,67 @@
                             <button onclick="saveProfileName()" class="px-3 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold">Guardar</button>
                         </div>
                     </div>
+
+                    <!-- INTERRUPTOR MODO ADMIN -->
+                    <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
+                        <div>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">Modo Administrador</p>
+                            <p class="text-[10px] text-gray-400">Edita cualquier texto tocándolo</p>
+                        </div>
+                        <button onclick="toggleAdminMode()" id="adminToggleBtn" class="w-12 h-6 bg-gray-300 rounded-full p-1 transition duration-200">
+                            <div id="adminDot" class="w-4 h-4 bg-white rounded-full shadow-md transition transform translate-x-0"></div>
+                        </button>
+                    </div>
+
+                    <!-- MODO OSCURO -->
                     <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
                         <p class="text-xs font-bold">Modo Oscuro</p>
                         <button onclick="toggleTheme()" class="w-12 h-6 bg-gray-300 dark:bg-brand-600 rounded-full p-1 transition duration-200">
                             <div class="w-4 h-4 bg-white rounded-full shadow-md transform dark:translate-x-6 transition"></div>
                         </button>
                     </div>
+
+                    <!-- BORRADO SEGURO CON CONFIRMACIÓN -->
                     <div class="pt-2 border-t dark:border-slate-700">
-                        <button onclick="resetAllData()" class="w-full py-2 bg-rose-500/10 text-rose-600 border border-rose-500/30 rounded-xl text-xs font-bold">Borrar Todo y Reiniciar</button>
+                        <button onclick="resetAllData()" class="w-full py-2.5 bg-rose-500/10 text-rose-600 border border-rose-500/30 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-shield-halved"></i> Borrar Todo y Reiniciar (Seguro)
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL: AVATAR -->
+        <!-- MODAL: AVATARES VARIADOS Y SUBIR FOTO -->
         <div id="avatarModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
-                    <h3 class="font-bold text-base">Elige tu Avatar</h3>
+                    <h3 class="font-bold text-base">Elige tu Avatar o Foto</h3>
                     <button onclick="closeModal('avatarModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <div onclick="selectAvatar('Bot')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Bot" class="w-14 h-14"><span class="text-[10px] mt-1 font-semibold">Robot</span></div>
-                    <div onclick="selectAvatar('Cat')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cat" class="w-14 h-14"><span class="text-[10px] mt-1 font-semibold">Gato</span></div>
-                    <div onclick="selectAvatar('Smile')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Smile" class="w-14 h-14"><span class="text-[10px] mt-1 font-semibold">Sonrisa</span></div>
+
+                <!-- OPCIÓN FOTO DESDE LA GALERÍA -->
+                <div class="p-3 bg-brand-50 dark:bg-slate-800 rounded-2xl border border-brand-200 dark:border-slate-700 flex justify-between items-center">
+                    <div>
+                        <p class="text-xs font-bold">Subir foto personal</p>
+                        <p class="text-[10px] text-gray-500">Desde la galería de tu dispositivo</p>
+                    </div>
+                    <label class="px-3 py-1.5 bg-brand-600 text-white rounded-xl text-xs font-bold cursor-pointer hover:bg-brand-700 transition">
+                        Subir <input type="file" id="customAvatarInput" accept="image/*" onchange="uploadCustomPhoto(event)" class="hidden">
+                    </label>
+                </div>
+
+                <!-- 10 AVATARES ANIMADOS -->
+                <div class="grid grid-cols-3 gap-3 pt-1">
+                    <div onclick="selectAvatar('Bot')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Bot" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Robot</span></div>
+                    <div onclick="selectAvatar('Cat')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cat" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Gatito</span></div>
+                    <div onclick="selectAvatar('Smile')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Smile" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Sonrisa</span></div>
+                    <div onclick="selectAvatar('Hero')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Hero" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Héroe</span></div>
+                    <div onclick="selectAvatar('Star')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Star" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Estrella</span></div>
+                    <div onclick="selectAvatar('Neon')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Neon" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Neón</span></div>
+                    <div onclick="selectAvatar('Owl')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Owl" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Búho</span></div>
+                    <div onclick="selectAvatar('Alien')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Alien" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Alien</span></div>
+                    <div onclick="selectAvatar('Monster')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Monster" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Monstruo</span></div>
+                    <div onclick="selectAvatar('Ninja')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Ninja" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Ninja</span></div>
                 </div>
             </div>
         </div>
@@ -468,32 +548,40 @@
         let db = {
             profileName: "Mi Dinero",
             avatarSeed: "Bot",
+            customPhotoUrl: null,
             darkMode: false,
             balanceVisible: true,
+            adminMode: false,
             transactions: [],
             savingsJars: [],
             bills: [],
-            travels: []
+            travels: [],
+            accounts: ["Efectivo", "Mercado Pago", "Banco"]
         };
 
         let currentActiveSmId = null;
+        const monthNamesShort = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
         function loadData() {
-            const saved = localStorage.getItem('mi_dinero_db_v4');
+            const saved = localStorage.getItem('mi_dinero_db_v6');
             if (saved) {
                 try { db = JSON.parse(saved); } catch(e) {}
             }
             if (!db.savingsJars) db.savingsJars = [];
             if (!db.bills) db.bills = [];
             if (!db.travels) db.travels = [];
+            if (!db.accounts || db.accounts.length === 0) db.accounts = ["Efectivo", "Mercado Pago", "Banco"];
+
             if (db.darkMode) document.documentElement.classList.add('dark');
             document.getElementById('profileNameInput').value = db.profileName;
             updateAvatarDisplay();
+            renderAccountsOptions();
+            renderDashboardAccounts();
             renderAll();
         }
 
         function saveData() {
-            localStorage.setItem('mi_dinero_db_v4', JSON.stringify(db));
+            localStorage.setItem('mi_dinero_db_v6', JSON.stringify(db));
         }
 
         function switchTab(tabId) {
@@ -537,6 +625,7 @@
                 document.getElementById('txDate').valueAsDate = new Date();
                 updateTxCategories();
                 populateTravelSelect();
+                renderAccountsOptions();
             }
         }
 
@@ -548,11 +637,137 @@
         function openSettingsModal() { document.getElementById('settingsModal').classList.remove('hidden'); }
         function openAvatarModal() { document.getElementById('avatarModal').classList.remove('hidden'); }
 
+        /* --- AVATARES Y SUBIR FOTO --- */
         function selectAvatar(seed) {
             db.avatarSeed = seed;
+            db.customPhotoUrl = null;
             updateAvatarDisplay();
             saveData();
             closeModal('avatarModal');
+        }
+
+        function uploadCustomPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    db.customPhotoUrl = e.target.result;
+                    updateAvatarDisplay();
+                    saveData();
+                    closeModal('avatarModal');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateAvatarDisplay() {
+            const avatar = document.getElementById('headerAvatar');
+            if(avatar) {
+                if(db.customPhotoUrl) {
+                    avatar.src = db.customPhotoUrl;
+                } else {
+                    avatar.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${db.avatarSeed}`;
+                }
+            }
+        }
+
+        /* --- MODO ADMIN --- */
+        function toggleAdminMode() {
+            db.adminMode = !db.adminMode;
+            const notice = document.getElementById('adminNotice');
+            const dot = document.getElementById('adminDot');
+            const btn = document.getElementById('adminToggleBtn');
+
+            if(db.adminMode) {
+                notice.classList.remove('hidden');
+                document.body.classList.add('admin-active');
+                dot.style.transform = 'translateX(24px)';
+                btn.classList.remove('bg-gray-300');
+                btn.classList.add('bg-amber-500');
+            } else {
+                notice.classList.add('hidden');
+                document.body.classList.remove('admin-active');
+                dot.style.transform = 'translateX(0px)';
+                btn.classList.remove('bg-amber-500');
+                btn.classList.add('bg-gray-300');
+            }
+        }
+
+        function editAdminText(key, labelName) {
+            if(!db.adminMode) return;
+            const el = document.getElementById(`txt_${key}`);
+            if(!el) return;
+            const newVal = prompt(`Editar "${labelName}":`, el.innerText);
+            if(newVal !== null && newVal.trim() !== "") {
+                el.innerText = newVal.trim();
+            }
+        }
+
+        /* --- GESTIÓN DE CUENTAS EN INICIO --- */
+        function renderAccountsOptions() {
+            const select = document.getElementById('txAccount');
+            if(!select) return;
+            select.innerHTML = '';
+            db.accounts.forEach(acc => {
+                select.innerHTML += `<option value="${acc}">${acc}</option>`;
+            });
+        }
+
+        function renderDashboardAccounts() {
+            const container = document.getElementById('dashboardAccountsList');
+            if(!container) return;
+            container.innerHTML = '';
+            db.accounts.forEach((acc, idx) => {
+                let accBalance = 0;
+                db.transactions.forEach(t => {
+                    if(t.account === acc) {
+                        if(t.type === 'income') accBalance += t.amount;
+                        else accBalance -= t.amount;
+                    }
+                });
+
+                container.innerHTML += `
+                    <div class="bg-gray-50 dark:bg-slate-800 p-3 rounded-2xl border border-gray-100 dark:border-slate-700 space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-gray-900 dark:text-white">💳 ${acc}</span>
+                            <div class="flex gap-1.5">
+                                <button onclick="editAccount(${idx})" class="text-sky-600"><i class="fa-solid fa-pen text-[9px]"></i></button>
+                                ${db.accounts.length > 1 ? `<button onclick="deleteAccount(${idx})" class="text-rose-500"><i class="fa-solid fa-trash text-[9px]"></i></button>` : ''}
+                            </div>
+                        </div>
+                        <p class="text-xs font-extrabold text-brand-600 dark:text-brand-400">$${accBalance.toFixed(2)}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function addNewAccount() {
+            const name = prompt("Nombre del nuevo medio de pago (ej: Ualá, Visa, Banco Galicia):");
+            if(name && name.trim() !== '') {
+                db.accounts.push(name.trim());
+                saveData();
+                renderDashboardAccounts();
+                renderAccountsOptions();
+            }
+        }
+
+        function editAccount(idx) {
+            const newName = prompt("Editar nombre de la cuenta:", db.accounts[idx]);
+            if(newName && newName.trim() !== '') {
+                db.accounts[idx] = newName.trim();
+                saveData();
+                renderDashboardAccounts();
+                renderAccountsOptions();
+            }
+        }
+
+        function deleteAccount(idx) {
+            if(confirm(`¿Eliminar la cuenta "${db.accounts[idx]}"?`)) {
+                db.accounts.splice(idx, 1);
+                saveData();
+                renderDashboardAccounts();
+                renderAccountsOptions();
+            }
         }
 
         function toggleInstallmentInputs() {
@@ -626,10 +841,10 @@
             renderAll();
         }
 
-        // --- AHORROS (FRASCOS INDEPENDIENTES) ---
+        // --- AHORROS ---
         function openAddSavingModal() {
             const name = prompt("Nombre del frasco de ahorro (ej: Fondo Emergencia, Auto):");
-            const account = prompt("¿En qué cuenta/medio guardas este ahorro? (ej: Mercado Pago, Banco):") || 'Efectivo';
+            const account = prompt("¿En qué cuenta guardas este ahorro? (ej: Mercado Pago, Banco):") || db.accounts[0];
             const amount = parseFloat(prompt("Monto depositado ($):") || 0);
 
             if(name) {
@@ -670,7 +885,7 @@
             });
         }
 
-        // --- VENCIMIENTOS Y NOTIFICACIONES / ALERTAS ---
+        // --- VENCIMIENTOS Y NOTIFICACIONES ---
         function openAddBillModal() {
             const name = prompt("Nombre de la factura / pago (ej: Luz, Alquiler, Tarjeta):");
             const amount = parseFloat(prompt("Monto ($):") || 0);
@@ -692,6 +907,7 @@
         function renderBills() {
             const list = document.getElementById('billsList');
             const alertContainer = document.getElementById('dashboardBillsAlerts');
+            const badge = document.getElementById('notificationBadge');
             if(!list || !alertContainer) return;
 
             list.innerHTML = db.bills.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">Sin pagos ni vencimientos pendientes</p>' : '';
@@ -712,6 +928,16 @@
             });
 
             const pending = db.bills.filter(b => !b.paid);
+
+            if(badge) {
+                if(pending.length > 0) {
+                    badge.innerText = pending.length;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+
             if(pending.length === 0) {
                 alertContainer.innerHTML = '<p class="text-[11px] text-amber-800 dark:text-amber-400">🎉 No tienes vencimientos pendientes este mes</p>';
             } else {
@@ -726,6 +952,46 @@
                     `;
                 });
             }
+        }
+
+        // --- GRÁFICO ANUAL DE GASTOS ---
+        function renderAnnualChart() {
+            const container = document.getElementById('annualChartBars');
+            if(!container) return;
+            container.innerHTML = '';
+
+            const currentYear = new Date().getFullYear();
+            const monthlyData = Array.from({ length: 12 }, () => ({ needed: 0, unneeded: 0 }));
+
+            db.transactions.forEach(t => {
+                if(t.type === 'expense') {
+                    const d = new Date(t.date);
+                    if(d.getFullYear() === currentYear) {
+                        const m = d.getMonth();
+                        if(t.necessity === 'needed') monthlyData[m].needed += t.amount;
+                        else monthlyData[m].unneeded += t.amount;
+                    }
+                }
+            });
+
+            const maxVal = Math.max(...monthlyData.map(d => d.needed + d.unneeded), 1);
+
+            monthlyData.forEach((d, idx) => {
+                const total = d.needed + d.unneeded;
+                const totalHeightPct = (total / maxVal) * 100;
+                const neededPct = total > 0 ? (d.needed / total) * 100 : 0;
+                const unneededPct = total > 0 ? (d.unneeded / total) * 100 : 0;
+
+                container.innerHTML += `
+                    <div class="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer" title="${monthNamesShort[idx]}: Nec $${d.needed.toFixed(0)} | Innec $${d.unneeded.toFixed(0)}">
+                        <div class="w-full max-w-[14px] bg-gray-100 dark:bg-slate-700 rounded-t flex flex-col justify-end overflow-hidden transition-all duration-300 group-hover:opacity-80" style="height: ${Math.max(totalHeightPct, 6)}%">
+                            <div class="bg-rose-500 w-full" style="height: ${unneededPct}%"></div>
+                            <div class="bg-emerald-500 w-full" style="height: ${neededPct}%"></div>
+                        </div>
+                        <span class="text-[9px] text-gray-400 mt-1 font-semibold">${monthNamesShort[idx]}</span>
+                    </div>
+                `;
+            });
         }
 
         // --- VIAJES ---
@@ -765,7 +1031,7 @@
         // --- SUPERMERCADO ---
         function openSupermarketModal(txId = null) {
             if(!txId) {
-                const tx = { id: Date.now(), type: 'expense', amount: 0, account: 'Efectivo', category: 'Supermercado', necessity: 'needed', desc: 'Compra Supermercado', date: new Date().toISOString().split('T')[0], products: [] };
+                const tx = { id: Date.now(), type: 'expense', amount: 0, account: db.accounts[0], category: 'Supermercado', necessity: 'needed', desc: 'Compra Supermercado', date: new Date().toISOString().split('T')[0], products: [] };
                 db.transactions.unshift(tx);
                 currentActiveSmId = tx.id;
             } else { currentActiveSmId = txId; }
@@ -850,6 +1116,8 @@
             renderHistory();
             renderSavingsJars();
             renderBills();
+            renderAnnualChart();
+            renderDashboardAccounts();
             populateTravelSelect();
         }
 
@@ -917,11 +1185,6 @@
             saveData();
         }
 
-        function updateAvatarDisplay() {
-            const avatar = document.getElementById('headerAvatar');
-            if(avatar) avatar.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${db.avatarSeed}`;
-        }
-
         function saveProfileName() {
             const val = document.getElementById('profileNameInput').value;
             if(val) {
@@ -933,10 +1196,14 @@
             }
         }
 
+        /* --- BORRADO SEGURO DE DATOS --- */
         function resetAllData() {
-            if(confirm('¿Borrar todos los datos y empezar de cero?')) {
-                localStorage.removeItem('mi_dinero_db_v4');
+            const confirmWord = prompt("⚠️ ACCIÓN DE SEGURIDAD:\nPara borrar absolutamente todos tus datos y reiniciar la app, escribe la palabra ELIMINAR en mayúsculas:");
+            if(confirmWord === "ELIMINAR") {
+                localStorage.removeItem('mi_dinero_db_v6');
                 location.reload();
+            } else if (confirmWord !== null) {
+                alert("❌ La palabra ingresada no es correcta. No se borrarán los datos.");
             }
         }
 
