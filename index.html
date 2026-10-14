@@ -50,7 +50,7 @@
         <header class="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div onclick="openAvatarModal()" class="relative cursor-pointer group">
-                    <img id="headerAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Diego" alt="Avatar" class="w-10 h-10 rounded-full object-cover bg-gray-100 ring-2 ring-brand-500/30 group-hover:ring-brand-500 transition-all">
+                    <img id="headerAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Bot" alt="Avatar" class="w-10 h-10 rounded-full object-cover bg-gray-100 ring-2 ring-brand-500/30 group-hover:ring-brand-500 transition-all">
                     <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-brand-500 rounded-full border-2 border-white dark:border-slate-900"></div>
                 </div>
                 <div>
@@ -109,7 +109,7 @@
                 <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 p-4 rounded-2xl space-y-2">
                     <div class="flex items-center justify-between">
                         <h3 class="font-bold text-xs text-amber-800 dark:text-amber-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-bell text-amber-600 animate-bounce"></i> Alertas de Vencimiento (Próximos pagos)
+                            <i class="fa-solid fa-bell text-amber-600"></i> Alertas de Vencimiento
                         </h3>
                         <button onclick="switchTab('bills')" class="text-[10px] text-amber-700 dark:text-amber-400 font-bold underline">Ver todos</button>
                     </div>
@@ -153,9 +153,19 @@
 
             <!-- SECCIÓN 2: GASTOS (REGISTRO, FILTROS, VIAJES, CUOTAS) -->
             <section id="sec-expenses" class="hidden space-y-4">
+                <div class="flex justify-between items-center bg-rose-50 dark:bg-slate-800 p-3 rounded-2xl border border-rose-200 dark:border-slate-700">
+                    <div>
+                        <h2 class="font-bold text-sm text-gray-900 dark:text-white">Control de Gastos</h2>
+                        <p class="text-[11px] text-gray-500">Categoriza, cuotas y viajes</p>
+                    </div>
+                    <button onclick="openModal('addTxModal', 'expense')" class="px-3 py-2 bg-rose-600 text-white rounded-xl text-xs font-semibold shadow hover:bg-rose-700 transition flex items-center gap-1">
+                        <i class="fa-solid fa-plus"></i> Nuevo Gasto
+                    </button>
+                </div>
+
                 <div class="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-2xl gap-1 border border-gray-200 dark:border-slate-700">
-                    <button onclick="switchExpenseSubtab('all')" id="subnav-all" class="flex-1 py-2 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-700 text-brand-600 shadow-sm">Todos y Filtros</button>
-                    <button onclick="switchExpenseSubtab('supermarket')" id="subnav-supermarket" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-500">🛒 Supermercado</button>
+                    <button onclick="switchExpenseSubtab('all')" id="subnav-all" class="flex-1 py-2 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-700 text-brand-600 shadow-sm">Filtros e Historial</button>
+                    <button onclick="switchExpenseSubtab('supermarket')" id="subnav-supermarket" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-500">🛒 Super</button>
                     <button onclick="switchExpenseSubtab('travels')" id="subnav-travels" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-500">✈️ Viajes</button>
                 </div>
 
@@ -219,3 +229,718 @@
                         <h2 class="font-bold text-sm text-gray-900 dark:text-white">Frascos de Ahorro</h2>
                         <p class="text-[11px] text-gray-500">Ahorro guardado por cuenta (Fuera del Capital Activo)</p>
                     </div>
+                    <button onclick="openAddSavingModal()" class="px-3 py-2 bg-brand-600 text-white rounded-xl text-xs font-semibold shadow hover:bg-brand-700 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-piggy-bank"></i> Nuevo Frasco
+                    </button>
+                </div>
+                <div id="savingsJarsList" class="space-y-3"></div>
+            </section>
+
+            <!-- SECCIÓN 4: VENCIMIENTOS Y FACTURAS -->
+            <section id="sec-bills" class="hidden space-y-4">
+                <div class="flex justify-between items-center bg-amber-50 dark:bg-slate-800 p-4 rounded-2xl border border-amber-200 dark:border-slate-700">
+                    <div>
+                        <h2 class="font-bold text-sm text-gray-900 dark:text-white">Vencimientos y Facturas</h2>
+                        <p class="text-[11px] text-gray-500">Fechas límite de pago mensual</p>
+                    </div>
+                    <button onclick="openAddBillModal()" class="px-3 py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs shadow hover:bg-amber-600 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-calendar-plus"></i> Agregar Pago
+                    </button>
+                </div>
+                <div id="billsList" class="space-y-3"></div>
+            </section>
+
+        </main>
+
+        <!-- BARRA DE NAVEGACIÓN INFERIOR (LOS 4 MENÚS PRINCIPALES + INICIO) -->
+        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-md w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-200 dark:border-slate-800 px-3 py-2 flex justify-between items-center z-40">
+            <button onclick="switchTab('incomes')" id="nav-incomes" class="flex flex-col items-center gap-1 text-gray-400 hover:text-emerald-600 transition">
+                <i class="fa-solid fa-circle-arrow-down text-lg"></i>
+                <span class="text-[10px]">Ingresos</span>
+            </button>
+            <button onclick="switchTab('expenses')" id="nav-expenses" class="flex flex-col items-center gap-1 text-gray-400 hover:text-rose-600 transition">
+                <i class="fa-solid fa-receipt text-lg"></i>
+                <span class="text-[10px]">Gastos</span>
+            </button>
+            
+            <div class="-mt-6">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-12 h-12 bg-gray-900 dark:bg-slate-800 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition border-2 border-brand-500">
+                    <i class="fa-solid fa-house text-lg"></i>
+                </button>
+            </div>
+
+            <button onclick="switchTab('savings')" id="nav-savings" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600 transition">
+                <i class="fa-solid fa-vault text-lg"></i>
+                <span class="text-[10px]">Ahorros</span>
+            </button>
+            <button onclick="switchTab('bills')" id="nav-bills" class="flex flex-col items-center gap-1 text-gray-400 hover:text-amber-600 transition">
+                <i class="fa-solid fa-calendar-check text-lg"></i>
+                <span class="text-[10px]">Vencimientos</span>
+            </button>
+        </nav>
+
+        <!-- MODAL: REGISTRAR TRANSACCIÓN (GASTO / INGRESO) -->
+        <div id="addTxModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 class="font-bold text-base" id="txModalTitle">Registrar Movimiento</h3>
+                    <button onclick="closeModal('addTxModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form id="txForm" onsubmit="handleSaveTx(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Tipo</label>
+                        <select id="txType" onchange="updateTxCategories()" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <option value="expense">🔴 Gasto</option>
+                            <option value="income">🟢 Ingreso</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Monto ($)</label>
+                        <input id="txAmount" type="number" step="0.01" required placeholder="0.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Cuenta / Medio de Pago</label>
+                        <select id="txAccount" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <option value="Efectivo">💵 Efectivo</option>
+                            <option value="Mercado Pago">📱 Mercado Pago</option>
+                            <option value="Banco">🏦 Banco / Tarjeta</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Categoría</label>
+                        <select id="txCategory" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <!-- Dinámico -->
+                        </select>
+                    </div>
+                    
+                    <!-- CAMPOS EXCLUSIVOS DE GASTOS -->
+                    <div id="expenseExtraOptions" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Calidad del gasto</label>
+                            <select id="txNecessity" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                                <option value="needed">✔️ Necesario</option>
+                                <option value="unneeded">❌ Innecesario</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">¿Es Gasto Fijo?</label>
+                                <select id="txIsFixed" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                                    <option value="no">No</option>
+                                    <option value="yes">Sí, mensual</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Asignar a Viaje</label>
+                                <select id="txTravelId" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                                    <option value="">Ninguno</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- CUOTAS -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">¿Es en Cuotas?</label>
+                                <select id="txIsInstallment" onchange="toggleInstallmentInputs()" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                                    <option value="no">No (1 cuota)</option>
+                                    <option value="yes">Sí, en cuotas</option>
+                                </select>
+                            </div>
+                            <div id="installmentBox" class="hidden grid grid-cols-2 gap-1">
+                                <div>
+                                    <label class="block text-[10px] font-semibold mb-1">Cuota N°</label>
+                                    <input id="txCurrentInstallment" type="number" min="1" value="1" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2 py-2 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-semibold mb-1">Total</label>
+                                    <input id="txTotalInstallments" type="number" min="1" value="3" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2 py-2 text-xs">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Descripción</label>
+                        <input id="txDesc" type="text" placeholder="Ej: Compra o Pago" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Fecha</label>
+                        <input id="txDate" type="date" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition shadow">Guardar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: SUPERMERCADO -->
+        <div id="supermarketModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 class="font-bold text-base">Detalle de Supermercado</h3>
+                    <button onclick="closeModal('supermarketModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex gap-2">
+                        <input id="smProductName" type="text" placeholder="Producto" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                        <input id="smProductPrice" type="number" step="0.01" placeholder="Precio" class="w-24 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div class="flex gap-2">
+                        <select id="smProductNecessity" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <option value="needed">✔️ Necesario</option>
+                            <option value="unneeded">❌ Innecesario</option>
+                        </select>
+                        <button onclick="addProductToSupermarket()" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold">Añadir</button>
+                    </div>
+                </div>
+                <div id="smProductsList" class="space-y-2 pt-2 border-t dark:border-slate-800"></div>
+                <button onclick="closeModal('supermarketModal'); renderAll();" class="w-full py-2.5 bg-gray-900 dark:bg-slate-800 text-white rounded-xl text-xs font-semibold">Listo y Guardar</button>
+            </div>
+        </div>
+
+        <!-- MODAL: CREAR VIAJE -->
+        <div id="newTravelModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 class="font-bold text-base">Nuevo Viaje</h3>
+                    <button onclick="closeModal('newTravelModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium mb-1">Destino / Nombre del viaje</label>
+                        <input id="travelNameInput" type="text" placeholder="Ej: Brasil 2026" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1">Presupuesto estimado ($)</label>
+                        <input id="travelBudgetInput" type="number" step="0.01" placeholder="0.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <button onclick="saveNewTravel()" class="w-full py-2.5 bg-sky-600 text-white rounded-xl text-xs font-bold">Crear Viaje</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL: AJUSTES -->
+        <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 class="font-bold text-base">Configuración</h3>
+                    <button onclick="closeModal('settingsModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium mb-1">Nombre de Perfil</label>
+                        <div class="flex gap-2">
+                            <input id="profileNameInput" type="text" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <button onclick="saveProfileName()" class="px-3 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold">Guardar</button>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
+                        <p class="text-xs font-bold">Modo Oscuro</p>
+                        <button onclick="toggleTheme()" class="w-12 h-6 bg-gray-300 dark:bg-brand-600 rounded-full p-1 transition duration-200">
+                            <div class="w-4 h-4 bg-white rounded-full shadow-md transform dark:translate-x-6 transition"></div>
+                        </button>
+                    </div>
+                    <div class="pt-2 border-t dark:border-slate-700">
+                        <button onclick="resetAllData()" class="w-full py-2 bg-rose-500/10 text-rose-600 border border-rose-500/30 rounded-xl text-xs font-bold">Borrar Todo y Reiniciar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL: AVATAR -->
+        <div id="avatarModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 class="font-bold text-base">Elige tu Avatar</h3>
+                    <button onclick="closeModal('avatarModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div onclick="selectAvatar('Bot')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Bot" class="w-14 h-14"><span class="text-[10px] mt-1 font-semibold">Robot</span></div>
+                    <div onclick="selectAvatar('Cat')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cat" class="w-14 h-14"><span class="text-[10px] mt-1 font-semibold">Gato</span></div>
+                    <div onclick="selectAvatar('Smile')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Smile" class="w-14 h-14"><span class="text-[10px] mt-1 font-semibold">Sonrisa</span></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT DE LÓGICA -->
+    <script>
+        let db = {
+            profileName: "Mi Dinero",
+            avatarSeed: "Bot",
+            darkMode: false,
+            balanceVisible: true,
+            transactions: [],
+            savingsJars: [],
+            bills: [],
+            travels: []
+        };
+
+        let currentActiveSmId = null;
+
+        function loadData() {
+            const saved = localStorage.getItem('mi_dinero_db_v4');
+            if (saved) {
+                try { db = JSON.parse(saved); } catch(e) {}
+            }
+            if (!db.savingsJars) db.savingsJars = [];
+            if (!db.bills) db.bills = [];
+            if (!db.travels) db.travels = [];
+            if (db.darkMode) document.documentElement.classList.add('dark');
+            document.getElementById('profileNameInput').value = db.profileName;
+            updateAvatarDisplay();
+            renderAll();
+        }
+
+        function saveData() {
+            localStorage.setItem('mi_dinero_db_v4', JSON.stringify(db));
+        }
+
+        function switchTab(tabId) {
+            ['dashboard', 'incomes', 'expenses', 'savings', 'bills'].forEach(t => {
+                const el = document.getElementById(`sec-${t}`);
+                if(el) el.classList.add('hidden');
+                const nav = document.getElementById(`nav-${t}`);
+                if(nav) {
+                    nav.classList.remove('text-brand-600', 'dark:text-brand-500', 'text-emerald-600', 'text-rose-600', 'text-amber-600', 'font-bold');
+                    nav.classList.add('text-gray-400');
+                }
+            });
+            const targetSec = document.getElementById(`sec-${tabId}`);
+            if(targetSec) targetSec.classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) {
+                activeNav.classList.remove('text-gray-400');
+                if(tabId === 'incomes') activeNav.classList.add('text-emerald-600', 'font-bold');
+                else if(tabId === 'expenses') activeNav.classList.add('text-rose-600', 'font-bold');
+                else if(tabId === 'savings') activeNav.classList.add('text-brand-600', 'font-bold');
+                else if(tabId === 'bills') activeNav.classList.add('text-amber-600', 'font-bold');
+            }
+        }
+
+        function switchExpenseSubtab(sub) {
+            ['all', 'supermarket', 'travels'].forEach(s => {
+                const el = document.getElementById(`exp-sub-${s}`);
+                if(el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(`exp-sub-${sub}`);
+            if(target) target.classList.remove('hidden');
+            if(sub === 'supermarket') renderSupermarketList();
+            if(sub === 'travels') renderTravelsList();
+        }
+
+        function openModal(modalId, defaultType = 'expense') {
+            const modal = document.getElementById(modalId);
+            if(modal) modal.classList.remove('hidden');
+            if(modalId === 'addTxModal') {
+                document.getElementById('txType').value = defaultType;
+                document.getElementById('txDate').valueAsDate = new Date();
+                updateTxCategories();
+                populateTravelSelect();
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if(modal) modal.classList.add('hidden');
+        }
+
+        function openSettingsModal() { document.getElementById('settingsModal').classList.remove('hidden'); }
+        function openAvatarModal() { document.getElementById('avatarModal').classList.remove('hidden'); }
+
+        function selectAvatar(seed) {
+            db.avatarSeed = seed;
+            updateAvatarDisplay();
+            saveData();
+            closeModal('avatarModal');
+        }
+
+        function toggleInstallmentInputs() {
+            const isInst = document.getElementById('txIsInstallment').value === 'yes';
+            document.getElementById('installmentBox').classList.toggle('hidden', !isInst);
+        }
+
+        function updateTxCategories() {
+            const type = document.getElementById('txType').value;
+            const cat = document.getElementById('txCategory');
+            const extra = document.getElementById('expenseExtraOptions');
+            if(type === 'expense') {
+                cat.innerHTML = `
+                    <option value="Supermercado">🛒 Supermercado</option>
+                    <option value="Comida">🍔 Comida / Salidas</option>
+                    <option value="Servicios">💡 Servicios</option>
+                    <option value="Transporte">🚗 Transporte</option>
+                    <option value="Otros">📦 Otros</option>
+                `;
+                extra.classList.remove('hidden');
+            } else {
+                cat.innerHTML = `
+                    <option value="Sueldo">💼 Sueldo</option>
+                    <option value="Ventas">📈 Ventas</option>
+                    <option value="Regalo">🎁 Regalo</option>
+                    <option value="Otros">📦 Otros</option>
+                `;
+                extra.classList.add('hidden');
+            }
+        }
+
+        function populateTravelSelect() {
+            const sel = document.getElementById('txTravelId');
+            const filterSel = document.getElementById('travelFilter');
+            if(!sel || !filterSel) return;
+            sel.innerHTML = '<option value="">Ninguno</option>';
+            filterSel.innerHTML = '<option value="all">🌴 Filtrar por Viaje (Todos)</option>';
+            db.travels.forEach(tr => {
+                sel.innerHTML += `<option value="${tr.id}">${tr.name}</option>`;
+                filterSel.innerHTML += `<option value="${tr.id}">${tr.name}</option>`;
+            });
+        }
+
+        function handleSaveTx(e) {
+            e.preventDefault();
+            const type = document.getElementById('txType').value;
+            const amount = parseFloat(document.getElementById('txAmount').value);
+            const account = document.getElementById('txAccount').value;
+            const category = document.getElementById('txCategory').value;
+            const desc = document.getElementById('txDesc').value || category;
+            const date = document.getElementById('txDate').value;
+
+            const isExpense = type === 'expense';
+            const necessity = isExpense ? document.getElementById('txNecessity').value : 'needed';
+            const isFixed = isExpense ? document.getElementById('txIsFixed').value === 'yes' : false;
+            const travelId = isExpense ? document.getElementById('txTravelId').value : '';
+            const isInstallment = isExpense ? document.getElementById('txIsInstallment').value === 'yes' : false;
+            const currentInst = isInstallment ? parseInt(document.getElementById('txCurrentInstallment').value) : 1;
+            const totalInst = isInstallment ? parseInt(document.getElementById('txTotalInstallments').value) : 1;
+
+            const tx = {
+                id: Date.now(), type, amount, account, category, necessity, isFixed, travelId,
+                isInstallment, currentInst, totalInst, desc, date,
+                products: category === 'Supermercado' ? [{ name: 'Compra general', price: amount, necessity }] : []
+            };
+
+            db.transactions.unshift(tx);
+            saveData();
+            closeModal('addTxModal');
+            document.getElementById('txForm').reset();
+            renderAll();
+        }
+
+        // --- AHORROS (FRASCOS INDEPENDIENTES) ---
+        function openAddSavingModal() {
+            const name = prompt("Nombre del frasco de ahorro (ej: Fondo Emergencia, Auto):");
+            const account = prompt("¿En qué cuenta/medio guardas este ahorro? (ej: Mercado Pago, Banco):") || 'Efectivo';
+            const amount = parseFloat(prompt("Monto depositado ($):") || 0);
+
+            if(name) {
+                db.savingsJars.push({ id: Date.now(), name, account, current: amount });
+                saveData();
+                renderSavingsJars();
+            }
+        }
+
+        function depositToJar(jarId) {
+            const add = parseFloat(prompt("Monto a agregar al ahorro ($):") || 0);
+            if(add > 0) {
+                const jar = db.savingsJars.find(j => j.id === jarId);
+                if(jar) { jar.current += add; saveData(); renderSavingsJars(); }
+            }
+        }
+
+        function renderSavingsJars() {
+            const list = document.getElementById('savingsJarsList');
+            if(!list) return;
+            list.innerHTML = db.savingsJars.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No tienes frascos de ahorro registrados</p>' : '';
+            db.savingsJars.forEach(j => {
+                list.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-2">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-xs">${j.name}</h4>
+                                <p class="text-[10px] text-gray-400">Guardado en: ${j.account}</p>
+                            </div>
+                            <span class="text-sm font-extrabold text-brand-600">$${j.current.toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1 border-t dark:border-slate-700">
+                            <span class="text-[10px] text-gray-400">🔒 Ahorro separado del saldo activo</span>
+                            <button onclick="depositToJar(${j.id})" class="px-2.5 py-1 bg-brand-50 text-brand-600 rounded-lg text-[11px] font-semibold">+ Sumar Ahorro</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- VENCIMIENTOS Y NOTIFICACIONES / ALERTAS ---
+        function openAddBillModal() {
+            const name = prompt("Nombre de la factura / pago (ej: Luz, Alquiler, Tarjeta):");
+            const amount = parseFloat(prompt("Monto ($):") || 0);
+            const date = prompt("Fecha de vencimiento (AAAA-MM-DD):", new Date().toISOString().split('T')[0]);
+
+            if(name && date) {
+                db.bills.push({ id: Date.now(), name, amount, date, paid: false });
+                saveData();
+                renderBills();
+                renderAll();
+            }
+        }
+
+        function toggleBillPaid(billId) {
+            const bill = db.bills.find(b => b.id === billId);
+            if(bill) { bill.paid = !bill.paid; saveData(); renderBills(); renderAll(); }
+        }
+
+        function renderBills() {
+            const list = document.getElementById('billsList');
+            const alertContainer = document.getElementById('dashboardBillsAlerts');
+            if(!list || !alertContainer) return;
+
+            list.innerHTML = db.bills.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">Sin pagos ni vencimientos pendientes</p>' : '';
+            alertContainer.innerHTML = '';
+
+            const today = new Date().toISOString().split('T')[0];
+
+            db.bills.forEach(b => {
+                list.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-bold ${b.paid ? 'line-through text-gray-400' : ''}">${b.name}</p>
+                            <p class="text-[10px] text-gray-400">Vence: ${b.date} • $${b.amount.toFixed(2)}</p>
+                        </div>
+                        <button onclick="toggleBillPaid(${b.id})" class="px-2.5 py-1 text-xs rounded-lg font-semibold ${b.paid ? 'bg-gray-100 text-gray-600' : 'bg-amber-500 text-slate-950'}">${b.paid ? 'Pagado' : 'Marcar Pagado'}</button>
+                    </div>
+                `;
+            });
+
+            const pending = db.bills.filter(b => !b.paid);
+            if(pending.length === 0) {
+                alertContainer.innerHTML = '<p class="text-[11px] text-amber-800 dark:text-amber-400">🎉 No tienes vencimientos pendientes este mes</p>';
+            } else {
+                pending.forEach(b => {
+                    const diffDays = Math.ceil((new Date(b.date) - new Date(today)) / (1000 * 60 * 60 * 24));
+                    let isUrgent = diffDays <= 1;
+                    alertContainer.innerHTML += `
+                        <div class="flex justify-between items-center text-xs p-1.5 rounded-lg ${isUrgent ? 'bg-rose-100 text-rose-800 font-bold' : 'text-amber-900'}">
+                            <span><b>${b.name}</b> ($${b.amount.toFixed(2)})</span>
+                            <span>${diffDays <= 0 ? '⚠️ Vence hoy!' : diffDays === 1 ? '⏰ Vence mañana!' : `📅 ${b.date}`}</span>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        // --- VIAJES ---
+        function openNewTravelModal() { document.getElementById('newTravelModal').classList.remove('hidden'); }
+        function saveNewTravel() {
+            const name = document.getElementById('travelNameInput').value;
+            const budget = parseFloat(document.getElementById('travelBudgetInput').value || 0);
+            if(name) {
+                db.travels.push({ id: Date.now().toString(), name, budget });
+                saveData();
+                closeModal('newTravelModal');
+                renderTravelsList();
+                populateTravelSelect();
+            }
+        }
+
+        function renderTravelsList() {
+            const container = document.getElementById('travelsList');
+            if(!container) return;
+            container.innerHTML = db.travels.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No has registrado viajes aún</p>' : '';
+            db.travels.forEach(tr => {
+                const spent = db.transactions.filter(t => t.travelId === tr.id).reduce((acc, t) => acc + t.amount, 0);
+                container.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-2">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-xs">✈️ ${tr.name}</h4>
+                            <span class="text-xs font-bold text-rose-500">$${spent.toFixed(2)} / $${tr.budget.toFixed(2)}</span>
+                        </div>
+                        <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+                            <div class="bg-sky-500 h-full" style="width: ${tr.budget > 0 ? Math.min(100, (spent/tr.budget)*100) : 100}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- SUPERMERCADO ---
+        function openSupermarketModal(txId = null) {
+            if(!txId) {
+                const tx = { id: Date.now(), type: 'expense', amount: 0, account: 'Efectivo', category: 'Supermercado', necessity: 'needed', desc: 'Compra Supermercado', date: new Date().toISOString().split('T')[0], products: [] };
+                db.transactions.unshift(tx);
+                currentActiveSmId = tx.id;
+            } else { currentActiveSmId = txId; }
+            renderSmProductsModal();
+            document.getElementById('supermarketModal').classList.remove('hidden');
+        }
+
+        function addProductToSupermarket() {
+            const name = document.getElementById('smProductName').value;
+            const price = parseFloat(document.getElementById('smProductPrice').value);
+            const necessity = document.getElementById('smProductNecessity').value;
+            if(!name || isNaN(price)) return;
+            const tx = db.transactions.find(t => t.id === currentActiveSmId);
+            if(tx) {
+                tx.products.push({ name, price, necessity });
+                tx.amount = tx.products.reduce((acc, p) => acc + p.price, 0);
+                saveData();
+                document.getElementById('smProductName').value = '';
+                document.getElementById('smProductPrice').value = '';
+                renderSmProductsModal();
+            }
+        }
+
+        function renderSmProductsModal() {
+            const tx = db.transactions.find(t => t.id === currentActiveSmId);
+            const list = document.getElementById('smProductsList');
+            if(!tx || !list) return;
+            list.innerHTML = tx.products.length === 0 ? '<p class="text-xs text-gray-400 text-center py-2">Sin productos</p>' : '';
+            tx.products.forEach((p, idx) => {
+                list.innerHTML += `<div class="flex justify-between text-xs p-2 bg-gray-50 dark:bg-slate-800 rounded-xl"><span>${p.name}</span><b>$${p.price.toFixed(2)}</b></div>`;
+            });
+        }
+
+        function renderSupermarketList() {
+            const container = document.getElementById('supermarketList');
+            if(!container) return;
+            const smTxs = db.transactions.filter(t => t.category === 'Supermercado');
+            container.innerHTML = smTxs.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">Sin compras de supermercado</p>' : '';
+            smTxs.forEach(t => {
+                container.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-bold">${t.desc}</p>
+                            <p class="text-[10px] text-gray-400">${t.date} • ${t.account}</p>
+                        </div>
+                        <span class="text-xs font-bold text-rose-500">$${t.amount.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+        }
+
+        // --- RENDER GLOBAL Y FILTROS ---
+        function renderAll() {
+            const dateStr = document.getElementById('currentDateStr');
+            if(dateStr) dateStr.innerText = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            let capitalActivo = 0, mIncome = 0, mExpense = 0, neededTot = 0, unneededTot = 0;
+
+            db.transactions.forEach(t => {
+                if(t.type === 'income') { capitalActivo += t.amount; mIncome += t.amount; }
+                else {
+                    capitalActivo -= t.amount;
+                    mExpense += t.amount;
+                    if(t.necessity === 'needed') neededTot += t.amount;
+                    else unneededTot += t.amount;
+                }
+            });
+
+            const tb = document.getElementById('totalBalance');
+            const mi = document.getElementById('monthlyIncome');
+            const me = document.getElementById('monthlyExpenses');
+            if(tb) tb.innerText = db.balanceVisible ? capitalActivo.toFixed(2) : '••••••';
+            if(mi) mi.innerText = db.balanceVisible ? `$${mIncome.toFixed(2)}` : '••••';
+            if(me) me.innerText = db.balanceVisible ? `$${mExpense.toFixed(2)}` : '••••';
+
+            const na = document.getElementById('necessityNeededAmount');
+            const ua = document.getElementById('necessityUnneededAmount');
+            if(na) na.innerText = `$${neededTot.toFixed(2)}`;
+            if(ua) ua.innerText = `$${unneededTot.toFixed(2)}`;
+
+            renderIncomesTab();
+            renderHistory();
+            renderSavingsJars();
+            renderBills();
+            populateTravelSelect();
+        }
+
+        function renderIncomesTab() {
+            const list = document.getElementById('incomeHistoryList');
+            if(!list) return;
+            const incomes = db.transactions.filter(t => t.type === 'income');
+            list.innerHTML = incomes.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No hay ingresos registrados</p>' : '';
+            incomes.forEach(t => {
+                list.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-bold">${t.desc}</p>
+                            <p class="text-[10px] text-gray-400">${t.account} • ${t.date}</p>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-600">+$${t.amount.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('fullHistoryList');
+            if(!list) return;
+            const filter = document.getElementById('historyFilter').value;
+            const monthFilter = document.getElementById('historyMonthFilter').value;
+            const travelFilter = document.getElementById('travelFilter').value;
+            const dateExact = document.getElementById('dateExactFilter').value;
+
+            let filtered = db.transactions.filter(t => t.type === 'expense');
+
+            if(monthFilter !== 'all') filtered = filtered.filter(t => new Date(t.date).getMonth().toString() === monthFilter);
+            if(dateExact) filtered = filtered.filter(t => t.date === dateExact);
+            if(travelFilter && travelFilter !== 'all') filtered = filtered.filter(t => t.travelId === travelFilter);
+
+            if(filter === 'needed') filtered = filtered.filter(t => t.necessity === 'needed');
+            if(filter === 'unneeded') filtered = filtered.filter(t => t.necessity === 'unneeded');
+            if(filter === 'fixed') filtered = filtered.filter(t => t.isFixed);
+            if(filter === 'installment') filtered = filtered.filter(t => t.isInstallment);
+
+            list.innerHTML = filtered.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No hay gastos con estos filtros</p>' : '';
+            filtered.forEach(t => {
+                list.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-bold">${t.desc} ${t.isInstallment ? `<span class="text-[10px] text-sky-600 font-semibold">(${t.currentInst}/${t.totalInst} cuotas)</span>` : ''}</p>
+                            <p class="text-[10px] text-gray-400">${t.category} • ${t.account} • ${t.date}</p>
+                        </div>
+                        <span class="text-xs font-bold text-rose-600">-$${t.amount.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleBalanceVisibility() {
+            db.balanceVisible = !db.balanceVisible;
+            const icon = document.getElementById('eyeIcon');
+            if(icon) icon.className = db.balanceVisible ? "fa-solid fa-eye text-sm" : "fa-solid fa-eye-slash text-sm";
+            renderAll();
+        }
+
+        function toggleTheme() {
+            db.darkMode = !db.darkMode;
+            document.documentElement.classList.toggle('dark', db.darkMode);
+            saveData();
+        }
+
+        function updateAvatarDisplay() {
+            const avatar = document.getElementById('headerAvatar');
+            if(avatar) avatar.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${db.avatarSeed}`;
+        }
+
+        function saveProfileName() {
+            const val = document.getElementById('profileNameInput').value;
+            if(val) {
+                db.profileName = val;
+                const greeting = document.getElementById('txt_userGreeting');
+                if(greeting) greeting.innerText = `Hola, ${val}`;
+                saveData();
+                closeModal('settingsModal');
+            }
+        }
+
+        function resetAllData() {
+            if(confirm('¿Borrar todos los datos y empezar de cero?')) {
+                localStorage.removeItem('mi_dinero_db_v4');
+                location.reload();
+            }
+        }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>
