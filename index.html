@@ -37,20 +37,10 @@
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 9999px;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #475569;
-        }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
     </style>
 </head>
 <body class="bg-[#fafafa] text-gray-900 dark:bg-slate-950 dark:text-gray-100 min-h-screen transition-colors duration-200">
@@ -84,776 +74,148 @@
         <!-- CONTENIDO PRINCIPAL -->
         <main class="flex-1 p-4 overflow-y-auto space-y-5">
 
-            <!-- PANTALLA 1: DASHBOARD / INICIO -->
+            <!-- PANTALLA INICIO (RESUMEN GENERAL Y ALERTAS) -->
             <section id="sec-dashboard" class="space-y-4">
-                <!-- TARJETA DE SALDO LÍQUIDO -->
+                <!-- TARJETA CAPITAL ACTIVO -->
                 <div class="bg-gradient-to-br from-gray-900 to-gray-800 dark:from-slate-800 dark:to-slate-950 text-white rounded-3xl p-5 shadow-xl relative overflow-hidden">
                     <div class="absolute -right-6 -top-6 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                    
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-xs uppercase tracking-wider text-slate-300 font-medium">Dinero Total Disponible</span>
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-xs uppercase tracking-wider text-slate-300 font-medium">Capital Activo Disponible</span>
                     </div>
-
-                    <div class="flex items-baseline gap-2 mb-4">
+                    <div class="flex items-baseline gap-2 mb-3">
                         <span class="text-2xl font-semibold text-slate-300">$</span>
                         <h2 id="totalBalance" class="text-3xl font-extrabold tracking-tight">0.00</h2>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-700/50">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
-                                <i class="fa-solid fa-arrow-down"></i>
-                            </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs"><i class="fa-solid fa-arrow-down"></i></div>
                             <div>
-                                <p class="text-[11px] text-slate-300">Ingresos Mes</p>
-                                <p id="monthlyIncome" class="text-sm font-semibold text-emerald-400">$0.00</p>
+                                <p class="text-[10px] text-slate-300">Ingresos Mes</p>
+                                <p id="monthlyIncome" class="text-xs font-bold text-emerald-400">$0.00</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs">
-                                <i class="fa-solid fa-arrow-up"></i>
-                            </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs"><i class="fa-solid fa-arrow-up"></i></div>
                             <div>
-                                <p class="text-[11px] text-slate-300">Gastos Mes</p>
-                                <p id="monthlyExpenses" class="text-sm font-semibold text-rose-400">$0.00</p>
+                                <p class="text-[10px] text-slate-300">Gastos Mes</p>
+                                <p id="monthlyExpenses" class="text-xs font-bold text-rose-400">$0.00</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ALERTA DE PRÓXIMOS VENCIMIENTOS -->
+                <!-- ALERTA DE VENCIMIENTOS CERCANOS -->
                 <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 p-4 rounded-2xl space-y-2">
                     <div class="flex items-center justify-between">
                         <h3 class="font-bold text-xs text-amber-800 dark:text-amber-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-bell text-amber-600"></i> Próximos Vencimientos y Facturas
+                            <i class="fa-solid fa-bell text-amber-600 animate-bounce"></i> Alertas de Vencimiento (Próximos pagos)
                         </h3>
                         <button onclick="switchTab('bills')" class="text-[10px] text-amber-700 dark:text-amber-400 font-bold underline">Ver todos</button>
                     </div>
-                    <div id="dashboardBillsAlerts" class="space-y-1.5">
-                        <!-- Alertas dinámicas -->
-                    </div>
+                    <div id="dashboardBillsAlerts" class="space-y-1.5"></div>
                 </div>
 
-                <!-- ACCIONES RÁPIDAS -->
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="openModal('addTxModal', 'income')" class="flex items-center justify-center gap-2 p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50 active:scale-95 transition shadow-sm">
-                        <i class="fa-solid fa-circle-plus text-lg"></i>
-                        <span class="text-xs font-bold">Nuevo Ingreso</span>
-                    </button>
-                    <button onclick="openModal('addTxModal', 'expense')" class="flex items-center justify-center gap-2 p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50 active:scale-95 transition shadow-sm">
-                        <i class="fa-solid fa-circle-minus text-lg"></i>
-                        <span class="text-xs font-bold">Nuevo Gasto</span>
-                    </button>
-                </div>
-
-                <!-- CALIDAD DE GASTOS -->
+                <!-- CALIDAD DE GASTOS NECESARIO VS INNECESARIO -->
                 <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-3">
-                    <h3 class="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-brand-600"></i>
-                        <span>Gastos Necesarios vs. Innecesarios</span>
+                    <h3 class="font-bold text-xs text-gray-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-brand-600"></i> Gastos Necesarios vs. Innecesarios
                     </h3>
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
-                            <p class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold mb-1">✔️ Necesario</p>
-                            <p id="necessityNeededAmount" class="text-base font-bold">$0.00</p>
-                            <p id="necessityNeededPct" class="text-[10px] text-gray-500">0%</p>
+                        <div class="p-2.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
+                            <p class="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">✔️ Necesario</p>
+                            <p id="necessityNeededAmount" class="text-sm font-bold">$0.00</p>
                         </div>
-                        <div class="p-3 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-100 dark:border-rose-800/30">
-                            <p class="text-xs text-rose-700 dark:text-rose-400 font-semibold mb-1">❌ Innecesario</p>
-                            <p id="necessityUnneededAmount" class="text-base font-bold">$0.00</p>
-                            <p id="necessityUnneededPct" class="text-[10px] text-gray-500">0%</p>
+                        <div class="p-2.5 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-100 dark:border-rose-800/30">
+                            <p class="text-[11px] text-rose-700 dark:text-rose-400 font-semibold">❌ Innecesario</p>
+                            <p id="necessityUnneededAmount" class="text-sm font-bold">$0.00</p>
                         </div>
                     </div>
-                    <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden flex">
-                        <div id="barNeeded" class="bg-emerald-500 h-full transition-all" style="width: 50%"></div>
-                        <div id="barUnneeded" class="bg-rose-500 h-full transition-all" style="width: 50%"></div>
-                    </div>
-                </div>
-
-                <!-- ÚLTIMOS MOVIMIENTOS -->
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-sm text-gray-900 dark:text-white">Últimos Movimientos</h3>
-                        <button onclick="switchTab('expenses')" class="text-xs text-brand-600 font-semibold hover:underline">Ver todo</button>
-                    </div>
-                    <div id="recentTxList" class="space-y-2"></div>
                 </div>
             </section>
 
-            <!-- PANTALLA 2: GASTOS Y SUPERMERCADO -->
+            <!-- SECCIÓN 1: INGRESOS -->
+            <section id="sec-incomes" class="hidden space-y-4">
+                <div class="flex justify-between items-center bg-emerald-50 dark:bg-slate-800 p-4 rounded-2xl border border-emerald-200 dark:border-slate-700">
+                    <div>
+                        <h2 class="font-bold text-sm text-gray-900 dark:text-white">Registro de Ingresos</h2>
+                        <p class="text-[11px] text-gray-500">Suma capital a tus cuentas o efectivo</p>
+                    </div>
+                    <button onclick="openModal('addTxModal', 'income')" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold shadow hover:bg-emerald-700 transition flex items-center gap-1">
+                        <i class="fa-solid fa-plus"></i> Nuevo Ingreso
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    <h3 class="font-bold text-xs text-gray-700 dark:text-gray-300">Historial de Ingresos</h3>
+                    <div id="incomeHistoryList" class="space-y-2"></div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: GASTOS (REGISTRO, FILTROS, VIAJES, CUOTAS) -->
             <section id="sec-expenses" class="hidden space-y-4">
                 <div class="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-2xl gap-1 border border-gray-200 dark:border-slate-700">
-                    <button onclick="switchExpenseSubtab('all')" id="subnav-all" class="flex-1 py-2 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-700 text-brand-600 shadow-sm">Todos</button>
+                    <button onclick="switchExpenseSubtab('all')" id="subnav-all" class="flex-1 py-2 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-700 text-brand-600 shadow-sm">Todos y Filtros</button>
                     <button onclick="switchExpenseSubtab('supermarket')" id="subnav-supermarket" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-500">🛒 Supermercado</button>
+                    <button onclick="switchExpenseSubtab('travels')" id="subnav-travels" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-500">✈️ Viajes</button>
                 </div>
 
-                <!-- Historial -->
+                <!-- SUBTAB: TODOS / HISTORIAL Y FILTROS -->
                 <div id="exp-sub-all" class="space-y-3">
                     <div class="grid grid-cols-2 gap-2">
                         <select id="historyFilter" onchange="renderHistory()" class="text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-medium">
-                            <option value="all">🔍 Todos</option>
-                            <option value="income">🟢 Ingresos</option>
-                            <option value="expense">🔴 Gastos</option>
+                            <option value="all">🔍 Todos los gastos</option>
                             <option value="needed">✔️ Necesarios</option>
                             <option value="unneeded">❌ Innecesarios</option>
+                            <option value="fixed">📌 Gastos Fijos</option>
+                            <option value="installment">💳 En Cuotas</option>
                         </select>
                         <select id="historyMonthFilter" onchange="renderHistory()" class="text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-medium">
                             <option value="all">📅 Todos los meses</option>
                             <option value="0">Enero</option><option value="1">Febrero</option><option value="2">Marzo</option><option value="3">Abril</option><option value="4">Mayo</option><option value="5">Junio</option><option value="6">Julio</option><option value="7">Agosto</option><option value="8">Septiembre</option><option value="9">Octubre</option><option value="10">Noviembre</option><option value="11">Diciembre</option>
                         </select>
                     </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="travelFilter" onchange="renderHistory()" class="text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-medium">
+                            <option value="all">🌴 Filtrar por Viaje (Todos)</option>
+                        </select>
+                        <input id="dateExactFilter" type="date" onchange="renderHistory()" class="text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-medium">
+                    </div>
                     <div id="fullHistoryList" class="space-y-2 pt-1"></div>
                 </div>
 
-                <!-- Supermercado Rápido -->
+                <!-- SUBTAB: SUPERMERCADO -->
                 <div id="exp-sub-supermarket" class="hidden space-y-3">
                     <div class="flex justify-between items-center bg-emerald-50 dark:bg-emerald-950/20 p-3 rounded-2xl border border-emerald-200 dark:border-emerald-900/40">
                         <div>
                             <h2 class="font-bold text-sm">Tickets de Supermercado</h2>
-                            <p class="text-[11px] text-gray-500">Agrega el total y detalla tus productos</p>
+                            <p class="text-[11px] text-gray-500">Carga rápida y desglose de items</p>
                         </div>
-                        <button onclick="openSupermarketModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold shadow flex items-center gap-1.5">
+                        <button onclick="openSupermarketModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold shadow flex items-center gap-1">
                             <i class="fa-solid fa-plus"></i> Cargar Ticket
                         </button>
                     </div>
                     <div id="supermarketList" class="space-y-3"></div>
                 </div>
+
+                <!-- SUBTAB: VIAJES -->
+                <div id="exp-sub-travels" class="hidden space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="font-bold text-sm">Control de Viajes</h2>
+                            <p class="text-[11px] text-gray-500">Presupuesto asignado por viaje</p>
+                        </div>
+                        <button onclick="openNewTravelModal()" class="px-3 py-1.5 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition flex items-center gap-1 shadow">
+                            <i class="fa-solid fa-plane-departure"></i> Crear Viaje
+                        </button>
+                    </div>
+                    <div id="travelsList" class="grid grid-cols-1 gap-3"></div>
+                </div>
             </section>
 
-            <!-- PANTALLA 3: AHORROS (FRASCOS DE AHORRO SEPARADOS) -->
+            <!-- SECCIÓN 3: AHORROS (FRASCOS INDEPENDIENTES) -->
             <section id="sec-savings" class="hidden space-y-4">
                 <div class="flex justify-between items-center bg-brand-50 dark:bg-slate-800 p-4 rounded-2xl border border-brand-100 dark:border-slate-700">
                     <div>
                         <h2 class="font-bold text-sm text-gray-900 dark:text-white">Frascos de Ahorro</h2>
-                        <p class="text-[11px] text-gray-500">Tus ahorros separados del dinero disponible</p>
+                        <p class="text-[11px] text-gray-500">Ahorro guardado por cuenta (Fuera del Capital Activo)</p>
                     </div>
-                    <button onclick="openAddSavingModal()" class="px-3 py-2 bg-brand-600 text-white rounded-xl text-xs font-semibold shadow hover:bg-brand-700 transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-piggy-bank"></i> Nuevo Frasco
-                    </button>
-                </div>
-                <div id="savingsJarsList" class="space-y-3">
-                    <!-- Frascos dinámicos -->
-                </div>
-            </section>
-
-            <!-- PANTALLA 4: VENCIMIENTOS Y FACTURAS -->
-            <section id="sec-bills" class="hidden space-y-4">
-                <div class="flex justify-between items-center bg-amber-50 dark:bg-slate-800 p-4 rounded-2xl border border-amber-200 dark:border-slate-700">
-                    <div>
-                        <h2 class="font-bold text-sm text-gray-900 dark:text-white">Vencimientos y Facturas</h2>
-                        <p class="text-[11px] text-gray-500">Controla tus fechas límites y evita recargos</p>
-                    </div>
-                    <button onclick="openAddBillModal()" class="px-3 py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs shadow hover:bg-amber-600 transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-calendar-plus"></i> Agregar Factura
-                    </button>
-                </div>
-                <div id="billsList" class="space-y-3">
-                    <!-- Vencimientos dinámicos -->
-                </div>
-            </section>
-
-        </main>
-
-        <!-- BARRA DE NAVEGACIÓN INFERIOR -->
-        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-md w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-200 dark:border-slate-800 px-4 py-2 flex justify-between items-center z-40">
-            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 text-brand-600 dark:text-brand-500 font-bold">
-                <i class="fa-solid fa-house text-lg"></i>
-                <span class="text-[10px]">Inicio</span>
-            </button>
-            <button onclick="switchTab('expenses')" id="nav-expenses" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
-                <i class="fa-solid fa-receipt text-lg"></i>
-                <span class="text-[10px]">Gastos</span>
-            </button>
-            <div class="-mt-6">
-                <button onclick="openModal('addTxModal')" class="w-12 h-12 bg-gradient-to-r from-brand-500 to-brand-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-brand-500/40 hover:scale-105 active:scale-95 transition">
-                    <i class="fa-solid fa-plus text-xl"></i>
-                </button>
-            </div>
-            <button onclick="switchTab('savings')" id="nav-savings" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
-                <i class="fa-solid fa-vault text-lg"></i>
-                <span class="text-[10px]">Ahorros</span>
-            </button>
-            <button onclick="switchTab('bills')" id="nav-bills" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
-                <i class="fa-solid fa-calendar-days text-lg"></i>
-                <span class="text-[10px]">Vencimientos</span>
-            </button>
-        </nav>
-
-        <!-- MODAL: NUEVA TRANSACCIÓN -->
-        <div id="addTxModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
-                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
-                    <h3 class="font-bold text-base">Nuevo Movimiento</h3>
-                    <button onclick="closeModal('addTxModal')" class="text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <form id="txForm" onsubmit="handleSaveTx(event)" class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-semibold mb-1">Tipo</label>
-                        <select id="txType" onchange="updateTxCategories()" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                            <option value="expense">🔴 Gasto</option>
-                            <option value="income">🟢 Ingreso</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold mb-1">Monto ($)</label>
-                        <input id="txAmount" type="number" step="0.01" required placeholder="0.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold mb-1">Categoría</label>
-                        <select id="txCategory" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                            <option value="Supermercado">🛒 Supermercado</option>
-                            <option value="Comida">🍔 Comida / Salidas</option>
-                            <option value="Servicios">💡 Servicios</option>
-                            <option value="Transporte">🚗 Transporte</option>
-                            <option value="Otros">📦 Otros</option>
-                        </select>
-                    </div>
-                    <div id="necessityBox">
-                        <label class="block text-xs font-semibold mb-1">Calidad del gasto</label>
-                        <select id="txNecessity" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                            <option value="needed">✔️ Necesario</option>
-                            <option value="unneeded">❌ Innecesario</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold mb-1">Descripción</label>
-                        <input id="txDesc" type="text" placeholder="Ej: Compra mensual" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold mb-1">Fecha</label>
-                        <input id="txDate" type="date" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                    </div>
-                    <button type="submit" class="w-full py-3 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition shadow">Guardar</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- MODAL: DETALLE SUPERMERCADO -->
-        <div id="supermarketModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
-                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
-                    <h3 class="font-bold text-base">Detalle de Supermercado</h3>
-                    <button onclick="closeModal('supermarketModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div class="space-y-3">
-                    <div class="flex gap-2">
-                        <input id="smProductName" type="text" placeholder="Producto" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                        <input id="smProductPrice" type="number" step="0.01" placeholder="Precio" class="w-24 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                    </div>
-                    <div class="flex gap-2">
-                        <select id="smProductNecessity" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                            <option value="needed">✔️ Necesario</option>
-                            <option value="unneeded">❌ Innecesario</option>
-                        </select>
-                        <button onclick="addProductToSupermarket()" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold">Añadir</button>
-                    </div>
-                </div>
-                <div id="smProductsList" class="space-y-2 pt-2 border-t dark:border-slate-800"></div>
-                <button onclick="closeModal('supermarketModal'); renderAll();" class="w-full py-2.5 bg-gray-900 dark:bg-slate-800 text-white rounded-xl text-xs font-semibold">Listo y Guardar</button>
-            </div>
-        </div>
-
-        <!-- MODAL: CONFIGURACIÓN / AJUSTES -->
-        <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
-                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
-                    <h3 class="font-bold text-base">Ajustes y Perfil</h3>
-                    <button onclick="closeModal('settingsModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-medium mb-1">Nombre de Perfil</label>
-                        <div class="flex gap-2">
-                            <input id="profileNameInput" type="text" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                            <button onclick="saveProfileName()" class="px-3 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold">Guardar</button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
-                        <div>
-                            <p class="text-xs font-bold">Modo Oscuro</p>
-                        </div>
-                        <button onclick="toggleTheme()" class="w-12 h-6 bg-gray-300 dark:bg-brand-600 rounded-full p-1 transition duration-200">
-                            <div class="w-4 h-4 bg-white rounded-full shadow-md transform dark:translate-x-6 transition"></div>
-                        </button>
-                    </div>
-                    <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
-                        <div>
-                            <p class="text-xs font-bold">Cambiar Avatar</p>
-                        </div>
-                        <button onclick="openAvatarModal()" class="px-3 py-1.5 bg-gray-100 dark:bg-slate-800 text-xs font-semibold rounded-lg">Elegir</button>
-                    </div>
-                    <div class="pt-2 border-t dark:border-slate-700">
-                        <button onclick="resetAllData()" class="w-full py-2 bg-rose-500/10 text-rose-600 border border-rose-500/30 rounded-xl text-xs font-bold">Borrar Todo y Reiniciar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MODAL: AVATAR -->
-        <div id="avatarModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
-                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
-                    <h3 class="font-bold text-base">Elige tu Avatar</h3>
-                    <button onclick="closeModal('avatarModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <div onclick="selectAvatar('Bot')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Bot" class="w-14 h-14"><span class="text-[10px] mt-1 font-semibold">Robot</span></div>
-                    <div onclick="selectAvatar('Cat')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cat" class="w-14 h-14"><span class="text-[10px] mt-1 font-semibold">Gato</span></div>
-                    <div onclick="selectAvatar('Smile')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Smile" class="w-14 h-14"><span class="text-[10px] mt-1 font-semibold">Sonrisa</span></div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- SCRIPT DE LÓGICA -->
-    <script>
-        let db = {
-            profileName: "Mi Dinero",
-            avatarSeed: "Bot",
-            darkMode: false,
-            balanceVisible: true,
-            transactions: [],
-            savingsJars: [], // Frascos de ahorro separados
-            bills: [],       // Vencimientos y facturas
-            accounts: [
-                { id: 1, name: 'Efectivo', icon: 'fa-money-bill-wave' },
-                { id: 2, name: 'Mercado Pago', icon: 'fa-wallet' },
-                { id: 3, name: 'Banco', icon: 'fa-building-columns' }
-            ]
-        };
-
-        let currentActiveSmId = null;
-
-        function loadData() {
-            const saved = localStorage.getItem('mi_dinero_db_v2');
-            if (saved) {
-                try { db = JSON.parse(saved); } catch(e) {}
-            }
-            if (!db.savingsJars) db.savingsJars = [];
-            if (!db.bills) db.bills = [];
-            if (db.darkMode) document.documentElement.classList.add('dark');
-            document.getElementById('profileNameInput').value = db.profileName;
-            updateAvatarDisplay();
-            renderAll();
-        }
-
-        function saveData() {
-            localStorage.setItem('mi_dinero_db_v2', JSON.stringify(db));
-        }
-
-        function switchTab(tabId) {
-            ['dashboard', 'expenses', 'savings', 'bills'].forEach(t => {
-                document.getElementById(`sec-${t}`).classList.add('hidden');
-                const nav = document.getElementById(`nav-${t}`);
-                if(nav) {
-                    nav.classList.remove('text-brand-600', 'dark:text-brand-500', 'font-bold');
-                    nav.classList.add('text-gray-400');
-                }
-            });
-            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
-            const activeNav = document.getElementById(`nav-${tabId}`);
-            if(activeNav) {
-                activeNav.classList.remove('text-gray-400');
-                activeNav.classList.add('text-brand-600', 'dark:text-brand-500', 'font-bold');
-            }
-        }
-
-        function switchExpenseSubtab(sub) {
-            ['all', 'supermarket'].forEach(s => {
-                document.getElementById(`exp-sub-${s}`).classList.add('hidden');
-            });
-            document.getElementById(`exp-sub-${sub}`).classList.remove('hidden');
-            if(sub === 'supermarket') renderSupermarketList();
-        }
-
-        function openModal(modalId, defaultType = 'expense') {
-            document.getElementById(modalId).classList.remove('hidden');
-            if(modalId === 'addTxModal') {
-                document.getElementById('txType').value = defaultType;
-                document.getElementById('txDate').valueAsDate = new Date();
-                updateTxCategories();
-            }
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
-
-        function openSettingsModal() { document.getElementById('settingsModal').classList.remove('hidden'); }
-        function openAvatarModal() { document.getElementById('avatarModal').classList.remove('hidden'); }
-
-        function updateTxCategories() {
-            const type = document.getElementById('txType').value;
-            const cat = document.getElementById('txCategory');
-            cat.innerHTML = type === 'expense' ? `
-                <option value="Supermercado">🛒 Supermercado</option>
-                <option value="Comida">🍔 Comida / Salidas</option>
-                <option value="Servicios">💡 Servicios</option>
-                <option value="Transporte">🚗 Transporte</option>
-                <option value="Otros">📦 Otros</option>
-            ` : `
-                <option value="Sueldo">💼 Sueldo</option>
-                <option value="Ventas">📈 Ventas</option>
-                <option value="Regalo">🎁 Regalo</option>
-                <option value="Otros">📦 Otros</option>
-            `;
-            document.getElementById('necessityBox').style.display = type === 'expense' ? 'block' : 'none';
-        }
-
-        function handleSaveTx(e) {
-            e.preventDefault();
-            const type = document.getElementById('txType').value;
-            const amount = parseFloat(document.getElementById('txAmount').value);
-            const category = document.getElementById('txCategory').value;
-            const necessity = type === 'expense' ? document.getElementById('txNecessity').value : 'needed';
-            const desc = document.getElementById('txDesc').value || category;
-            const date = document.getElementById('txDate').value;
-
-            const tx = { id: Date.now(), type, amount, category, necessity, desc, date, products: category === 'Supermercado' ? [{ name: 'Compra general', price: amount, necessity }] : [] };
-            db.transactions.unshift(tx);
-            saveData();
-            closeModal('addTxModal');
-            document.getElementById('txForm').reset();
-            renderAll();
-        }
-
-        // --- GESTIÓN DE FRASCOS DE AHORRO ---
-        function openAddSavingModal() {
-            const name = prompt("Nombre del frasco de ahorro (ej: Vacaciones, Fondo Emergencia):");
-            const amount = parseFloat(prompt("Monto inicial a depositar ($):") || 0);
-            const target = parseFloat(prompt("Meta objetivo ($):") || 0);
-            const account = prompt("¿Desde qué medio de pago/cuenta sale el dinero? (Ej: Mercado Pago, Efectivo):") || 'Efectivo';
-
-            if(name) {
-                db.savingsJars.push({
-                    id: Date.now(),
-                    name,
-                    current: amount,
-                    target: target > 0 ? target : amount,
-                    account
-                });
-                saveData();
-                renderSavingsJars();
-                renderAll();
-            }
-        }
-
-        function depositToJar(jarId) {
-            const add = parseFloat(prompt("Monto a agregar al frasco ($):") || 0);
-            if(add > 0) {
-                const jar = db.savingsJars.find(j => j.id === jarId);
-                if(jar) {
-                    jar.current += add;
-                    saveData();
-                    renderSavingsJars();
-                }
-            }
-        }
-
-        function deleteJar(jarId) {
-            if(confirm("¿Eliminar este frasco de ahorro?")) {
-                db.savingsJars = db.savingsJars.filter(j => j.id !== jarId);
-                saveData();
-                renderSavingsJars();
-            }
-        }
-
-        function renderSavingsJars() {
-            const list = document.getElementById('savingsJarsList');
-            list.innerHTML = db.savingsJars.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No tienes frascos de ahorro creados aún</p>' : '';
-            db.savingsJars.forEach(j => {
-                const pct = j.target > 0 ? Math.min(100, (j.current / j.target) * 100) : 100;
-                list.innerHTML += `
-                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-2">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h4 class="font-bold text-xs text-gray-900 dark:text-white">${j.name}</h4>
-                                <p class="text-[10px] text-gray-400">Medio origen: ${j.account}</p>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-extrabold text-brand-600">$${j.current.toFixed(2)} <span class="text-[10px] text-gray-400 font-normal">/ $${j.target.toFixed(2)}</span></span>
-                                <button onclick="deleteJar(${j.id})" class="text-gray-400 hover:text-rose-500 text-xs"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </div>
-                        <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
-                            <div class="bg-brand-500 h-full transition-all" style="width: ${pct}%"></div>
-                        </div>
-                        <div class="flex justify-end pt-1">
-                            <button onclick="depositToJar(${j.id})" class="px-3 py-1 bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 rounded-lg text-[11px] font-semibold"><i class="fa-solid fa-plus mr-1"></i> Agregar ahorro</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // --- GESTIÓN DE VENCIMIENTOS Y FACTURAS ---
-        function openAddBillModal() {
-            const name = prompt("Nombre de la factura o vencimiento (ej: Luz, Alquiler, Internet):");
-            const amount = parseFloat(prompt("Monto ($):") || 0);
-            const date = prompt("Fecha de vencimiento (AAAA-MM-DD):", new Date().toISOString().split('T')[0]);
-
-            if(name && date) {
-                db.bills.push({
-                    id: Date.now(),
-                    name,
-                    amount,
-                    date,
-                    paid: false
-                });
-                saveData();
-                renderBills();
-                renderAll();
-            }
-        }
-
-        function toggleBillPaid(billId) {
-            const bill = db.bills.find(b => b.id === billId);
-            if(bill) {
-                bill.paid = !bill.paid;
-                saveData();
-                renderBills();
-                renderAll();
-            }
-        }
-
-        function deleteBill(billId) {
-            db.bills = db.bills.filter(b => b.id !== billId);
-            saveData();
-            renderBills();
-            renderAll();
-        }
-
-        function renderBills() {
-            const list = document.getElementById('billsList');
-            const alertContainer = document.getElementById('dashboardBillsAlerts');
-            list.innerHTML = db.bills.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No hay vencimientos registrados</p>' : '';
-            alertContainer.innerHTML = '';
-
-            let pendingCount = 0;
-            db.bills.forEach(b => {
-                if(!b.paid) pendingCount++;
-                list.innerHTML += `
-                    <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-full ${b.paid ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'} flex items-center justify-center text-xs">
-                                <i class="fa-solid ${b.paid ? 'fa-check' : 'fa-bell'}"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold ${b.paid ? 'line-through text-gray-400' : ''}">${b.name}</p>
-                                <p class="text-[10px] text-gray-400">Vence: ${b.date} • $${b.amount.toFixed(2)}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="toggleBillPaid(${b.id})" class="px-2.5 py-1 text-xs rounded-lg font-semibold ${b.paid ? 'bg-gray-100 text-gray-600 dark:bg-slate-700 dark:text-gray-300' : 'bg-amber-500 text-slate-950'}">${b.paid ? 'Pagada' : 'Pagar'}</button>
-                            <button onclick="deleteBill(${b.id})" class="text-gray-400 hover:text-rose-500 text-xs"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            const pendingBills = db.bills.filter(b => !b.paid);
-            if(pendingBills.length === 0) {
-                alertContainer.innerHTML = '<p class="text-[11px] text-amber-800 dark:text-amber-400">🎉 No tienes vencimientos pendientes</p>';
-            } else {
-                pendingBills.slice(0, 3).forEach(b => {
-                    alertContainer.innerHTML += `
-                        <div class="flex justify-between items-center text-xs text-amber-900 dark:text-amber-300">
-                            <span><b>${b.name}</b> ($${b.amount.toFixed(2)})</span>
-                            <span class="font-bold">📅 ${b.date}</span>
-                        </div>
-                    `;
-                });
-            }
-        }
-
-        // --- SUPERMERCADO ---
-        function openSupermarketModal(txId = null) {
-            if(!txId) {
-                const tx = { id: Date.now(), type: 'expense', amount: 0, category: 'Supermercado', necessity: 'needed', desc: 'Compra Supermercado', date: new Date().toISOString().split('T')[0], products: [] };
-                db.transactions.unshift(tx);
-                currentActiveSmId = tx.id;
-            } else { currentActiveSmId = txId; }
-            renderSmProductsModal();
-            document.getElementById('supermarketModal').classList.remove('hidden');
-        }
-
-        function addProductToSupermarket() {
-            const name = document.getElementById('smProductName').value;
-            const price = parseFloat(document.getElementById('smProductPrice').value);
-            const necessity = document.getElementById('smProductNecessity').value;
-            if(!name || isNaN(price)) return;
-            const tx = db.transactions.find(t => t.id === currentActiveSmId);
-            if(tx) {
-                tx.products.push({ name, price, necessity });
-                tx.amount = tx.products.reduce((acc, p) => acc + p.price, 0);
-                saveData();
-                document.getElementById('smProductName').value = '';
-                document.getElementById('smProductPrice').value = '';
-                renderSmProductsModal();
-            }
-        }
-
-        function removeSmProduct(index) {
-            const tx = db.transactions.find(t => t.id === currentActiveSmId);
-            if(tx) {
-                tx.products.splice(index, 1);
-                tx.amount = tx.products.reduce((acc, p) => acc + p.price, 0);
-                saveData();
-                renderSmProductsModal();
-            }
-        }
-
-        function renderSmProductsModal() {
-            const tx = db.transactions.find(t => t.id === currentActiveSmId);
-            const list = document.getElementById('smProductsList');
-            if(!tx) return;
-            list.innerHTML = tx.products.length === 0 ? '<p class="text-xs text-gray-400 text-center py-2">Sin productos</p>' : '';
-            tx.products.forEach((p, idx) => {
-                list.innerHTML += `
-                    <div class="flex justify-between items-center bg-gray-50 dark:bg-slate-800 p-2.5 rounded-xl text-xs">
-                        <span><b>${p.name}</b> ($${p.price.toFixed(2)})</span>
-                        <button onclick="removeSmProduct(${idx})" class="text-rose-500"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
-            });
-        }
-
-        function renderSupermarketList() {
-            const container = document.getElementById('supermarketList');
-            const smTxs = db.transactions.filter(t => t.category === 'Supermercado');
-            container.innerHTML = smTxs.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No hay tickets de supermercado</p>' : '';
-            smTxs.forEach(t => {
-                container.innerHTML += `
-                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 space-y-2 shadow-sm">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold">${t.desc} (${t.date})</span>
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-bold text-rose-500">$${t.amount.toFixed(2)}</span>
-                                <button onclick="openSupermarketModal(${t.id})" class="px-2.5 py-1 bg-brand-50 text-brand-600 rounded-lg text-xs font-semibold">Editar</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // --- RENDER GLOBAL ---
-        function renderAll() {
-            const now = new Date();
-            document.getElementById('currentDateStr').innerText = now.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-            let total = 0, mIncome = 0, mExpense = 0, neededTot = 0, unneededTot = 0;
-            db.transactions.forEach(t => {
-                if(t.type === 'income') { total += t.amount; mIncome += t.amount; }
-                else {
-                    total -= t.amount;
-                    mExpense += t.amount;
-                    if(t.necessity === 'needed') neededTot += t.amount;
-                    else unneededTot += t.amount;
-                }
-            });
-
-            document.getElementById('totalBalance').innerText = db.balanceVisible ? total.toFixed(2) : '••••••';
-            document.getElementById('monthlyIncome').innerText = db.balanceVisible ? `$${mIncome.toFixed(2)}` : '••••';
-            document.getElementById('monthlyExpenses').innerText = db.balanceVisible ? `$${mExpense.toFixed(2)}` : '••••';
-
-            document.getElementById('necessityNeededAmount').innerText = `$${neededTot.toFixed(2)}`;
-            document.getElementById('necessityUnneededAmount').innerText = `$${unneededTot.toFixed(2)}`;
-            const totalExp = neededTot + unneededTot;
-            const neededPct = totalExp > 0 ? (neededTot / totalExp) * 100 : 50;
-            document.getElementById('barNeeded').style.width = `${neededPct}%`;
-            document.getElementById('barUnneeded').style.width = `${100 - neededPct}%`;
-
-            const recentList = document.getElementById('recentTxList');
-            recentList.innerHTML = db.transactions.length === 0 ? '<p class="text-xs text-gray-400 text-center py-2">Sin movimientos</p>' : '';
-            db.transactions.slice(0, 5).forEach(t => {
-                recentList.innerHTML += `
-                    <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-3 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm">
-                        <div>
-                            <p class="text-xs font-bold">${t.desc}</p>
-                            <p class="text-[10px] text-gray-400">${t.category} • ${t.date}</p>
-                        </div>
-                        <span class="text-xs font-bold ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">${t.type === 'income' ? '+' : '-'}$${t.amount.toFixed(2)}</span>
-                    </div>
-                `;
-            });
-
-            renderHistory();
-            renderSavingsJars();
-            renderBills();
-        }
-
-        function renderHistory() {
-            const list = document.getElementById('fullHistoryList');
-            const filter = document.getElementById('historyFilter').value;
-            const monthFilter = document.getElementById('historyMonthFilter').value;
-
-            let filtered = db.transactions.filter(t => {
-                const tMonth = new Date(t.date).getMonth().toString();
-                if(monthFilter !== 'all' && tMonth !== monthFilter) return false;
-                if(filter === 'income' && t.type !== 'income') return false;
-                if(filter === 'expense' && t.type !== 'expense') return false;
-                if(filter === 'needed' && t.necessity !== 'needed') return false;
-                if(filter === 'unneeded' && t.necessity !== 'unneeded') return false;
-                return true;
-            });
-
-            list.innerHTML = filtered.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No hay movimientos</p>' : '';
-            filtered.forEach(t => {
-                list.innerHTML += `
-                    <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-3 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm">
-                        <div>
-                            <p class="text-xs font-bold">${t.desc}</p>
-                            <p class="text-[10px] text-gray-400">${t.category} • ${t.date}</p>
-                        </div>
-                        <span class="text-xs font-bold ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">${t.type === 'income' ? '+' : '-'}$${t.amount.toFixed(2)}</span>
-                    </div>
-                `;
-            });
-        }
-
-        function toggleBalanceVisibility() {
-            db.balanceVisible = !db.balanceVisible;
-            document.getElementById('eyeIcon').className = db.balanceVisible ? "fa-solid fa-eye text-sm" : "fa-solid fa-eye-slash text-sm";
-            renderAll();
-        }
-
-        function toggleTheme() {
-            db.darkMode = !db.darkMode;
-            document.documentElement.classList.toggle('dark', db.darkMode);
-            saveData();
-        }
-
-        function selectAvatar(seed) {
-            db.avatarSeed = seed;
-            updateAvatarDisplay();
-            saveData();
-            closeModal('avatarModal');
-        }
-
-        function updateAvatarDisplay() {
-            document.getElementById('headerAvatar').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${db.avatarSeed}`;
-        }
-
-        function saveProfileName() {
-            const val = document.getElementById('profileNameInput').value;
-            if(val) {
-                db.profileName = val;
-                document.getElementById('txt_userGreeting').innerText = `Hola, ${val}`;
-                saveData();
-                closeModal('settingsModal');
-            }
-        }
-
-        function resetAllData() {
-            if(confirm('¿Borrar todos los datos y empezar de cero?')) {
-                localStorage.removeItem('mi_dinero_db_v2');
-                location.reload();
-            }
-        }
-
-        window.onload = loadData;
-    </script>
-</body>
-</html>
