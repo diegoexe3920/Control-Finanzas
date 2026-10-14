@@ -97,7 +97,7 @@
         <!-- CONTENIDO PRINCIPAL -->
         <main class="flex-1 p-4 overflow-y-auto space-y-5">
 
-            <!-- PANTALLA INICIO (RESUMEN GENERAL, ALERTAS, GRÁFICO Y MEDIOS DE PAGO) -->
+            <!-- PANTALLA INICIO -->
             <section id="sec-dashboard" class="space-y-4">
                 <!-- TARJETA CAPITAL ACTIVO -->
                 <div class="bg-gradient-to-br from-gray-900 to-gray-800 dark:from-slate-800 dark:to-slate-950 text-white rounded-3xl p-5 shadow-xl relative overflow-hidden">
@@ -105,9 +105,17 @@
                     <div class="flex justify-between items-start mb-1">
                         <span id="txt_lblCapital" class="text-xs uppercase tracking-wider text-slate-300 font-medium admin-editable" onclick="editAdminText('lblCapital', 'Titulo Capital')">Capital Activo Disponible</span>
                     </div>
-                    <div class="flex items-baseline gap-2 mb-3">
-                        <span class="text-2xl font-semibold text-slate-300">$</span>
-                        <h2 id="totalBalance" class="text-3xl font-extrabold tracking-tight">0.00</h2>
+                    <div class="flex flex-col gap-0.5 mb-3">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-2xl font-semibold text-slate-300">$</span>
+                            <h2 id="totalBalance" class="text-3xl font-extrabold tracking-tight">0,00</h2>
+                            <span class="text-xs text-slate-400 font-bold">ARS</span>
+                        </div>
+                        <div class="flex items-baseline gap-1 text-sky-400 text-xs font-semibold">
+                            <span>US$</span>
+                            <span id="totalBalanceUSD">0,00</span>
+                            <span class="text-[10px] text-slate-400">USD</span>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-700/50">
@@ -115,26 +123,31 @@
                             <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs"><i class="fa-solid fa-arrow-down"></i></div>
                             <div>
                                 <p id="txt_lblIncome" class="text-[10px] text-slate-300 admin-editable" onclick="editAdminText('lblIncome', 'Etiqueta Ingresos')">Ingresos Mes</p>
-                                <p id="monthlyIncome" class="text-xs font-bold text-emerald-400">$0.00</p>
+                                <p id="monthlyIncome" class="text-xs font-bold text-emerald-400">$0,00</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
                             <div class="w-7 h-7 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs"><i class="fa-solid fa-arrow-up"></i></div>
                             <div>
                                 <p id="txt_lblExpense" class="text-[10px] text-slate-300 admin-editable" onclick="editAdminText('lblExpense', 'Etiqueta Gastos')">Gastos Mes</p>
-                                <p id="monthlyExpenses" class="text-xs font-bold text-rose-400">$0.00</p>
+                                <p id="monthlyExpenses" class="text-xs font-bold text-rose-400">$0,00</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ALERTA DE VENCIMIENTOS CERCANOS -->
+                <!-- ALERTA DE VENCIMIENTOS Y CONVERSOR DE MONEDA -->
                 <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 p-4 rounded-2xl space-y-2">
                     <div class="flex items-center justify-between">
                         <h3 class="font-bold text-xs text-amber-800 dark:text-amber-400 flex items-center gap-1.5">
                             <i class="fa-solid fa-bell text-amber-600"></i> <span id="txt_lblAlertsTitle" class="admin-editable" onclick="editAdminText('lblAlertsTitle', 'Titulo Alertas')">Alertas de Vencimiento</span>
                         </h3>
-                        <button onclick="switchTab('bills')" class="text-[10px] text-amber-700 dark:text-amber-400 font-bold underline">Ver todos</button>
+                        <div class="flex items-center gap-2">
+                            <button onclick="openCalcModal()" title="Calculadora Conversora de Moneda" class="w-7 h-7 bg-amber-200/70 dark:bg-amber-900/50 text-amber-900 dark:text-amber-200 rounded-lg flex items-center justify-center text-xs hover:scale-105 transition">
+                                <i class="fa-solid fa-calculator"></i>
+                            </button>
+                            <button onclick="switchTab('bills')" class="text-[10px] text-amber-700 dark:text-amber-400 font-bold underline">Ver todos</button>
+                        </div>
                     </div>
                     <div id="dashboardBillsAlerts" class="space-y-1.5"></div>
                 </div>
@@ -147,11 +160,11 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div class="p-2.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
                             <p class="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">✔️ Necesario</p>
-                            <p id="necessityNeededAmount" class="text-sm font-bold">$0.00</p>
+                            <p id="necessityNeededAmount" class="text-sm font-bold">$0,00</p>
                         </div>
                         <div class="p-2.5 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-100 dark:border-rose-800/30">
                             <p class="text-[11px] text-rose-700 dark:text-rose-400 font-semibold">❌ Innecesario</p>
-                            <p id="necessityUnneededAmount" class="text-sm font-bold">$0.00</p>
+                            <p id="necessityUnneededAmount" class="text-sm font-bold">$0,00</p>
                         </div>
                     </div>
                 </div>
@@ -173,7 +186,7 @@
                     <div id="annualChartBars" class="h-36 flex items-end justify-between gap-1 pt-4 pb-2 border-b border-gray-100 dark:border-slate-700"></div>
                 </div>
 
-                <!-- SECCIÓN DE CUENTAS Y MEDIOS DE PAGO (PANTALLA PRINCIPAL) -->
+                <!-- SECCIÓN DE CUENTAS Y MEDIOS DE PAGO -->
                 <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-3">
                     <div class="flex justify-between items-center">
                         <h3 class="font-bold text-xs text-gray-900 dark:text-white flex items-center gap-2">
@@ -335,16 +348,26 @@
                     <button onclick="closeModal('addTxModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <form id="txForm" onsubmit="handleSaveTx(event)" class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-semibold mb-1">Tipo</label>
-                        <select id="txType" onchange="updateTxCategories()" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                            <option value="expense">🔴 Gasto</option>
-                            <option value="income">🟢 Ingreso</option>
-                        </select>
+                    <input type="hidden" id="txEditId">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Tipo</label>
+                            <select id="txType" onchange="updateTxCategories()" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                                <option value="expense">🔴 Gasto</option>
+                                <option value="income">🟢 Ingreso</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Moneda</label>
+                            <select id="txCurrency" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-brand-600">
+                                <option value="ARS">$ Pesos (ARS)</option>
+                                <option value="USD">US$ Dólares (USD)</option>
+                            </select>
+                        </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold mb-1">Monto ($)</label>
-                        <input id="txAmount" type="number" step="0.01" required placeholder="0.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                        <label class="block text-xs font-semibold mb-1">Monto</label>
+                        <input id="txAmount" type="text" inputmode="numeric" oninput="formatCurrencyInput(this)" required placeholder="0" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold mb-1">Cuenta / Medio de Pago</label>
@@ -407,8 +430,110 @@
                         <label class="block text-xs font-semibold mb-1">Fecha</label>
                         <input id="txDate" type="date" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
                     </div>
-                    <button type="submit" class="w-full py-3 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition shadow">Guardar</button>
+                    <button type="submit" class="w-full py-3 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition shadow">Guardar Movimiento</button>
                 </form>
+            </div>
+        </div>
+
+        <!-- MODAL: NUEVO FRASCO DE AHORRO -->
+        <div id="addSavingModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 id="savingModalTitle" class="font-bold text-base">Nuevo Frasco de Ahorro</h3>
+                    <button onclick="closeModal('addSavingModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form onsubmit="handleSaveSavingJar(event)" class="space-y-3">
+                    <input type="hidden" id="savingEditId">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Nombre del frasco</label>
+                        <input id="jarName" type="text" required placeholder="Ej: Fondo de Emergencia, Viaje" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Cuenta / Medio</label>
+                            <select id="jarAccount" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Moneda</label>
+                            <select id="jarCurrency" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-brand-600">
+                                <option value="ARS">$ ARS</option>
+                                <option value="USD">US$ USD</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Monto inicial</label>
+                        <input id="jarAmount" type="text" inputmode="numeric" oninput="formatCurrencyInput(this)" value="0" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold">Guardar Frasco</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: NUEVO / EDITAR VENCIMIENTO -->
+        <div id="addBillModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 id="billModalTitle" class="font-bold text-base">Nuevo Vencimiento</h3>
+                    <button onclick="closeModal('addBillModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form onsubmit="handleSaveBill(event)" class="space-y-3">
+                    <input type="hidden" id="billEditId">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Nombre del pago / factura</label>
+                        <input id="billName" type="text" required placeholder="Ej: Luz, Alquiler, Tarjeta" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Monto</label>
+                            <input id="billAmount" type="text" inputmode="numeric" oninput="formatCurrencyInput(this)" required placeholder="0" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Moneda</label>
+                            <select id="billCurrency" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-amber-600">
+                                <option value="ARS">$ ARS</option>
+                                <option value="USD">US$ USD</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Fecha de vencimiento</label>
+                        <input id="billDate" type="date" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs">Guardar Vencimiento</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: CALCULADORA CONVERSORA PESO / DÓLAR EN VIVO -->
+        <div id="calcModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 class="font-bold text-base flex items-center gap-2"><i class="fa-solid fa-calculator text-amber-500"></i> Conversor Pesos / Dólares</h3>
+                    <button onclick="closeModal('calcModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div class="bg-amber-50 dark:bg-amber-950/40 p-3 rounded-2xl border border-amber-200 dark:border-amber-900/40 space-y-1 text-center">
+                    <p class="text-[10px] text-amber-800 dark:text-amber-300 uppercase font-bold">Cotización Dólar Mercado (Blue)</p>
+                    <p id="calcRateDisplay" class="text-lg font-extrabold text-amber-900 dark:text-amber-200">1 USD = $1.250 ARS</p>
+                    <p id="calcRateUpdated" class="text-[9px] text-gray-400">Actualizando en vivo...</p>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Monto en Pesos ($ ARS)</label>
+                        <input id="calcARS" type="text" inputmode="numeric" oninput="formatCurrencyInput(this); convertArsToUsd();" placeholder="0" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-emerald-600">
+                    </div>
+                    <div class="text-center text-xs font-bold text-gray-400">⇅</div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Monto en Dólares (US$ USD)</label>
+                        <input id="calcUSD" type="text" inputmode="numeric" oninput="formatCurrencyInput(this); convertUsdToArs();" placeholder="0" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-sky-600">
+                    </div>
+                </div>
+
+                <button onclick="fetchLiveDolarRate()" class="w-full py-2 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-200 transition">
+                    <i class="fa-solid fa-arrows-rotate"></i> Actualizar Cotización
+                </button>
             </div>
         </div>
 
@@ -422,7 +547,7 @@
                 <div class="space-y-3">
                     <div class="flex gap-2">
                         <input id="smProductName" type="text" placeholder="Producto" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                        <input id="smProductPrice" type="number" step="0.01" placeholder="Precio" class="w-24 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                        <input id="smProductPrice" type="text" inputmode="numeric" oninput="formatCurrencyInput(this)" placeholder="Precio" class="w-24 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
                     </div>
                     <div class="flex gap-2">
                         <select id="smProductNecessity" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
@@ -450,8 +575,8 @@
                         <input id="travelNameInput" type="text" placeholder="Ej: Brasil 2026" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium mb-1">Presupuesto estimado ($)</label>
-                        <input id="travelBudgetInput" type="number" step="0.01" placeholder="0.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                        <label class="block text-xs font-medium mb-1">Presupuesto estimado ($ ARS)</label>
+                        <input id="travelBudgetInput" type="text" inputmode="numeric" oninput="formatCurrencyInput(this)" placeholder="0" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
                     </div>
                     <button onclick="saveNewTravel()" class="w-full py-2.5 bg-sky-600 text-white rounded-xl text-xs font-bold">Crear Viaje</button>
                 </div>
@@ -544,6 +669,7 @@
             darkMode: false,
             balanceVisible: true,
             adminMode: false,
+            dolarRate: 1250,
             transactions: [],
             savingsJars: [],
             bills: [],
@@ -554,8 +680,24 @@
         let currentActiveSmId = null;
         const monthNamesShort = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
+        /* --- FORMATEO AUTOMÁTICO MIENTRAS SE ESCRIBE --- */
+        function formatCurrencyInput(input) {
+            let val = input.value.replace(/\D/g, "");
+            if(!val) { input.value = ""; return; }
+            input.value = Number(val).toLocaleString('es-AR');
+        }
+
+        function parseInputValue(str) {
+            if(!str) return 0;
+            return parseFloat(str.toString().replace(/\./g, "").replace(",", ".")) || 0;
+        }
+
+        function fmt(n) {
+            return Number(n || 0).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+
         function loadData() {
-            const saved = localStorage.getItem('mi_dinero_db_v7');
+            const saved = localStorage.getItem('mi_dinero_db_v9');
             if (saved) {
                 try { db = JSON.parse(saved); } catch(e) {}
             }
@@ -563,17 +705,64 @@
             if (!db.bills) db.bills = [];
             if (!db.travels) db.travels = [];
             if (!db.accounts || db.accounts.length === 0) db.accounts = ["Efectivo", "Mercado Pago", "Banco"];
+            if (!db.dolarRate) db.dolarRate = 1250;
 
             if (db.darkMode) document.documentElement.classList.add('dark');
-            document.getElementById('profileNameInput').value = db.profileName;
+            
+            if(db.profileName) {
+                document.getElementById('profileNameInput').value = db.profileName;
+                const greeting = document.getElementById('txt_userGreeting');
+                if(greeting) greeting.innerText = `Hola, ${db.profileName}`;
+            }
+
             updateAvatarDisplay();
             renderAccountsOptions();
             renderDashboardAccounts();
+            fetchLiveDolarRate();
             renderAll();
         }
 
         function saveData() {
-            localStorage.setItem('mi_dinero_db_v7', JSON.stringify(db));
+            localStorage.setItem('mi_dinero_db_v9', JSON.stringify(db));
+        }
+
+        /* --- COTIZACIÓN DÓLAR EN VIVO --- */
+        async function fetchLiveDolarRate() {
+            try {
+                const res = await fetch('https://dolarapi.com/v1/dolares/blue');
+                if(res.ok) {
+                    const data = await res.json();
+                    if(data && data.venta) {
+                        db.dolarRate = data.venta;
+                        saveData();
+                        const display = document.getElementById('calcRateDisplay');
+                        const updated = document.getElementById('calcRateUpdated');
+                        if(display) display.innerText = `1 USD = $${fmt(db.dolarRate)} ARS`;
+                        if(updated) updated.innerText = `Actualizado: ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                        renderAll();
+                    }
+                }
+            } catch(e) {
+                const display = document.getElementById('calcRateDisplay');
+                if(display) display.innerText = `1 USD = $${fmt(db.dolarRate)} ARS`;
+            }
+        }
+
+        function openCalcModal() {
+            fetchLiveDolarRate();
+            document.getElementById('calcModal').classList.remove('hidden');
+        }
+
+        function convertArsToUsd() {
+            const ars = parseInputValue(document.getElementById('calcARS').value);
+            const usd = ars / db.dolarRate;
+            document.getElementById('calcUSD').value = usd > 0 ? fmt(usd) : '';
+        }
+
+        function convertUsdToArs() {
+            const usd = parseInputValue(document.getElementById('calcUSD').value);
+            const ars = usd * db.dolarRate;
+            document.getElementById('calcARS').value = ars > 0 ? fmt(ars) : '';
         }
 
         function switchTab(tabId) {
@@ -613,7 +802,12 @@
             const modal = document.getElementById(modalId);
             if(modal) modal.classList.remove('hidden');
             if(modalId === 'addTxModal') {
+                document.getElementById('txEditId').value = '';
+                document.getElementById('txModalTitle').innerText = 'Registrar Movimiento';
                 document.getElementById('txType').value = defaultType;
+                document.getElementById('txCurrency').value = 'ARS';
+                document.getElementById('txAmount').value = '';
+                document.getElementById('txDesc').value = '';
                 document.getElementById('txDate').valueAsDate = new Date();
                 updateTxCategories();
                 populateTravelSelect();
@@ -710,11 +904,12 @@
             if(!container) return;
             container.innerHTML = '';
             db.accounts.forEach((acc, idx) => {
-                let accBalance = 0;
+                let accBalanceARS = 0;
                 db.transactions.forEach(t => {
                     if(t.account === acc) {
-                        if(t.type === 'income') accBalance += t.amount;
-                        else accBalance -= t.amount;
+                        const amtInARS = (t.currency === 'USD') ? t.amount * db.dolarRate : t.amount;
+                        if(t.type === 'income') accBalanceARS += amtInARS;
+                        else accBalanceARS -= amtInARS;
                     }
                 });
 
@@ -727,7 +922,7 @@
                                 ${db.accounts.length > 1 ? `<button onclick="deleteAccount(${idx})" class="text-rose-500"><i class="fa-solid fa-trash text-[9px]"></i></button>` : ''}
                             </div>
                         </div>
-                        <p class="text-xs font-extrabold text-brand-600 dark:text-brand-400">$${accBalance.toFixed(2)}</p>
+                        <p class="text-xs font-extrabold text-brand-600 dark:text-brand-400">$${fmt(accBalanceARS)}</p>
                     </div>
                 `;
             });
@@ -767,7 +962,6 @@
             document.getElementById('installmentBox').classList.toggle('hidden', !isInst);
         }
 
-        /* --- ACTUALIZACIÓN DE CATEGORÍAS EXTENDIDAS --- */
         function updateTxCategories() {
             const type = document.getElementById('txType').value;
             const cat = document.getElementById('txCategory');
@@ -815,8 +1009,10 @@
 
         function handleSaveTx(e) {
             e.preventDefault();
+            const editId = document.getElementById('txEditId').value;
             const type = document.getElementById('txType').value;
-            const amount = parseFloat(document.getElementById('txAmount').value);
+            const currency = document.getElementById('txCurrency').value || 'ARS';
+            const amount = parseInputValue(document.getElementById('txAmount').value);
             const account = document.getElementById('txAccount').value;
             const category = document.getElementById('txCategory').value;
             const desc = document.getElementById('txDesc').value || category;
@@ -830,34 +1026,124 @@
             const currentInst = isInstallment ? parseInt(document.getElementById('txCurrentInstallment').value) : 1;
             const totalInst = isInstallment ? parseInt(document.getElementById('txTotalInstallments').value) : 1;
 
-            const tx = {
-                id: Date.now(), type, amount, account, category, necessity, isFixed, travelId,
-                isInstallment, currentInst, totalInst, desc, date,
-                products: category === 'Supermercado' ? [{ name: 'Compra general', price: amount, necessity }] : []
-            };
+            if(editId) {
+                const tx = db.transactions.find(t => t.id == editId);
+                if(tx) {
+                    tx.type = type; tx.currency = currency; tx.amount = amount; tx.account = account; tx.category = category;
+                    tx.necessity = necessity; tx.isFixed = isFixed; tx.travelId = travelId;
+                    tx.isInstallment = isInstallment; tx.currentInst = currentInst; tx.totalInst = totalInst;
+                    tx.desc = desc; tx.date = date;
+                }
+            } else {
+                const tx = {
+                    id: Date.now(), type, currency, amount, account, category, necessity, isFixed, travelId,
+                    isInstallment, currentInst, totalInst, desc, date,
+                    products: category === 'Supermercado' ? [{ name: 'Compra general', price: amount, necessity }] : []
+                };
+                db.transactions.unshift(tx);
+            }
 
-            db.transactions.unshift(tx);
             saveData();
             closeModal('addTxModal');
             document.getElementById('txForm').reset();
             renderAll();
         }
 
-        // --- AHORROS ---
-        function openAddSavingModal() {
-            const name = prompt("Nombre del frasco de ahorro (ej: Fondo Emergencia, Auto):");
-            const account = prompt("¿En qué cuenta guardas este ahorro? (ej: Mercado Pago, Banco):") || db.accounts[0];
-            const amount = parseFloat(prompt("Monto depositado ($):") || 0);
+        function editTx(id) {
+            const t = db.transactions.find(x => x.id == id);
+            if(!t) return;
+            openModal('addTxModal', t.type);
+            document.getElementById('txEditId').value = t.id;
+            document.getElementById('txModalTitle').innerText = 'Editar Movimiento';
+            document.getElementById('txType').value = t.type;
+            document.getElementById('txCurrency').value = t.currency || 'ARS';
+            updateTxCategories();
+            document.getElementById('txAmount').value = fmt(t.amount);
+            document.getElementById('txAccount').value = t.account;
+            document.getElementById('txCategory').value = t.category;
+            document.getElementById('txDesc').value = t.desc;
+            document.getElementById('txDate').value = t.date;
+            if(t.type === 'expense') {
+                document.getElementById('txNecessity').value = t.necessity;
+                document.getElementById('txIsFixed').value = t.isFixed ? 'yes' : 'no';
+                document.getElementById('txTravelId').value = t.travelId || '';
+                document.getElementById('txIsInstallment').value = t.isInstallment ? 'yes' : 'no';
+                toggleInstallmentInputs();
+                if(t.isInstallment) {
+                    document.getElementById('txCurrentInstallment').value = t.currentInst;
+                    document.getElementById('txTotalInstallments').value = t.totalInst;
+                }
+            }
+        }
 
-            if(name) {
-                db.savingsJars.push({ id: Date.now(), name, account, current: amount });
+        function deleteTx(id) {
+            if(confirm('¿Eliminar este movimiento?')) {
+                db.transactions = db.transactions.filter(t => t.id != id);
+                saveData();
+                renderAll();
+            }
+        }
+
+        // --- AHORROS Y FRASCOS ---
+        function openAddSavingModal(editId = null) {
+            const modal = document.getElementById('addSavingModal');
+            const accountSelect = document.getElementById('jarAccount');
+            accountSelect.innerHTML = '';
+            db.accounts.forEach(acc => {
+                accountSelect.innerHTML += `<option value="${acc}">${acc}</option>`;
+            });
+
+            if(editId) {
+                const jar = db.savingsJars.find(j => j.id == editId);
+                if(jar) {
+                    document.getElementById('savingEditId').value = jar.id;
+                    document.getElementById('savingModalTitle').innerText = 'Editar Frasco de Ahorro';
+                    document.getElementById('jarName').value = jar.name;
+                    document.getElementById('jarAccount').value = jar.account;
+                    document.getElementById('jarCurrency').value = jar.currency || 'ARS';
+                    document.getElementById('jarAmount').value = fmt(jar.current);
+                }
+            } else {
+                document.getElementById('savingEditId').value = '';
+                document.getElementById('savingModalTitle').innerText = 'Nuevo Frasco de Ahorro';
+                document.getElementById('jarName').value = '';
+                document.getElementById('jarCurrency').value = 'ARS';
+                document.getElementById('jarAmount').value = '0';
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function handleSaveSavingJar(e) {
+            e.preventDefault();
+            const editId = document.getElementById('savingEditId').value;
+            const name = document.getElementById('jarName').value;
+            const account = document.getElementById('jarAccount').value;
+            const currency = document.getElementById('jarCurrency').value || 'ARS';
+            const current = parseInputValue(document.getElementById('jarAmount').value);
+
+            if(editId) {
+                const jar = db.savingsJars.find(j => j.id == editId);
+                if(jar) { jar.name = name; jar.account = account; jar.currency = currency; jar.current = current; }
+            } else {
+                db.savingsJars.push({ id: Date.now(), name, account, currency, current });
+            }
+
+            saveData();
+            closeModal('addSavingModal');
+            renderSavingsJars();
+        }
+
+        function deleteJar(id) {
+            if(confirm('¿Eliminar este frasco de ahorro?')) {
+                db.savingsJars = db.savingsJars.filter(j => j.id != id);
                 saveData();
                 renderSavingsJars();
             }
         }
 
         function depositToJar(jarId) {
-            const add = parseFloat(prompt("Monto a agregar al ahorro ($):") || 0);
+            const addStr = prompt("Monto a agregar al ahorro:");
+            const add = parseInputValue(addStr);
             if(add > 0) {
                 const jar = db.savingsJars.find(j => j.id === jarId);
                 if(jar) { jar.current += add; saveData(); renderSavingsJars(); }
@@ -869,6 +1155,7 @@
             if(!list) return;
             list.innerHTML = db.savingsJars.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No tienes frascos de ahorro registrados</p>' : '';
             db.savingsJars.forEach(j => {
+                const currSymbol = (j.currency === 'USD') ? 'US$' : '$';
                 list.innerHTML += `
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-2">
                         <div class="flex justify-between items-center">
@@ -876,7 +1163,13 @@
                                 <h4 class="font-bold text-xs">${j.name}</h4>
                                 <p class="text-[10px] text-gray-400">Guardado en: ${j.account}</p>
                             </div>
-                            <span class="text-sm font-extrabold text-brand-600">$${j.current.toFixed(2)}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-extrabold text-brand-600">${currSymbol}${fmt(j.current)}</span>
+                                <div class="flex gap-1.5 ml-2">
+                                    <button onclick="openAddSavingModal(${j.id})" class="text-sky-600 p-1"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                                    <button onclick="deleteJar(${j.id})" class="text-rose-500 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                                </div>
+                            </div>
                         </div>
                         <div class="flex justify-between items-center pt-1 border-t dark:border-slate-700">
                             <span class="text-[10px] text-gray-400">🔒 Ahorro separado del saldo activo</span>
@@ -888,22 +1181,62 @@
         }
 
         // --- VENCIMIENTOS Y NOTIFICACIONES ---
-        function openAddBillModal() {
-            const name = prompt("Nombre de la factura / pago (ej: Luz, Alquiler, Tarjeta):");
-            const amount = parseFloat(prompt("Monto ($):") || 0);
-            const date = prompt("Fecha de vencimiento (AAAA-MM-DD):", new Date().toISOString().split('T')[0]);
-
-            if(name && date) {
-                db.bills.push({ id: Date.now(), name, amount, date, paid: false });
-                saveData();
-                renderBills();
-                renderAll();
+        function openAddBillModal(editId = null) {
+            const modal = document.getElementById('addBillModal');
+            if(editId) {
+                const bill = db.bills.find(b => b.id == editId);
+                if(bill) {
+                    document.getElementById('billEditId').value = bill.id;
+                    document.getElementById('billModalTitle').innerText = 'Editar Vencimiento';
+                    document.getElementById('billName').value = bill.name;
+                    document.getElementById('billAmount').value = fmt(bill.amount);
+                    document.getElementById('billCurrency').value = bill.currency || 'ARS';
+                    document.getElementById('billDate').value = bill.date;
+                }
+            } else {
+                document.getElementById('billEditId').value = '';
+                document.getElementById('billModalTitle').innerText = 'Nuevo Vencimiento';
+                document.getElementById('billName').value = '';
+                document.getElementById('billAmount').value = '';
+                document.getElementById('billCurrency').value = 'ARS';
+                document.getElementById('billDate').valueAsDate = new Date();
             }
+            modal.classList.remove('hidden');
+        }
+
+        function handleSaveBill(e) {
+            e.preventDefault();
+            const editId = document.getElementById('billEditId').value;
+            const name = document.getElementById('billName').value;
+            const amount = parseInputValue(document.getElementById('billAmount').value);
+            const currency = document.getElementById('billCurrency').value || 'ARS';
+            const date = document.getElementById('billDate').value;
+
+            if(editId) {
+                const bill = db.bills.find(b => b.id == editId);
+                if(bill) { bill.name = name; bill.amount = amount; bill.currency = currency; bill.date = date; }
+            } else {
+                db.bills.push({ id: Date.now(), name, amount, currency, date, paid: false });
+            }
+
+            saveData();
+            closeModal('addBillModal');
+            renderBills();
+            renderAll();
         }
 
         function toggleBillPaid(billId) {
             const bill = db.bills.find(b => b.id === billId);
             if(bill) { bill.paid = !bill.paid; saveData(); renderBills(); renderAll(); }
+        }
+
+        function deleteBill(id) {
+            if(confirm('¿Eliminar este vencimiento?')) {
+                db.bills = db.bills.filter(b => b.id != id);
+                saveData();
+                renderBills();
+                renderAll();
+            }
         }
 
         function renderBills() {
@@ -918,13 +1251,18 @@
             const today = new Date().toISOString().split('T')[0];
 
             db.bills.forEach(b => {
+                const currSymbol = (b.currency === 'USD') ? 'US$' : '$';
                 list.innerHTML += `
                     <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm flex justify-between items-center">
                         <div>
                             <p class="text-xs font-bold ${b.paid ? 'line-through text-gray-400' : ''}">${b.name}</p>
-                            <p class="text-[10px] text-gray-400">Vence: ${b.date} • $${b.amount.toFixed(2)}</p>
+                            <p class="text-[10px] text-gray-400">Vence: ${b.date} • ${currSymbol}${fmt(b.amount)}</p>
                         </div>
-                        <button onclick="toggleBillPaid(${b.id})" class="px-2.5 py-1 text-xs rounded-lg font-semibold ${b.paid ? 'bg-gray-100 text-gray-600' : 'bg-amber-500 text-slate-950'}">${b.paid ? 'Pagado' : 'Marcar Pagado'}</button>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleBillPaid(${b.id})" class="px-2.5 py-1 text-xs rounded-lg font-semibold ${b.paid ? 'bg-gray-100 text-gray-600' : 'bg-amber-500 text-slate-950'}">${b.paid ? 'Pagado' : 'Marcar Pagado'}</button>
+                            <button onclick="openAddBillModal(${b.id})" class="text-sky-600 p-1"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                            <button onclick="deleteBill(${b.id})" class="text-rose-500 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                        </div>
                     </div>
                 `;
             });
@@ -946,9 +1284,10 @@
                 pending.forEach(b => {
                     const diffDays = Math.ceil((new Date(b.date) - new Date(today)) / (1000 * 60 * 60 * 24));
                     let isUrgent = diffDays <= 1;
+                    const currSymbol = (b.currency === 'USD') ? 'US$' : '$';
                     alertContainer.innerHTML += `
                         <div class="flex justify-between items-center text-xs p-1.5 rounded-lg ${isUrgent ? 'bg-rose-100 text-rose-800 font-bold' : 'text-amber-900'}">
-                            <span><b>${b.name}</b> ($${b.amount.toFixed(2)})</span>
+                            <span><b>${b.name}</b> (${currSymbol}${fmt(b.amount)})</span>
                             <span>${diffDays <= 0 ? '⚠️ Vence hoy!' : diffDays === 1 ? '⏰ Vence mañana!' : `📅 ${b.date}`}</span>
                         </div>
                     `;
@@ -970,8 +1309,9 @@
                     const d = new Date(t.date);
                     if(d.getFullYear() === currentYear) {
                         const m = d.getMonth();
-                        if(t.necessity === 'needed') monthlyData[m].needed += t.amount;
-                        else monthlyData[m].unneeded += t.amount;
+                        const amtARS = (t.currency === 'USD') ? t.amount * db.dolarRate : t.amount;
+                        if(t.necessity === 'needed') monthlyData[m].needed += amtARS;
+                        else monthlyData[m].unneeded += amtARS;
                     }
                 }
             });
@@ -985,7 +1325,7 @@
                 const unneededPct = total > 0 ? (d.unneeded / total) * 100 : 0;
 
                 container.innerHTML += `
-                    <div class="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer" title="${monthNamesShort[idx]}: Nec $${d.needed.toFixed(0)} | Innec $${d.unneeded.toFixed(0)}">
+                    <div class="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer" title="${monthNamesShort[idx]}: Nec $${fmt(d.needed)} | Innec $${fmt(d.unneeded)}">
                         <div class="w-full max-w-[14px] bg-gray-100 dark:bg-slate-700 rounded-t flex flex-col justify-end overflow-hidden transition-all duration-300 group-hover:opacity-80" style="height: ${Math.max(totalHeightPct, 6)}%">
                             <div class="bg-rose-500 w-full" style="height: ${unneededPct}%"></div>
                             <div class="bg-emerald-500 w-full" style="height: ${neededPct}%"></div>
@@ -1000,7 +1340,7 @@
         function openNewTravelModal() { document.getElementById('newTravelModal').classList.remove('hidden'); }
         function saveNewTravel() {
             const name = document.getElementById('travelNameInput').value;
-            const budget = parseFloat(document.getElementById('travelBudgetInput').value || 0);
+            const budget = parseInputValue(document.getElementById('travelBudgetInput').value);
             if(name) {
                 db.travels.push({ id: Date.now().toString(), name, budget });
                 saveData();
@@ -1015,12 +1355,14 @@
             if(!container) return;
             container.innerHTML = db.travels.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No has registrado viajes aún</p>' : '';
             db.travels.forEach(tr => {
-                const spent = db.transactions.filter(t => t.travelId === tr.id).reduce((acc, t) => acc + t.amount, 0);
+                const spent = db.transactions.filter(t => t.travelId === tr.id).reduce((acc, t) => {
+                    return acc + ((t.currency === 'USD') ? t.amount * db.dolarRate : t.amount);
+                }, 0);
                 container.innerHTML += `
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-2">
                         <div class="flex justify-between items-center">
                             <h4 class="font-bold text-xs">✈️ ${tr.name}</h4>
-                            <span class="text-xs font-bold text-rose-500">$${spent.toFixed(2)} / $${tr.budget.toFixed(2)}</span>
+                            <span class="text-xs font-bold text-rose-500">$${fmt(spent)} / $${fmt(tr.budget)}</span>
                         </div>
                         <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
                             <div class="bg-sky-500 h-full" style="width: ${tr.budget > 0 ? Math.min(100, (spent/tr.budget)*100) : 100}%"></div>
@@ -1033,7 +1375,7 @@
         // --- SUPERMERCADO ---
         function openSupermarketModal(txId = null) {
             if(!txId) {
-                const tx = { id: Date.now(), type: 'expense', amount: 0, account: db.accounts[0], category: 'Supermercado', necessity: 'needed', desc: 'Compra Supermercado', date: new Date().toISOString().split('T')[0], products: [] };
+                const tx = { id: Date.now(), type: 'expense', currency: 'ARS', amount: 0, account: db.accounts[0], category: 'Supermercado', necessity: 'needed', desc: 'Compra Supermercado', date: new Date().toISOString().split('T')[0], products: [] };
                 db.transactions.unshift(tx);
                 currentActiveSmId = tx.id;
             } else { currentActiveSmId = txId; }
@@ -1043,9 +1385,9 @@
 
         function addProductToSupermarket() {
             const name = document.getElementById('smProductName').value;
-            const price = parseFloat(document.getElementById('smProductPrice').value);
+            const price = parseInputValue(document.getElementById('smProductPrice').value);
             const necessity = document.getElementById('smProductNecessity').value;
-            if(!name || isNaN(price)) return;
+            if(!name || price <= 0) return;
             const tx = db.transactions.find(t => t.id === currentActiveSmId);
             if(tx) {
                 tx.products.push({ name, price, necessity });
@@ -1062,8 +1404,8 @@
             const list = document.getElementById('smProductsList');
             if(!tx || !list) return;
             list.innerHTML = tx.products.length === 0 ? '<p class="text-xs text-gray-400 text-center py-2">Sin productos</p>' : '';
-            tx.products.forEach((p, idx) => {
-                list.innerHTML += `<div class="flex justify-between text-xs p-2 bg-gray-50 dark:bg-slate-800 rounded-xl"><span>${p.name}</span><b>$${p.price.toFixed(2)}</b></div>`;
+            tx.products.forEach((p) => {
+                list.innerHTML += `<div class="flex justify-between text-xs p-2 bg-gray-50 dark:bg-slate-800 rounded-xl"><span>${p.name}</span><b>$${fmt(p.price)}</b></div>`;
             });
         }
 
@@ -1079,7 +1421,7 @@
                             <p class="text-xs font-bold">${t.desc}</p>
                             <p class="text-[10px] text-gray-400">${t.date} • ${t.account}</p>
                         </div>
-                        <span class="text-xs font-bold text-rose-500">$${t.amount.toFixed(2)}</span>
+                        <span class="text-xs font-bold text-rose-500">$${fmt(t.amount)}</span>
                     </div>
                 `;
             });
@@ -1090,29 +1432,34 @@
             const dateStr = document.getElementById('currentDateStr');
             if(dateStr) dateStr.innerText = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-            let capitalActivo = 0, mIncome = 0, mExpense = 0, neededTot = 0, unneededTot = 0;
+            let capitalARS = 0, mIncomeARS = 0, mExpenseARS = 0, neededTotARS = 0, unneededTotARS = 0;
 
             db.transactions.forEach(t => {
-                if(t.type === 'income') { capitalActivo += t.amount; mIncome += t.amount; }
+                const amtARS = (t.currency === 'USD') ? t.amount * db.dolarRate : t.amount;
+                if(t.type === 'income') { capitalARS += amtARS; mIncomeARS += amtARS; }
                 else {
-                    capitalActivo -= t.amount;
-                    mExpense += t.amount;
-                    if(t.necessity === 'needed') neededTot += t.amount;
-                    else unneededTot += t.amount;
+                    capitalARS -= amtARS;
+                    mExpenseARS += amtARS;
+                    if(t.necessity === 'needed') neededTotARS += amtARS;
+                    else unneededTotARS += amtARS;
                 }
             });
 
+            const capitalUSD = capitalARS / db.dolarRate;
+
             const tb = document.getElementById('totalBalance');
+            const tbUSD = document.getElementById('totalBalanceUSD');
             const mi = document.getElementById('monthlyIncome');
             const me = document.getElementById('monthlyExpenses');
-            if(tb) tb.innerText = db.balanceVisible ? capitalActivo.toFixed(2) : '••••••';
-            if(mi) mi.innerText = db.balanceVisible ? `$${mIncome.toFixed(2)}` : '••••';
-            if(me) me.innerText = db.balanceVisible ? `$${mExpense.toFixed(2)}` : '••••';
+            if(tb) tb.innerText = db.balanceVisible ? fmt(capitalARS) : '••••••';
+            if(tbUSD) tbUSD.innerText = db.balanceVisible ? fmt(capitalUSD) : '••••';
+            if(mi) mi.innerText = db.balanceVisible ? `$${fmt(mIncomeARS)}` : '••••';
+            if(me) me.innerText = db.balanceVisible ? `$${fmt(mExpenseARS)}` : '••••';
 
             const na = document.getElementById('necessityNeededAmount');
             const ua = document.getElementById('necessityUnneededAmount');
-            if(na) na.innerText = `$${neededTot.toFixed(2)}`;
-            if(ua) ua.innerText = `$${unneededTot.toFixed(2)}`;
+            if(na) na.innerText = `$${fmt(neededTotARS)}`;
+            if(ua) ua.innerText = `$${fmt(unneededTotARS)}`;
 
             renderIncomesTab();
             renderHistory();
@@ -1129,13 +1476,20 @@
             const incomes = db.transactions.filter(t => t.type === 'income');
             list.innerHTML = incomes.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No hay ingresos registrados</p>' : '';
             incomes.forEach(t => {
+                const currSymbol = (t.currency === 'USD') ? 'US$' : '$';
                 list.innerHTML += `
                     <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm flex justify-between items-center">
                         <div>
                             <p class="text-xs font-bold">${t.desc}</p>
                             <p class="text-[10px] text-gray-400">${t.account} • ${t.date}</p>
                         </div>
-                        <span class="text-xs font-bold text-emerald-600">+$${t.amount.toFixed(2)}</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-bold text-emerald-600">+${currSymbol}${fmt(t.amount)}</span>
+                            <div class="flex gap-1">
+                                <button onclick="editTx(${t.id})" class="text-sky-600 p-1"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                                <button onclick="deleteTx(${t.id})" class="text-rose-500 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                            </div>
+                        </div>
                     </div>
                 `;
             });
@@ -1162,13 +1516,20 @@
 
             list.innerHTML = filtered.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No hay gastos con estos filtros</p>' : '';
             filtered.forEach(t => {
+                const currSymbol = (t.currency === 'USD') ? 'US$' : '$';
                 list.innerHTML += `
                     <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm flex justify-between items-center">
                         <div>
                             <p class="text-xs font-bold">${t.desc} ${t.isInstallment ? `<span class="text-[10px] text-sky-600 font-semibold">(${t.currentInst}/${t.totalInst} cuotas)</span>` : ''}</p>
                             <p class="text-[10px] text-gray-400">${t.category} • ${t.account} • ${t.date}</p>
                         </div>
-                        <span class="text-xs font-bold text-rose-600">-$${t.amount.toFixed(2)}</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-bold text-rose-600">-${currSymbol}${fmt(t.amount)}</span>
+                            <div class="flex gap-1">
+                                <button onclick="editTx(${t.id})" class="text-sky-600 p-1"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                                <button onclick="deleteTx(${t.id})" class="text-rose-500 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                            </div>
+                        </div>
                     </div>
                 `;
             });
@@ -1190,9 +1551,9 @@
         function saveProfileName() {
             const val = document.getElementById('profileNameInput').value;
             if(val) {
-                db.profileName = val;
+                db.profileName = val.trim();
                 const greeting = document.getElementById('txt_userGreeting');
-                if(greeting) greeting.innerText = `Hola, ${val}`;
+                if(greeting) greeting.innerText = `Hola, ${db.profileName}`;
                 saveData();
                 closeModal('settingsModal');
             }
@@ -1201,7 +1562,7 @@
         function resetAllData() {
             const confirmWord = prompt("⚠️ ACCIÓN DE SEGURIDAD:\nPara borrar todos tus datos y reiniciar la app, escribe ELIMINAR en mayúsculas:");
             if(confirmWord === "ELIMINAR") {
-                localStorage.removeItem('mi_dinero_db_v7');
+                localStorage.removeItem('mi_dinero_db_v9');
                 location.reload();
             } else if (confirmWord !== null) {
                 alert("❌ Palabra incorrecta. No se realizaron cambios.");
