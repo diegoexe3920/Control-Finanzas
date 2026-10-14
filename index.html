@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#16a34a">
+    <meta name="theme-color" content="#ffffff">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Mi Dinero">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2953/2953363.png">
+    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/bottts/svg?seed=MiDinero">
     <title>Control de Finanzas Personales</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -51,7 +51,6 @@
         .dark ::-webkit-scrollbar-thumb {
             background: #475569;
         }
-        /* Admin Mode Editable Highlight */
         .admin-editable {
             position: relative;
             cursor: pointer;
@@ -65,22 +64,22 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 dark:bg-slate-950 dark:text-gray-100 min-h-screen transition-colors duration-200">
-    <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col bg-white dark:bg-slate-900 shadow-2xl relative pb-24">
+<body class="bg-[#fafafa] text-gray-900 dark:bg-slate-950 dark:text-gray-100 min-h-screen transition-colors duration-200">
+    <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col bg-white dark:bg-slate-900 shadow-xl relative pb-24 border-x border-gray-200/50 dark:border-slate-800">
         
         <!-- BANNER MODO ADMIN -->
         <div id="adminNotice" class="hidden bg-amber-500 text-slate-950 px-3 py-1.5 text-[11px] font-bold text-center flex justify-between items-center z-50 sticky top-0 shadow-md">
             <span class="flex items-center gap-1.5">
-                <i class="fa-solid fa-wand-magic-sparkles text-slate-950"></i> Modo ADMIN activo: Toca cualquier texto resaltado para editarlo
+                <i class="fa-solid fa-wand-magic-sparkles text-slate-950"></i> Modo ADMIN activo: Toca cualquier texto resaltado
             </span>
             <button onclick="toggleAdminMode()" class="bg-slate-950 text-white px-2 py-0.5 rounded text-[10px] font-semibold hover:bg-slate-800 transition">Desactivar</button>
         </div>
 
-        <!-- CABECERA SUPERIOR -->
-        <header class="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
+        <!-- CABECERA SUPERIOR (Estilo Instagram Light Mode) -->
+        <header class="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div onclick="openAvatarModal()" class="relative cursor-pointer group">
-                    <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-brand-500/30 group-hover:ring-brand-500 transition-all">
+                    <img id="headerAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Diego" alt="Avatar" class="w-10 h-10 rounded-full object-cover bg-gray-100 ring-2 ring-brand-500/30 group-hover:ring-brand-500 transition-all">
                     <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-brand-500 rounded-full border-2 border-white dark:border-slate-900"></div>
                 </div>
                 <div>
@@ -108,11 +107,11 @@
             <!-- PANTALLA 1: DASHBOARD / INICIO -->
             <section id="sec-dashboard" class="space-y-5">
                 <!-- TARJETA DE SALDO TOTAL -->
-                <div class="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-950 text-white rounded-3xl p-5 shadow-xl relative overflow-hidden">
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 dark:from-slate-800 dark:to-slate-950 text-white rounded-3xl p-5 shadow-xl relative overflow-hidden">
                     <div class="absolute -right-6 -top-6 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl pointer-events-none"></div>
                     
                     <div class="flex justify-between items-start mb-2">
-                        <span class="text-xs uppercase tracking-wider text-slate-400 font-medium flex items-center gap-1">
+                        <span class="text-xs uppercase tracking-wider text-slate-300 font-medium flex items-center gap-1">
                             <span id="txt_lblNetBalance" class="admin-editable" onclick="editAdminText('lblNetBalance', 'Etiqueta Saldo Total')">Dinero Total</span>
                             <i class="fa-solid fa-pencil text-[9px] text-amber-500 admin-pencil hidden"></i>
                         </span>
@@ -122,7 +121,7 @@
                     </div>
 
                     <div class="flex items-baseline gap-2 mb-4">
-                        <span class="text-2xl font-semibold text-slate-400">$</span>
+                        <span class="text-2xl font-semibold text-slate-300">$</span>
                         <h2 id="totalBalance" class="text-3xl font-extrabold tracking-tight transition-all">0.00</h2>
                     </div>
 
@@ -132,7 +131,7 @@
                                 <i class="fa-solid fa-arrow-down"></i>
                             </div>
                             <div>
-                                <p class="text-[11px] text-slate-400 admin-editable" id="txt_lblIncome" onclick="editAdminText('lblIncome', 'Etiqueta Ingresos')">Ingresos del Mes</p>
+                                <p class="text-[11px] text-slate-300 admin-editable" id="txt_lblIncome" onclick="editAdminText('lblIncome', 'Etiqueta Ingresos')">Ingresos del Mes</p>
                                 <p id="monthlyIncome" class="text-sm font-semibold text-emerald-400">$0.00</p>
                             </div>
                         </div>
@@ -141,14 +140,14 @@
                                 <i class="fa-solid fa-arrow-up"></i>
                             </div>
                             <div>
-                                <p class="text-[11px] text-slate-400 admin-editable" id="txt_lblExpense" onclick="editAdminText('lblExpense', 'Etiqueta Gastos')">Gastos del Mes</p>
+                                <p class="text-[11px] text-slate-300 admin-editable" id="txt_lblExpense" onclick="editAdminText('lblExpense', 'Etiqueta Gastos')">Gastos del Mes</p>
                                 <p id="monthlyExpenses" class="text-sm font-semibold text-rose-400">$0.00</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ALERTAS DE PRÓXIMOS VENCIMIENTOS Y GASTOS FIJOS -->
+                <!-- PRÓXIMOS VENCIMIENTOS -->
                 <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 p-4 rounded-2xl space-y-2.5">
                     <div class="flex items-center justify-between">
                         <h3 class="font-bold text-xs text-amber-800 dark:text-amber-400 flex items-center gap-1.5">
@@ -156,29 +155,27 @@
                         </h3>
                         <span class="text-[10px] bg-amber-500 text-slate-950 font-bold px-2 py-0.5 rounded-full" id="alertsCount">0 fijos</span>
                     </div>
-                    <div id="alertsList" class="space-y-1.5">
-                        <!-- Alertas dinámicas -->
-                    </div>
+                    <div id="alertsList" class="space-y-1.5"></div>
                 </div>
 
-                <!-- BARRA DE ACCIONES RÁPIDAS -->
+                <!-- ACCIONES RÁPIDAS -->
                 <div class="grid grid-cols-2 gap-3">
-                    <button onclick="openModal('addTxModal', 'income')" class="flex items-center justify-center gap-2 p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50 hover:opacity-90 active:scale-95 transition">
+                    <button onclick="openModal('addTxModal', 'income')" class="flex items-center justify-center gap-2 p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50 hover:opacity-90 active:scale-95 transition shadow-sm">
                         <i class="fa-solid fa-circle-plus text-lg"></i>
-                        <span class="text-xs font-bold admin-editable" id="txt_btnQuickIncome" onclick="editAdminText('btnQuickIncome', 'Boton Ingreso')">Nuevo Ingreso</span>
+                        <span class="text-xs font-bold">Nuevo Ingreso</span>
                     </button>
-                    <button onclick="openModal('addTxModal', 'expense')" class="flex items-center justify-center gap-2 p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50 hover:opacity-90 active:scale-95 transition">
+                    <button onclick="openModal('addTxModal', 'expense')" class="flex items-center justify-center gap-2 p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50 hover:opacity-90 active:scale-95 transition shadow-sm">
                         <i class="fa-solid fa-circle-minus text-lg"></i>
-                        <span class="text-xs font-bold admin-editable" id="txt_btnQuickExpense" onclick="editAdminText('btnQuickExpense', 'Boton Gasto')">Nuevo Gasto</span>
+                        <span class="text-xs font-bold">Nuevo Gasto</span>
                     </button>
                 </div>
 
-                <!-- ANÁLISIS DE CALIDAD DE GASTOS (NECESARIO VS INNECESARIO) -->
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700/60 shadow-sm space-y-3">
+                <!-- CALIDAD DE GASTOS -->
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700/60 shadow-sm space-y-3">
                     <div class="flex justify-between items-center">
                         <h3 class="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
                             <i class="fa-solid fa-chart-pie text-brand-600"></i>
-                            <span id="txt_lblQualityTitle" class="admin-editable" onclick="editAdminText('lblQualityTitle', 'Titulo Calidad de Gastos')">Gastos Necesarios vs. Innecesarios</span>
+                            <span>Gastos Necesarios vs. Innecesarios</span>
                         </h3>
                     </div>
 
@@ -199,7 +196,6 @@
                         </div>
                     </div>
 
-                    <!-- Barra de Progreso -->
                     <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden flex">
                         <div id="barNeeded" class="bg-emerald-500 h-full transition-all" style="width: 50%"></div>
                         <div id="barUnneeded" class="bg-rose-500 h-full transition-all" style="width: 50%"></div>
@@ -209,20 +205,16 @@
                 <!-- ÚLTIMOS MOVIMIENTOS -->
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-sm text-gray-900 dark:text-white admin-editable" id="txt_lblRecentTx" onclick="editAdminText('lblRecentTx', 'Titulo Recientes')">Últimos Movimientos</h3>
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white">Últimos Movimientos</h3>
                         <button onclick="switchTab('expenses')" class="text-xs text-brand-600 dark:text-brand-400 font-semibold hover:underline">Ver todo</button>
                     </div>
-
-                    <div id="recentTxList" class="space-y-2">
-                        <!-- Elementos dinámicos -->
-                    </div>
+                    <div id="recentTxList" class="space-y-2"></div>
                 </div>
             </section>
 
-            <!-- PANTALLA 2: SECCIÓN PRINCIPAL DE GASTOS (CON SUBMENÚS Y FILTROS AVANZADOS) -->
+            <!-- PANTALLA 2: GASTOS (TODOS, SUPERMERCADO, VIAJES) -->
             <section id="sec-expenses" class="hidden space-y-4">
-                <!-- PESTAÑAS / SUBMENÚS DE GASTOS -->
-                <div class="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-2xl gap-1 border border-gray-200/60 dark:border-slate-700">
+                <div class="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-2xl gap-1 border border-gray-200 dark:border-slate-700">
                     <button onclick="switchExpenseSubtab('all')" id="subnav-all" class="flex-1 py-2 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm">
                         <i class="fa-solid fa-list mr-1"></i> Todos
                     </button>
@@ -234,61 +226,40 @@
                     </button>
                 </div>
 
-                <!-- VISTA 1 SUBMENÚ: TODOS LOS GASTOS CON FILTROS AVANZADOS -->
+                <!-- Submenú 1: Todos y Filtros -->
                 <div id="exp-sub-all" class="space-y-3">
-                    <div class="flex flex-col gap-2">
-                        <div class="flex justify-between items-center">
-                            <h2 class="font-bold text-sm text-gray-900 dark:text-white">Historial y Filtros</h2>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <select id="historyFilter" onchange="renderHistory()" class="text-xs bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-medium text-gray-800 dark:text-gray-200">
-                                <option value="all">🔍 Todos</option>
-                                <option value="income">🟢 Ingresos</option>
-                                <option value="expense">🔴 Gastos Totales</option>
-                                <option value="needed">✔️ Necesarios</option>
-                                <option value="unneeded">❌ Innecesarios</option>
-                                <option value="recurring">📌 Gastos Fijos</option>
-                                <option value="installment">💳 Gastos en Cuotas</option>
-                            </select>
-                            <select id="historyMonthFilter" onchange="renderHistory()" class="text-xs bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-medium text-gray-800 dark:text-gray-200">
-                                <option value="all">📅 Todos los meses</option>
-                                <option value="0">Enero</option>
-                                <option value="1">Febrero</option>
-                                <option value="2">Marzo</option>
-                                <option value="3">Abril</option>
-                                <option value="4">Mayo</option>
-                                <option value="5">Junio</option>
-                                <option value="6">Julio</option>
-                                <option value="7">Agosto</option>
-                                <option value="8">Septiembre</option>
-                                <option value="9">Octubre</option>
-                                <option value="10">Noviembre</option>
-                                <option value="11">Diciembre</option>
-                            </select>
-                        </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="historyFilter" onchange="renderHistory()" class="text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-medium text-gray-800 dark:text-gray-200">
+                            <option value="all">🔍 Todos</option>
+                            <option value="income">🟢 Ingresos</option>
+                            <option value="expense">🔴 Gastos Totales</option>
+                            <option value="needed">✔️ Necesarios</option>
+                            <option value="unneeded">❌ Innecesarios</option>
+                            <option value="supermarket">🛒 Supermercado</option>
+                        </select>
+                        <select id="historyMonthFilter" onchange="renderHistory()" class="text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-medium text-gray-800 dark:text-gray-200">
+                            <option value="all">📅 Todos los meses</option>
+                            <option value="0">Enero</option><option value="1">Febrero</option><option value="2">Marzo</option><option value="3">Abril</option><option value="4">Mayo</option><option value="5">Junio</option><option value="6">Julio</option><option value="7">Agosto</option><option value="8">Septiembre</option><option value="9">Octubre</option><option value="10">Noviembre</option><option value="11">Diciembre</option>
+                        </select>
                     </div>
-                    <div id="fullHistoryList" class="space-y-2 pt-1">
-                        <!-- Lista dinámica -->
-                    </div>
+                    <div id="fullHistoryList" class="space-y-2 pt-1"></div>
                 </div>
 
-                <!-- VISTA 2 SUBMENÚ: SUPERMERCADO -->
+                <!-- Submenú 2: Supermercado con Carga Rápida y Detalle -->
                 <div id="exp-sub-supermarket" class="hidden space-y-3">
-                    <div class="flex justify-between items-center">
+                    <div class="flex justify-between items-center bg-emerald-50 dark:bg-emerald-950/20 p-3 rounded-2xl border border-emerald-200 dark:border-emerald-900/40">
                         <div>
-                            <h2 class="font-bold text-sm text-gray-900 dark:text-white">Gastos de Supermercado</h2>
-                            <p class="text-[11px] text-gray-500 dark:text-gray-400">Desglosa tus tickets producto por producto</p>
+                            <h2 class="font-bold text-sm text-gray-900 dark:text-white">Supermercado rápido</h2>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400">Agrega el total y detalla tus productos</p>
                         </div>
-                        <button onclick="openModal('addTxModal', 'expense', 'Supermercado')" class="px-3 py-1.5 bg-amber-500 text-white rounded-xl text-xs font-semibold hover:bg-amber-600 transition flex items-center gap-1.5 shadow">
+                        <button onclick="openSupermarketModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold hover:bg-emerald-700 transition shadow flex items-center gap-1.5">
                             <i class="fa-solid fa-plus"></i> Cargar Ticket
                         </button>
                     </div>
-                    <div id="supermarketList" class="space-y-3">
-                        <!-- Compras dinámicas -->
-                    </div>
+                    <div id="supermarketList" class="space-y-3"></div>
                 </div>
 
-                <!-- VISTA 3 SUBMENÚ: VIAJES -->
+                <!-- Submenú 3: Viajes -->
                 <div id="exp-sub-travels" class="hidden space-y-3">
                     <div class="flex justify-between items-center">
                         <div>
@@ -299,9 +270,7 @@
                             <i class="fa-solid fa-plane-departure"></i> Nuevo Viaje
                         </button>
                     </div>
-                    <div id="travelsList" class="grid grid-cols-1 gap-3">
-                        <!-- Tarjetas de Viajes dinámicas -->
-                    </div>
+                    <div id="travelsList" class="grid grid-cols-1 gap-3"></div>
                 </div>
             </section>
 
@@ -309,62 +278,34 @@
             <section id="sec-accounts" class="hidden space-y-5">
                 <div>
                     <div class="flex justify-between items-center mb-3">
-                        <h2 class="font-bold text-base text-gray-900 dark:text-white admin-editable" id="txt_lblAccountsTitle" onclick="editAdminText('lblAccountsTitle', 'Titulo Medios de Pago')">Mis Medios de Pago</h2>
+                        <h2 class="font-bold text-base text-gray-900 dark:text-white">Mis Medios de Pago</h2>
                         <button onclick="openAddAccountModal()" class="text-xs text-brand-600 font-semibold hover:underline">+ Agregar Medio</button>
                     </div>
-                    <div id="accountsGrid" class="grid grid-cols-2 gap-3">
-                        <!-- Medios dinámicos -->
-                    </div>
+                    <div id="accountsGrid" class="grid grid-cols-2 gap-3"></div>
                 </div>
 
                 <div>
                     <div class="flex justify-between items-center mb-3">
-                        <h2 class="font-bold text-base text-gray-900 dark:text-white admin-editable" id="txt_lblSavingsTitle" onclick="editAdminText('lblSavingsTitle', 'Titulo Ahorros')">Ahorros y Reservas</h2>
+                        <h2 class="font-bold text-base text-gray-900 dark:text-white">Ahorros y Reservas</h2>
                         <button onclick="openAddSavingModal()" class="text-xs text-brand-600 font-semibold hover:underline">+ Nueva Meta</button>
                     </div>
-                    <div id="savingsList" class="space-y-3">
-                        <!-- Metas dinámicas -->
-                    </div>
+                    <div id="savingsList" class="space-y-3"></div>
                 </div>
             </section>
 
-            <!-- PANTALLA 4: CONFIGURACIÓN Y MODO ADMIN -->
+            <!-- PANTALLA 4: CONFIGURACIÓN -->
             <section id="sec-settings" class="hidden space-y-5">
-                <div class="bg-gradient-to-br from-brand-500 to-brand-700 text-white rounded-2xl p-4 shadow-md space-y-3">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-mobile-screen-button text-xl"></i>
-                        <h3 class="font-bold text-sm">Instalar como App en tu Celular</h3>
-                    </div>
-                    <p class="text-xs text-brand-100">
-                        Puedes instalar esta webapp en la pantalla de inicio de tu iPhone o Android para abrirla sin navegador y usarla a pantalla completa.
-                    </p>
-                    <div class="bg-white/10 p-3 rounded-xl backdrop-blur-xs text-[11px] space-y-2">
-                        <p class="font-bold border-b border-white/20 pb-1">📱 En iPhone (Safari):</p>
-                        <ol class="list-decimal list-inside space-y-0.5 text-brand-50">
-                            <li>Toca el botón <b>Compartir</b> (<i class="fa-solid fa-share-nodes"></i>) en Safari.</li>
-                            <li>Selecciona <b>"Agregar a inicio"</b> (<i class="fa-solid fa-plus-square"></i>).</li>
-                        </ol>
-                        <p class="font-bold border-b border-white/20 pb-1 pt-1">🤖 En Android (Chrome / Edge):</p>
-                        <ol class="list-decimal list-inside space-y-0.5 text-brand-50">
-                            <li>Toca los <b>3 puntos</b> arriba a la derecha.</li>
-                            <li>Toca <b>"Agregar a la pantalla principal"</b> o <b>"Instalar aplicación"</b>.</li>
-                        </ol>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700 space-y-4">
-                    <h3 class="font-bold text-sm text-gray-900 dark:text-white border-b dark:border-slate-700 pb-2 admin-editable" id="txt_lblSettingsTitle" onclick="editAdminText('lblSettingsTitle', 'Titulo Ajustes')">Configuración del Perfil</h3>
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-200 dark:border-slate-700 space-y-4 shadow-sm">
+                    <h3 class="font-bold text-sm text-gray-900 dark:text-white border-b dark:border-slate-700 pb-2">Configuración del Perfil</h3>
                     
-                    <!-- Nombre del Perfil -->
                     <div>
                         <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Nombre de Perfil</label>
                         <div class="flex gap-2">
-                            <input id="profileNameInput" type="text" placeholder="Tu Nombre" class="flex-1 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <input id="profileNameInput" type="text" placeholder="Tu Nombre" class="flex-1 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-gray-900 dark:text-white">
                             <button onclick="saveProfileName()" class="px-3 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition">Guardar</button>
                         </div>
                     </div>
 
-                    <!-- Modo Oscuro / Claro -->
                     <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
                         <div>
                             <p class="text-xs font-bold text-gray-900 dark:text-white">Modo Claro / Oscuro</p>
@@ -375,18 +316,16 @@
                         </button>
                     </div>
 
-                    <!-- Foto de Perfil -->
                     <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
                         <div>
-                            <p class="text-xs font-bold text-gray-900 dark:text-white">Foto de Perfil</p>
-                            <p class="text-[11px] text-gray-500 dark:text-gray-400">Subir foto o seleccionar avatar</p>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">Avatar Animado</p>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400">Personaliza tu avatar ilustrado</p>
                         </div>
                         <button onclick="openAvatarModal()" class="px-3 py-1.5 bg-gray-100 dark:bg-slate-700 text-xs font-semibold rounded-lg hover:bg-gray-200 transition">
                             Cambiar
                         </button>
                     </div>
 
-                    <!-- Limpiar todo el contenido / Reiniciar -->
                     <div class="pt-2 border-t dark:border-slate-700">
                         <button onclick="resetAllData()" class="w-full py-2 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-trash-can"></i> Borrar Todo y Empezar de Cero
@@ -394,1280 +333,614 @@
                     </div>
                 </div>
 
-                <!-- TARJETA MODO ADMINISTRADOR -->
+                <!-- MODO ADMINISTRADOR -->
                 <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 space-y-3">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-shield-halved text-amber-500 text-lg"></i>
                             <div>
                                 <p class="text-xs font-bold text-gray-900 dark:text-white">Modo Administrador</p>
-                                <p class="text-[11px] text-gray-500 dark:text-gray-400">Permite editar cualquier texto tocándolo directamente</p>
+                                <p class="text-[11px] text-gray-500 dark:text-gray-400">Permite editar textos tocándolos directamente</p>
                             </div>
                         </div>
                         <button onclick="toggleAdminMode()" id="adminToggleBtn" class="w-12 h-6 bg-gray-300 rounded-full p-1 transition duration-200">
                             <div id="adminDot" class="w-4 h-4 bg-white rounded-full shadow-md transition"></div>
                         </button>
                     </div>
-
-                    <!-- CONTROLES MODO ADMIN -->
-                    <div id="adminPanel" class="hidden pt-3 border-t border-amber-500/20 space-y-3">
-                        <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold uppercase tracking-wider">Opciones de Administración</p>
-                        
-                        <div>
-                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Agregar Nueva Categoría de Gasto</label>
-                            <div class="flex gap-2">
-                                <input id="newCategoryInput" type="text" placeholder="Ej: Mascotas" class="flex-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs">
-                                <button onclick="addCustomCategory()" class="px-3 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-xl hover:bg-amber-600 transition">Añadir</button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
         </main>
 
-        <!-- BARRA DE NAVEGACIÓN INFERIOR (LOS 4 MENÚS PRINCIPALES) -->
-        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-md w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-100 dark:border-slate-800 px-6 py-2 flex justify-between items-center z-40">
+        <!-- BARRA DE NAVEGACIÓN INFERIOR -->
+        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-md w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-200 dark:border-slate-800 px-6 py-2 flex justify-between items-center z-40">
             <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 text-brand-600 dark:text-brand-500 font-bold">
                 <i class="fa-solid fa-house text-lg"></i>
-                <span class="text-[10px] admin-editable" id="txt_navHome" onclick="editAdminText('navHome', 'Navegacion Inicio')">Inicio</span>
+                <span class="text-[10px]">Inicio</span>
             </button>
-            
             <button onclick="switchTab('expenses')" id="nav-expenses" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
                 <i class="fa-solid fa-receipt text-lg"></i>
-                <span class="text-[10px] admin-editable" id="txt_navExpenses" onclick="editAdminText('navExpenses', 'Navegacion Gastos')">Gastos</span>
+                <span class="text-[10px]">Gastos</span>
             </button>
-
-            <!-- Botón flotante central (+) -->
             <div class="-mt-6">
                 <button onclick="openModal('addTxModal')" class="w-12 h-12 bg-gradient-to-r from-brand-500 to-brand-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-brand-500/40 hover:scale-105 active:scale-95 transition">
                     <i class="fa-solid fa-plus text-xl"></i>
                 </button>
             </div>
-
             <button onclick="switchTab('accounts')" id="nav-accounts" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
                 <i class="fa-solid fa-wallet text-lg"></i>
-                <span class="text-[10px] admin-editable" id="txt_navAccounts" onclick="editAdminText('navAccounts', 'Navegacion Cuentas')">Cuentas</span>
+                <span class="text-[10px]">Cuentas</span>
             </button>
-            
             <button onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600">
                 <i class="fa-solid fa-gear text-lg"></i>
-                <span class="text-[10px] admin-editable" id="txt_navSettings" onclick="editAdminText('navSettings', 'Navegacion Ajustes')">Ajustes</span>
+                <span class="text-[10px]">Ajustes</span>
             </button>
         </nav>
 
-        <!-- VENTANAS MODALES -->
-
-        <!-- MODAL 1: REGISTRAR TRANSACCIÓN -->
+        <!-- MODAL: NUEVA TRANSACCIÓN -->
         <div id="addTxModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
                     <h3 class="font-bold text-base text-gray-900 dark:text-white" id="txModalTitle">Nuevo Movimiento</h3>
-                    <button onclick="closeModal('addTxModal')" class="text-gray-400 hover:text-gray-600 text-lg">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+                    <button onclick="closeModal('addTxModal')" class="text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-
-                <form id="txForm" onsubmit="handleSaveTx(event)" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-2 p-1 bg-gray-100 dark:bg-slate-800 rounded-xl">
-                        <button type="button" id="typeExpenseBtn" onclick="setTxType('expense')" class="py-2 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-700 text-rose-600 shadow">Gasto</button>
-                        <button type="button" id="typeIncomeBtn" onclick="setTxType('income')" class="py-2 text-xs font-bold rounded-lg transition text-gray-500">Ingreso</button>
-                    </div>
-                    <input type="hidden" id="txType" value="expense">
-
+                <form id="txForm" onsubmit="handleSaveTx(event)" class="space-y-3">
                     <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Monto ($)</label>
-                        <input type="number" step="0.01" id="txAmount" required placeholder="0.00" class="w-full text-2xl font-bold bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Categoría</label>
-                        <select id="txCategory" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Tipo</label>
+                        <select id="txType" onchange="updateTxCategories()" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <option value="expense">🔴 Gasto</option>
+                            <option value="income">🟢 Ingreso</option>
                         </select>
                     </div>
-
                     <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Medio de Pago / Cuenta</label>
-                        <select id="txAccount" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Monto ($)</label>
+                        <input id="txAmount" type="number" step="0.01" required placeholder="0.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Categoría</label>
+                        <select id="txCategory" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <option value="Supermercado">🛒 Supermercado</option>
+                            <option value="Comida">🍔 Comida / Salidas</option>
+                            <option value="Servicios">💡 Servicios / Fijos</option>
+                            <option value="Transporte">🚗 Transporte</option>
+                            <option value="Otros">📦 Otros</option>
                         </select>
                     </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Detalle / Nota</label>
-                        <input type="text" id="txNote" placeholder="Ej: Luz, Alquiler o Sueldo" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm">
-                    </div>
-
-                    <div id="necessityOptionWrapper" class="p-3 bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-gray-100 dark:border-slate-700 space-y-2">
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400">¿Es un gasto necesario o innecesario?</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600">
-                                <input type="radio" name="txNecessity" value="needed" checked class="text-emerald-600 focus:ring-emerald-500">
-                                <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">🟢 Necesario</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600">
-                                <input type="radio" name="txNecessity" value="unneeded" class="text-rose-600 focus:ring-rose-500">
-                                <span class="text-xs font-semibold text-rose-600 dark:text-rose-400">🔴 Innecesario</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- OPCIONES AVANZADAS: FIJOS Y CUOTAS -->
-                    <div id="advancedExpenseOptions" class="p-3 bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-gray-100 dark:border-slate-700 space-y-2.5">
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" id="txRecurring" class="rounded text-brand-600 focus:ring-brand-500">
-                            <label for="txRecurring" class="text-xs text-gray-700 dark:text-gray-300 font-semibold">📌 Es un gasto fijo / recurrente (Vencimiento)</label>
-                        </div>
-                        <div class="flex items-center gap-2 pt-1 border-t border-gray-200 dark:border-slate-700">
-                            <input type="checkbox" id="txIsInstallment" onchange="toggleInstallmentInputs(this)" class="rounded text-brand-600 focus:ring-brand-500">
-                            <label for="txIsInstallment" class="text-xs text-gray-700 dark:text-gray-300 font-semibold">💳 Es una compra en cuotas</label>
-                        </div>
-                        <div id="installmentWrapper" class="hidden grid grid-cols-2 gap-2 pt-1">
-                            <div>
-                                <label class="block text-[10px] text-gray-500">Cuota Actual</label>
-                                <input type="number" id="txCurrentInstallment" value="1" min="1" class="w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] text-gray-500">Total Cuotas</label>
-                                <input type="number" id="txTotalInstallments" value="3" min="1" class="w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Asociar a Viaje (Opcional)</label>
-                        <select id="txTravelLink" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm">
-                            <option value="">Ninguno</option>
+                    <div id="necessityBox">
+                        <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Calidad del gasto</label>
+                        <select id="txNecessity" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <option value="needed">✔️ Necesario</option>
+                            <option value="unneeded">❌ Innecesario</option>
                         </select>
                     </div>
-
-                    <button type="submit" class="w-full py-3 bg-brand-600 text-white rounded-xl font-bold shadow-lg shadow-brand-500/30 hover:bg-brand-700 transition">
-                        Guardar Movimiento
-                    </button>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Descripción / Título</label>
+                        <input id="txDesc" type="text" placeholder="Ej: Compra mensual" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Fecha</label>
+                        <input id="txDate" type="date" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition shadow">Guardar Movimiento</button>
                 </form>
             </div>
         </div>
 
-        <!-- MODAL 2: DESGLOSE DE TICKET DE SUPERMERCADO -->
-        <div id="superItemsModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+        <!-- MODAL: GESTIÓN DE PRODUCTOS DE SUPERMERCADO -->
+        <div id="supermarketModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
                     <div>
-                        <h3 class="font-bold text-base text-gray-900 dark:text-white">Desglosar Ticket Supermercado</h3>
-                        <p class="text-xs text-gray-400" id="superItemTxDate">Ticket de Super</p>
+                        <h3 class="font-bold text-base text-gray-900 dark:text-white" id="smModalTitle">Detalle de Supermercado</h3>
+                        <p class="text-[11px] text-gray-500" id="smModalSubtitle">Agrega los productos comprados</p>
                     </div>
-                    <button onclick="closeModal('superItemsModal')" class="text-gray-400 hover:text-gray-600 text-lg">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+                    <button onclick="closeModal('supermarketModal')" class="text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-
-                <form onsubmit="handleAddItemToSuper(event)" class="space-y-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700">
-                    <input type="hidden" id="activeSuperTxId">
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="itemName" placeholder="Ej: Leche o Pan" required class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-2.5 py-2 text-xs">
-                        <input type="number" step="0.01" id="itemPrice" placeholder="Precio ($)" required class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-2.5 py-2 text-xs">
+                <div class="space-y-3">
+                    <div class="flex gap-2">
+                        <input id="smProductName" type="text" placeholder="Nombre del producto" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                        <input id="smProductPrice" type="number" step="0.01" placeholder="Precio" class="w-24 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
                     </div>
-
-                    <div class="flex items-center gap-2">
-                        <select id="itemNecessity" class="flex-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-2.5 py-2 text-xs font-semibold">
-                            <option value="needed" class="text-emerald-600">🟢 Necesario</option>
-                            <option value="unneeded" class="text-rose-600">🔴 Innecesario</option>
+                    <div class="flex gap-2">
+                        <select id="smProductNecessity" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                            <option value="needed">✔️ Necesario</option>
+                            <option value="unneeded">❌ Innecesario</option>
                         </select>
-                        <button type="submit" class="px-4 py-2 bg-brand-600 text-white rounded-lg text-xs font-bold hover:bg-brand-700 transition">
-                            + Agregar Producto
-                        </button>
-                    </div>
-                </form>
-
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center text-xs text-gray-400 font-medium px-1">
-                        <span>Productos del Ticket</span>
-                        <span id="superItemsTotalSum">Total $0.00</span>
-                    </div>
-                    <div id="superItemsList" class="space-y-1.5 max-h-48 overflow-y-auto">
+                        <button onclick="addProductToSupermarket()" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition">Añadir</button>
                     </div>
                 </div>
+                <div id="smProductsList" class="space-y-2 pt-2 border-t dark:border-slate-800"></div>
+                <button onclick="closeModal('supermarketModal'); renderAll();" class="w-full py-2.5 bg-gray-900 dark:bg-slate-800 text-white rounded-xl text-xs font-semibold">Listo y Guardar</button>
             </div>
         </div>
 
-        <!-- MODAL 3: SELECCIÓN DE PERFIL Y AVATAR -->
+        <!-- MODAL: SELECCIONAR AVATAR ANIMADO -->
         <div id="avatarModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-bold text-sm text-gray-900 dark:text-white">Foto de Perfil</h3>
-                    <button onclick="closeModal('avatarModal')" class="text-gray-400 hover:text-gray-600">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 class="font-bold text-base text-gray-900 dark:text-white">Elige tu Avatar Animado</h3>
+                    <button onclick="closeModal('avatarModal')" class="text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-
-                <label class="block w-full py-2.5 px-4 bg-brand-50 dark:bg-brand-950/40 border border-dashed border-brand-500 rounded-xl text-center text-xs font-bold text-brand-600 dark:text-brand-400 cursor-pointer hover:bg-brand-100 transition">
-                    <i class="fa-solid fa-image mr-1.5"></i> Elegir Foto de la Galería
-                    <input type="file" accept="image/*" onchange="handleFileUpload(event)" class="hidden">
-                </label>
-
-                <p class="text-center text-[11px] text-gray-400 font-medium">O elige un avatar de la lista:</p>
-
                 <div class="grid grid-cols-3 gap-3">
-                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
-                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
-                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
-                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
-                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
-                    <img onclick="selectAvatar('https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80')" src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-brand-500 cursor-pointer">
+                    <div onclick="selectAvatar('Bot')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700 flex flex-col items-center">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Bot" class="w-14 h-14 rounded-full">
+                        <span class="text-[10px] mt-1 font-semibold">Robot</span>
+                    </div>
+                    <div onclick="selectAvatar('Cat')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700 flex flex-col items-center">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cat" class="w-14 h-14 rounded-full">
+                        <span class="text-[10px] mt-1 font-semibold">Gatito</span>
+                    </div>
+                    <div onclick="selectAvatar('Smile')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700 flex flex-col items-center">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Smile" class="w-14 h-14 rounded-full">
+                        <span class="text-[10px] mt-1 font-semibold">Sonrisa</span>
+                    </div>
+                    <div onclick="selectAvatar('Hero')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700 flex flex-col items-center">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Hero" class="w-14 h-14 rounded-full">
+                        <span class="text-[10px] mt-1 font-semibold">Héroe</span>
+                    </div>
+                    <div onclick="selectAvatar('Star')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700 flex flex-col items-center">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Star" class="w-14 h-14 rounded-full">
+                        <span class="text-[10px] mt-1 font-semibold">Estrella</span>
+                    </div>
+                    <div onclick="selectAvatar('Neon')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700 flex flex-col items-center">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Neon" class="w-14 h-14 rounded-full">
+                        <span class="text-[10px] mt-1 font-semibold">Neón</span>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- MODAL 4: CREAR NUEVO VIAJE -->
-        <div id="newTravelModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
-                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
-                    <h3 class="font-bold text-sm text-gray-900 dark:text-white">Nuevo Viaje</h3>
-                    <button onclick="closeModal('newTravelModal')" class="text-gray-400 hover:text-gray-600">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-
-                <form onsubmit="handleCreateTravel(event)" class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Destino / Nombre</label>
-                        <input type="text" id="travelName" required placeholder="Ej: Bariloche 2026" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Presupuesto Estimado ($)</label>
-                        <input type="number" id="travelBudget" required placeholder="150000" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                    </div>
-                    <button type="submit" class="w-full py-2.5 bg-sky-600 text-white font-bold text-xs rounded-xl hover:bg-sky-700 transition">
-                        Crear Viaje
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- MODAL 5: NUEVO MEDIO DE PAGO -->
-        <div id="newAccountModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
-                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
-                    <h3 class="font-bold text-sm text-gray-900 dark:text-white">Nuevo Medio de Pago</h3>
-                    <button onclick="closeModal('newAccountModal')" class="text-gray-400 hover:text-gray-600">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-
-                <form onsubmit="handleCreateAccount(event)" class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Nombre (Banco / Billetera)</label>
-                        <input type="text" id="accName" required placeholder="Ej: Banco Galicia o Naranja X" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Saldo Inicial ($)</label>
-                        <input type="number" id="accBalance" required placeholder="0.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Tipo</label>
-                        <select id="accType" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                            <option value="bank">Banco / Débito</option>
-                            <option value="wallet">Billetera Virtual</option>
-                            <option value="credit">Tarjeta de Crédito</option>
-                            <option value="cash">Efectivo</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="w-full py-2.5 bg-brand-600 text-white font-bold text-xs rounded-xl hover:bg-brand-700 transition">
-                        Guardar Medio
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- MODAL 6: NUEVA META DE AHORRO -->
-        <div id="newSavingModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 space-y-4">
-                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-2">
-                    <h3 class="font-bold text-sm text-gray-900 dark:text-white">Nueva Meta de Ahorro</h3>
-                    <button onclick="closeModal('newSavingModal')" class="text-gray-400 hover:text-gray-600">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-
-                <form onsubmit="handleCreateSaving(event)" class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Nombre de la Meta</label>
-                        <input type="text" id="svgTitle" required placeholder="Ej: Fondo de Emergencia" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Monto Objetivo ($)</label>
-                        <input type="number" id="svgTarget" required placeholder="500000" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Ahorrado Inicial ($)</label>
-                        <input type="number" id="svgCurrent" placeholder="0.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                    </div>
-                    <button type="submit" class="w-full py-2.5 bg-brand-600 text-white font-bold text-xs rounded-xl hover:bg-brand-700 transition">
-                        Guardar Meta
-                    </button>
-                </form>
             </div>
         </div>
 
     </div>
 
-    <!-- CÓDIGO Y LÓGICA DE LA APLICACIÓN -->
+    <!-- SCRIPT DE LÓGICA -->
     <script>
-        // ESTADO INICIAL COMPLETAMENTE EN CERO
-        const defaultState = {
-            balanceHidden: false,
+        let db = {
+            profileName: "Mi Dinero",
+            avatarSeed: "Bot",
+            darkMode: false,
+            balanceVisible: true,
             adminMode: false,
-            theme: 'light',
-            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-            customTexts: {
-                userGreeting: 'Hola, Mi Dinero',
-                lblNetBalance: 'Dinero Total',
-                lblIncome: 'Ingresos del Mes',
-                lblExpense: 'Gastos del Mes',
-                btnQuickIncome: 'Nuevo Ingreso',
-                btnQuickExpense: 'Nuevo Gasto',
-                lblQualityTitle: 'Gastos Necesarios vs. Innecesarios',
-                lblRecentTx: 'Últimos Movimientos',
-                lblAccountsTitle: 'Mis Medios de Pago',
-                lblSavingsTitle: 'Ahorros y Reservas',
-                lblSettingsTitle: 'Configuración del Perfil',
-                navHome: 'Inicio',
-                navExpenses: 'Gastos',
-                navAccounts: 'Cuentas',
-                navSettings: 'Ajustes'
-            },
-            accounts: [
-                { id: 'acc1', name: 'Efectivo', type: 'cash', balance: 0, icon: 'fa-money-bill-wave' },
-                { id: 'acc2', name: 'Banco / Débito', type: 'bank', balance: 0, icon: 'fa-building-columns' }
-            ],
-            categories: {
-                income: ['Sueldo', 'Ventas', 'Trabajos', 'Reintegros', 'Otros'],
-                expense: ['Servicios', 'Casa/Alquiler', 'Combustible auto', 'Supermercado', 'Panadería', 'Comida', 'Verdulería', 'Carnicería', 'Kiosco', 'Ropa', 'Regalo', 'Arreglo', 'Transporte', 'Ferreteria', 'Viajes', 'Otros']
-            },
             transactions: [],
-            travels: [],
+            accounts: [
+                { id: 1, name: 'Efectivo', balance: 0, icon: 'fa-money-bill-wave' },
+                { id: 2, name: 'Mercado Pago', balance: 0, icon: 'fa-wallet' }
+            ],
             savings: []
         };
 
-        let state = JSON.parse(localStorage.getItem('financeAppState')) || defaultState;
-        if (!state.customTexts) state.customTexts = { ...defaultState.customTexts };
-        if (!state.categories) state.categories = { ...defaultState.categories };
-        if (!state.transactions) state.transactions = [];
+        let currentActiveSmId = null;
 
-        // GUARDAR ESTADO LOCAL
-        function saveState() {
-            localStorage.setItem('financeAppState', JSON.stringify(state));
-            renderApp();
-        }
-
-        // INICIALIZACIÓN
-        window.onload = function() {
-            const now = new Date();
-            const options = { weekday: 'short', day: 'numeric', month: 'short' };
-            document.getElementById('currentDateStr').innerText = now.toLocaleDateString('es-ES', options);
-
-            // Seleccionar mes actual por defecto en el filtro
-            const monthFilter = document.getElementById('historyMonthFilter');
-            if (monthFilter) {
-                monthFilter.value = now.getMonth().toString();
+        function loadData() {
+            const saved = localStorage.getItem('mi_dinero_db');
+            if (saved) {
+                try { db = JSON.parse(saved); } catch(e) {}
             }
-
-            if (state.theme === 'dark') {
+            if (db.darkMode) {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
             }
-
-            if (document.getElementById('profileNameInput')) {
-                document.getElementById('profileNameInput').value = state.customTexts.userGreeting || '';
-            }
-
-            renderApp();
-        };
-
-        function renderApp() {
-            // Aplicar textos personalizados
-            Object.keys(state.customTexts).forEach(key => {
-                const el = document.getElementById(`txt_${key}`);
-                if (el) {
-                    el.innerText = state.customTexts[key];
-                }
-            });
-
-            // Sincronizar Avatar
-            const avatarEl = document.getElementById('headerAvatar');
-            if (avatarEl && state.avatar) {
-                avatarEl.src = state.avatar;
-            }
-
-            // Calculo de balances
-            const netBalance = state.accounts.reduce((sum, acc) => sum + parseFloat(acc.balance || 0), 0);
-            
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-
-            let monthlyInc = 0;
-            let monthlyExp = 0;
-            let neededExp = 0;
-            let unneededExp = 0;
-
-            state.transactions.forEach(tx => {
-                const txDate = new Date(tx.date);
-                if (txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear) {
-                    const amt = parseFloat(tx.amount || 0);
-                    if (tx.type === 'income') {
-                        monthlyInc += amt;
-                    } else if (tx.type === 'expense') {
-                        monthlyExp += amt;
-                        if (tx.necessity === 'unneeded') {
-                            unneededExp += amt;
-                        } else {
-                            neededExp += amt;
-                        }
-                    }
-                }
-            });
-
-            document.getElementById('totalBalance').innerText = state.balanceHidden ? '••••••' : netBalance.toLocaleString('es-AR', { minimumFractionDigits: 2 });
-            document.getElementById('monthlyIncome').innerText = state.balanceHidden ? '••••' : `$${monthlyInc.toLocaleString('es-AR')}`;
-            document.getElementById('monthlyExpenses').innerText = state.balanceHidden ? '••••' : `$${monthlyExp.toLocaleString('es-AR')}`;
-
-            document.getElementById('necessityNeededAmount').innerText = state.balanceHidden ? '••••' : `$${neededExp.toLocaleString('es-AR')}`;
-            document.getElementById('necessityUnneededAmount').innerText = state.balanceHidden ? '••••' : `$${unneededExp.toLocaleString('es-AR')}`;
-
-            const totalMonthExp = neededExp + unneededExp;
-            const neededPct = totalMonthExp > 0 ? Math.round((neededExp / totalMonthExp) * 100) : 0;
-            const unneededPct = totalMonthExp > 0 ? Math.round((unneededExp / totalMonthExp) * 100) : 0;
-
-            document.getElementById('necessityNeededPct').innerText = `${neededPct}% del total`;
-            document.getElementById('necessityUnneededPct').innerText = `${unneededPct}% del total`;
-
-            document.getElementById('barNeeded').style.width = `${neededPct}%`;
-            document.getElementById('barUnneeded').style.width = `${unneededPct}%`;
-
-            // Movimientos recientes
-            const recentList = document.getElementById('recentTxList');
-            recentList.innerHTML = '';
-            
-            const sorted = [...state.transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
-
-            if (sorted.length === 0) {
-                recentList.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">Sin movimientos registrados. Toca + para agregar uno.</p>`;
-            } else {
-                sorted.forEach(tx => {
-                    const acc = state.accounts.find(a => a.id === tx.accountId) || { name: 'Cuenta' };
-                    recentList.appendChild(createTxElement(tx, acc));
-                });
-            }
-
-            renderAlerts();
-            renderAdminPanel();
-            renderSupermarket();
-            renderTravels();
-            renderAccountsAndSavings();
-            renderHistory();
+            document.getElementById('profileNameInput').value = db.profileName;
+            updateAvatarDisplay();
+            renderAll();
         }
 
-        // RENDER ALERTAS DE VENCIMIENTOS / GASTOS FIJOS
-        function renderAlerts() {
-            const list = document.getElementById('alertsList');
-            const countEl = document.getElementById('alertsCount');
-            if (!list) return;
-            list.innerHTML = '';
-
-            const recurringTxs = state.transactions.filter(t => t.recurring && t.type === 'expense');
-            countEl.innerText = `${recurringTxs.length} fijos`;
-
-            if (recurringTxs.length === 0) {
-                list.innerHTML = `<p class="text-[11px] text-amber-700 dark:text-amber-300">No hay gastos fijos o vencimientos registrados.</p>`;
-                return;
-            }
-
-            recurringTxs.slice(0, 3).forEach(tx => {
-                const div = document.createElement('div');
-                div.className = 'flex justify-between items-center bg-white/80 dark:bg-slate-900/50 p-2 rounded-xl text-xs border border-amber-200/50 dark:border-amber-900/30';
-                div.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-calendar-days text-amber-600"></i>
-                        <div>
-                            <span class="font-bold text-gray-900 dark:text-white">${tx.category}</span>
-                            <p class="text-[10px] text-gray-500">${tx.note || 'Gasto fijo recurrente'}</p>
-                        </div>
-                    </div>
-                    <span class="font-extrabold text-rose-600 dark:text-rose-400">-$${parseFloat(tx.amount).toLocaleString('es-AR')}</span>
-                `;
-                list.appendChild(div);
-            });
+        function saveData() {
+            localStorage.setItem('mi_dinero_db', JSON.stringify(db));
         }
 
-        // GENERAR ELEMENTO DE TRANSACCIÓN EN DOM (CON ETIQUETAS DE CUOTAS/FIJOS)
-        function createTxElement(tx, acc) {
-            const div = document.createElement('div');
-            div.className = 'flex justify-between items-center p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700/60 shadow-sm group';
-            
-            const isIncome = tx.type === 'income';
-            const iconBg = isIncome ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400';
-            const iconClass = isIncome ? 'fa-arrow-down' : 'fa-arrow-up';
-            
-            let tagsHTML = '';
-            if (!isIncome) {
-                if (tx.necessity === 'unneeded') {
-                    tagsHTML += '<span class="text-[9px] bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-300 font-bold px-1.5 py-0.5 rounded ml-1">Innecesario</span>';
-                } else {
-                    tagsHTML += '<span class="text-[9px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 font-bold px-1.5 py-0.5 rounded ml-1">Necesario</span>';
-                }
-                if (tx.recurring) {
-                    tagsHTML += '<span class="text-[9px] bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 font-bold px-1.5 py-0.5 rounded ml-1">Fijo</span>';
-                }
-                if (tx.isInstallment) {
-                    tagsHTML += `<span class="text-[9px] bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 font-bold px-1.5 py-0.5 rounded ml-1">Cuota ${tx.currentInstallment}/${tx.totalInstallments}</span>`;
-                }
-            }
-
-            div.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl ${iconBg} flex items-center justify-center text-xs flex-shrink-0">
-                        <i class="fa-solid ${iconClass}"></i>
-                    </div>
-                    <div>
-                        <div class="flex items-center flex-wrap gap-y-1">
-                            <p class="text-xs font-bold text-gray-900 dark:text-white">${tx.category}</p>
-                            ${tagsHTML}
-                        </div>
-                        <p class="text-[11px] text-gray-400">${tx.note || acc.name}</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <div class="text-right">
-                        <p class="text-xs font-bold ${isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'}">
-                            ${isIncome ? '+' : '-'}$${parseFloat(tx.amount).toLocaleString('es-AR')}
-                        </p>
-                        <p class="text-[10px] text-gray-400">${new Date(tx.date).toLocaleDateString('es-ES')}</p>
-                    </div>
-                    <button onclick="deleteTx('${tx.id}')" title="Eliminar" class="text-gray-300 hover:text-rose-500 p-1.5 transition">
-                        <i class="fa-solid fa-trash-can text-xs"></i>
-                    </button>
-                </div>
-            `;
-            return div;
-        }
-
-        // ELIMINAR TRANSACCIÓN Y AJUSTAR BALANCES
-        function deleteTx(txId) {
-            const index = state.transactions.findIndex(t => t.id === txId);
-            if (index === -1) return;
-
-            const tx = state.transactions[index];
-            const accIndex = state.accounts.findIndex(a => a.id === tx.accountId);
-            
-            if (accIndex !== -1) {
-                if (tx.type === 'income') {
-                    state.accounts[accIndex].balance -= parseFloat(tx.amount);
-                } else {
-                    state.accounts[accIndex].balance += parseFloat(tx.amount);
-                }
-            }
-
-            state.transactions.splice(index, 1);
-            saveState();
-        }
-
-        // RENDER PANTALLA SUPERMERCADO
-        function renderSupermarket() {
-            const list = document.getElementById('supermarketList');
-            if (!list) return;
-            list.innerHTML = '';
-
-            const superTxs = state.transactions.filter(t => t.category === 'Supermercado' || t.category === 'Panadería' || t.category === 'Verdulería' || t.category === 'Carnicería');
-
-            if (superTxs.length === 0) {
-                list.innerHTML = `<div class="p-6 text-center text-xs text-gray-400">No hay gastos de supermercado aún registrados.</div>`;
-                return;
-            }
-
-            superTxs.forEach(tx => {
-                const itemsCount = tx.items ? tx.items.length : 0;
-                const card = document.createElement('div');
-                card.className = 'bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700 space-y-3 shadow-sm';
-                
-                card.innerHTML = `
-                    <div class="flex justify-between items-center border-b dark:border-slate-700 pb-2">
-                        <div>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white">${tx.note || tx.category}</span>
-                            <p class="text-[10px] text-gray-400">${new Date(tx.date).toLocaleDateString('es-ES')}</p>
-                        </div>
-                        <div class="text-right flex items-center gap-2">
-                            <span class="text-sm font-extrabold text-rose-600 dark:text-rose-400">-$${parseFloat(tx.amount).toLocaleString('es-AR')}</span>
-                            <button onclick="deleteTx('${tx.id}')" title="Eliminar Ticket" class="text-gray-300 hover:text-rose-500 p-1 transition">
-                                <i class="fa-solid fa-trash-can text-xs"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="text-gray-500">${itemsCount} productos en ticket</span>
-                        <button onclick="openSuperItemsModal('${tx.id}')" class="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold rounded-lg hover:bg-amber-500/20 transition">
-                            <i class="fa-solid fa-list-check mr-1"></i> Desglosar Productos
-                        </button>
-                    </div>
-                `;
-                list.appendChild(card);
-            });
-        }
-
-        // RENDER PANTALLA VIAJES
-        function renderTravels() {
-            const list = document.getElementById('travelsList');
-            if (!list) return;
-            list.innerHTML = '';
-
-            if (state.travels.length === 0) {
-                list.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">No tienes viajes registrados. Haz clic en "Nuevo Viaje" para agregar uno.</p>`;
-                return;
-            }
-
-            state.travels.forEach(trv => {
-                const spent = state.transactions
-                    .filter(t => t.travelId === trv.id)
-                    .reduce((sum, t) => sum + parseFloat(t.amount), 0);
-
-                const pct = trv.budget > 0 ? Math.min(100, Math.round((spent / trv.budget) * 100)) : 0;
-
-                const card = document.createElement('div');
-                card.className = 'bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700 space-y-3 shadow-sm';
-                card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-900/40 text-sky-600 dark:text-sky-400 flex items-center justify-center">
-                                <i class="fa-solid fa-plane"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-sm font-bold text-gray-900 dark:text-white">${trv.name}</h3>
-                                <p class="text-[10px] text-gray-400">Presupuesto: $${parseFloat(trv.budget).toLocaleString('es-AR')}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold text-sky-600 dark:text-sky-400">$${spent.toLocaleString('es-AR')} gastados</span>
-                            <button onclick="deleteTravel('${trv.id}')" title="Eliminar Viaje" class="text-gray-300 hover:text-rose-500 p-1 transition">
-                                <i class="fa-solid fa-trash-can text-xs"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="space-y-1">
-                        <div class="w-full bg-gray-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
-                            <div class="bg-sky-500 h-full" style="width: ${pct}%"></div>
-                        </div>
-                        <div class="flex justify-between text-[10px] text-gray-400">
-                            <span>${pct}% ejecutado</span>
-                            <span>Disponible: $${Math.max(0, trv.budget - spent).toLocaleString('es-AR')}</span>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(card);
-            });
-        }
-
-        function deleteTravel(travelId) {
-            state.travels = state.travels.filter(t => t.id !== travelId);
-            saveState();
-        }
-
-        // RENDER CUENTAS Y RESERVAS
-        function renderAccountsAndSavings() {
-            const grid = document.getElementById('accountsGrid');
-            if (grid) {
-                grid.innerHTML = '';
-                state.accounts.forEach(acc => {
-                    const div = document.createElement('div');
-                    div.className = 'p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 flex flex-col justify-between shadow-sm relative group';
-                    div.innerHTML = `
-                        <div class="flex items-center justify-between gap-2 mb-2">
-                            <div class="flex items-center gap-2 truncate">
-                                <i class="fa-solid ${acc.icon || 'fa-wallet'} text-brand-600 text-sm"></i>
-                                <span class="text-xs font-bold text-gray-900 dark:text-white truncate">${acc.name}</span>
-                            </div>
-                            <button onclick="deleteAccount('${acc.id}')" title="Eliminar Cuenta" class="text-gray-300 hover:text-rose-500 transition">
-                                <i class="fa-solid fa-trash-can text-[10px]"></i>
-                            </button>
-                        </div>
-                        <p class="text-sm font-extrabold text-gray-900 dark:text-white">$${parseFloat(acc.balance).toLocaleString('es-AR')}</p>
-                    `;
-                    grid.appendChild(div);
-                });
-            }
-
-            const sList = document.getElementById('savingsList');
-            if (sList) {
-                sList.innerHTML = '';
-                if (state.savings.length === 0) {
-                    sList.innerHTML = `<p class="text-xs text-gray-400 text-center py-3">No hay metas de ahorro guardadas.</p>`;
-                } else {
-                    state.savings.forEach(svg => {
-                        const pct = svg.target > 0 ? Math.min(100, Math.round((svg.current / svg.target) * 100)) : 0;
-                        const div = document.createElement('div');
-                        div.className = 'p-3 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 space-y-2 shadow-sm';
-                        div.innerHTML = `
-                            <div class="flex justify-between items-center text-xs">
-                                <span class="font-bold text-gray-900 dark:text-white">${svg.title}</span>
-                                <div class="flex items-center gap-2">
-                                    <span class="font-semibold text-brand-600 dark:text-brand-400">$${svg.current.toLocaleString('es-AR')} / $${svg.target.toLocaleString('es-AR')}</span>
-                                    <button onclick="deleteSaving('${svg.id}')" title="Eliminar Meta" class="text-gray-300 hover:text-rose-500 transition">
-                                        <i class="fa-solid fa-trash-can text-[10px]"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="w-full bg-gray-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
-                                <div class="bg-brand-500 h-full" style="width: ${pct}%"></div>
-                            </div>
-                        `;
-                        sList.appendChild(div);
-                    });
-                }
-            }
-        }
-
-        function deleteAccount(accId) {
-            if (state.accounts.length <= 1) {
-                alert('Debes mantener al menos un medio de pago.');
-                return;
-            }
-            state.accounts = state.accounts.filter(a => a.id !== accId);
-            saveState();
-        }
-
-        function deleteSaving(svgId) {
-            state.savings = state.savings.filter(s => s.id !== svgId);
-            saveState();
-        }
-
-        // RENDER HISTORIAL CON FILTROS AVANZADOS (NECESARIOS, INNECESARIOS, FIJOS, CUOTAS, MES)
-        function renderHistory() {
-            const filterEl = document.getElementById('historyFilter');
-            const monthEl = document.getElementById('historyMonthFilter');
-            if (!filterEl || !monthEl) return;
-
-            const filter = filterEl.value;
-            const monthFilter = monthEl.value;
-            const container = document.getElementById('fullHistoryList');
-            if (!container) return;
-            container.innerHTML = '';
-
-            let filtered = [...state.transactions];
-
-            // Filtro por tipo o categoría especial
-            if (filter === 'income') filtered = filtered.filter(t => t.type === 'income');
-            if (filter === 'expense') filtered = filtered.filter(t => t.type === 'expense');
-            if (filter === 'needed') filtered = filtered.filter(t => t.type === 'expense' && t.necessity === 'needed');
-            if (filter === 'unneeded') filtered = filtered.filter(t => t.type === 'expense' && t.necessity === 'unneeded');
-            if (filter === 'recurring') filtered = filtered.filter(t => t.recurring);
-            if (filter === 'installment') filtered = filtered.filter(t => t.isInstallment);
-
-            // Filtro por mes
-            if (monthFilter !== 'all') {
-                const targetMonth = parseInt(monthFilter);
-                filtered = filtered.filter(t => new Date(t.date).getMonth() === targetMonth);
-            }
-
-            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">No hay transacciones que coincidan con los filtros seleccionados.</p>`;
-                return;
-            }
-
-            filtered.forEach(tx => {
-                const acc = state.accounts.find(a => a.id === tx.accountId) || { name: 'Cuenta' };
-                container.appendChild(createTxElement(tx, acc));
-            });
-        }
-
-        // CAMBIO ENTRE LOS MENÚS PRINCIPALES (CON TOGGLE DE AJUSTES A INICIO)
         function switchTab(tabId) {
-            const targetSec = document.getElementById(`sec-${tabId}`);
-            
-            // Si ya estamos en ajustes y volvemos a tocar el icono, vuelve al inicio
-            if (tabId === 'settings' && targetSec && !targetSec.classList.contains('hidden')) {
-                switchTab('dashboard');
-                return;
-            }
-
             ['dashboard', 'expenses', 'accounts', 'settings'].forEach(t => {
-                const sec = document.getElementById(`sec-${t}`);
-                if (sec) sec.classList.add('hidden');
-
-                const navBtn = document.getElementById(`nav-${t}`);
-                if (navBtn) {
-                    navBtn.className = 'flex flex-col items-center gap-1 text-gray-400 hover:text-brand-600';
+                document.getElementById(`sec-${t}`).classList.add('hidden');
+                const nav = document.getElementById(`nav-${t}`);
+                if(nav) {
+                    nav.classList.remove('text-brand-600', 'dark:text-brand-500', 'font-bold');
+                    nav.classList.add('text-gray-400');
                 }
             });
-
-            if (targetSec) targetSec.classList.remove('hidden');
-
-            const targetNav = document.getElementById(`nav-${tabId}`);
-            if (targetNav) {
-                targetNav.className = 'flex flex-col items-center gap-1 text-brand-600 dark:text-brand-500 font-bold';
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) {
+                activeNav.classList.remove('text-gray-400');
+                activeNav.classList.add('text-brand-600', 'dark:text-brand-500', 'font-bold');
             }
         }
 
-        // CAMBIO DE SUBMENÚS DENTRO DE "GASTOS"
-        function switchExpenseSubtab(subtabId) {
-            ['all', 'supermarket', 'travels'].forEach(st => {
-                const subView = document.getElementById(`exp-sub-${st}`);
-                if (subView) subView.classList.add('hidden');
-
-                const subNavBtn = document.getElementById(`subnav-${st}`);
-                if (subNavBtn) {
-                    subNavBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl transition text-gray-500 hover:text-gray-700 dark:hover:text-gray-200';
-                }
+        function switchExpenseSubtab(sub) {
+            ['all', 'supermarket', 'travels'].forEach(s => {
+                document.getElementById(`exp-sub-${s}`).classList.add('hidden');
+                document.getElementById(`subnav-${s}`).classList.remove('bg-white', 'dark:bg-slate-700', 'text-brand-600', 'dark:text-brand-400', 'shadow-sm');
+                document.getElementById(`subnav-${s}`).classList.add('text-gray-500');
             });
+            document.getElementById(`exp-sub-${sub}`).classList.remove('hidden');
+            const btn = document.getElementById(`subnav-${sub}`);
+            btn.classList.add('bg-white', 'dark:bg-slate-700', 'text-brand-600', 'dark:text-brand-400', 'shadow-sm');
+            btn.classList.remove('text-gray-500');
+            if(sub === 'supermarket') renderSupermarketList();
+        }
 
-            const targetSubView = document.getElementById(`exp-sub-${subtabId}`);
-            if (targetSubView) targetSubView.classList.remove('hidden');
-
-            const targetSubNav = document.getElementById(`subnav-${subtabId}`);
-            if (targetSubNav) {
-                targetSubNav.className = 'flex-1 py-2 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm';
+        function openModal(modalId, defaultType = 'expense', defaultCategory = '') {
+            document.getElementById(modalId).classList.remove('hidden');
+            if(modalId === 'addTxModal') {
+                document.getElementById('txType').value = defaultType;
+                if(defaultCategory) document.getElementById('txCategory').value = defaultCategory;
+                document.getElementById('txDate').valueAsDate = new Date();
+                updateTxCategories();
             }
         }
 
-        // PANEL DE ADMINISTRADOR
-        function renderAdminPanel() {
-            const badge = document.getElementById('adminBadge');
-            const panel = document.getElementById('adminPanel');
-            const notice = document.getElementById('adminNotice');
-            const appContainer = document.getElementById('app');
-            const adminDot = document.getElementById('adminDot');
-            const adminToggleBtn = document.getElementById('adminToggleBtn');
-
-            const pencils = document.querySelectorAll('.admin-pencil');
-
-            if (state.adminMode) {
-                if (badge) badge.classList.remove('hidden');
-                if (panel) panel.classList.remove('hidden');
-                if (notice) notice.classList.remove('hidden');
-                if (appContainer) appContainer.classList.add('admin-active');
-                if (adminToggleBtn) adminToggleBtn.className = 'w-12 h-6 bg-amber-500 rounded-full p-1 transition duration-200';
-                if (adminDot) adminDot.className = 'w-4 h-4 bg-white rounded-full shadow-md transform translate-x-6 transition';
-                pencils.forEach(p => p.classList.remove('hidden'));
-            } else {
-                if (badge) badge.classList.add('hidden');
-                if (panel) panel.classList.add('hidden');
-                if (notice) notice.classList.add('hidden');
-                if (appContainer) appContainer.classList.remove('admin-active');
-                if (adminToggleBtn) adminToggleBtn.className = 'w-12 h-6 bg-gray-300 rounded-full p-1 transition duration-200';
-                if (adminDot) adminDot.className = 'w-4 h-4 bg-white rounded-full shadow-md transition';
-                pencils.forEach(p => p.classList.add('hidden'));
-            }
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
         }
 
-        function toggleAdminMode() {
-            state.adminMode = !state.adminMode;
-            saveState();
-        }
-
-        function editAdminText(key, label) {
-            if (!state.adminMode) return;
-            const current = state.customTexts[key] || '';
-            const updated = prompt(`[Modo ADMIN] Editar ${label}:`, current);
-            if (updated !== null && updated.trim() !== '') {
-                state.customTexts[key] = updated.trim();
-                saveState();
-            }
-        }
-
-        // MOSTRAR/OCULTAR SALDO
-        function toggleBalanceVisibility() {
-            state.balanceHidden = !state.balanceHidden;
-            saveState();
-        }
-
-        // FUNCIONES DE MODALES
-        function openModal(id, type = 'expense', category = null) {
-            const modal = document.getElementById(id);
-            if (modal) modal.classList.remove('hidden');
-
-            if (id === 'addTxModal') {
-                setTxType(type);
-                populateCategories();
-                populateAccounts();
-                populateTravelLinks();
-                if (category) {
-                    const catSelect = document.getElementById('txCategory');
-                    if (catSelect) catSelect.value = category;
-                }
-            }
-        }
-
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            if (modal) modal.classList.add('hidden');
-        }
-
-        // TIPO DE MOVIMIENTO
-        function setTxType(type) {
-            document.getElementById('txType').value = type;
-            const expenseBtn = document.getElementById('typeExpenseBtn');
-            const incomeBtn = document.getElementById('typeIncomeBtn');
-            const necessityWrapper = document.getElementById('necessityOptionWrapper');
-            const advancedOptions = document.getElementById('advancedExpenseOptions');
-
-            if (type === 'expense') {
-                expenseBtn.className = 'py-2 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-700 text-rose-600 shadow';
-                incomeBtn.className = 'py-2 text-xs font-bold rounded-lg transition text-gray-500';
-                if (necessityWrapper) necessityWrapper.classList.remove('hidden');
-                if (advancedOptions) advancedOptions.classList.remove('hidden');
-            } else {
-                incomeBtn.className = 'py-2 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-700 text-emerald-600 shadow';
-                expenseBtn.className = 'py-2 text-xs font-bold rounded-lg transition text-gray-500';
-                if (necessityWrapper) necessityWrapper.classList.add('hidden');
-                if (advancedOptions) advancedOptions.classList.add('hidden');
-            }
-            populateCategories();
-        }
-
-        function toggleInstallmentInputs(checkbox) {
-            const wrapper = document.getElementById('installmentWrapper');
-            if (checkbox.checked) {
-                wrapper.classList.remove('hidden');
-            } else {
-                wrapper.classList.add('hidden');
-            }
-        }
-
-        function populateCategories() {
+        function updateTxCategories() {
             const type = document.getElementById('txType').value;
-            const select = document.getElementById('txCategory');
-            if (!select) return;
-            select.innerHTML = '';
-
-            const list = state.categories[type] || [];
-            list.forEach(cat => {
-                const opt = document.createElement('option');
-                opt.value = cat;
-                opt.innerText = cat;
-                select.appendChild(opt);
-            });
+            const cat = document.getElementById('txCategory');
+            cat.innerHTML = '';
+            if(type === 'expense') {
+                cat.innerHTML = `
+                    <option value="Supermercado">🛒 Supermercado</option>
+                    <option value="Comida">🍔 Comida / Salidas</option>
+                    <option value="Servicios">💡 Servicios / Fijos</option>
+                    <option value="Transporte">🚗 Transporte</option>
+                    <option value="Otros">📦 Otros</option>
+                `;
+                document.getElementById('necessityBox').classList.remove('hidden');
+            } else {
+                cat.innerHTML = `
+                    <option value="Sueldo">💼 Sueldo</option>
+                    <option value="Ventas">📈 Ventas</option>
+                    <option value="Regalo">🎁 Regalo</option>
+                    <option value="Otros">📦 Otros</option>
+                `;
+                document.getElementById('necessityBox').classList.add('hidden');
+            }
         }
 
-        function populateAccounts() {
-            const select = document.getElementById('txAccount');
-            if (!select) return;
-            select.innerHTML = '';
-            state.accounts.forEach(acc => {
-                const opt = document.createElement('option');
-                opt.value = acc.id;
-                opt.innerText = `${acc.name} ($${parseFloat(acc.balance).toLocaleString('es-AR')})`;
-                select.appendChild(opt);
-            });
-        }
-
-        function populateTravelLinks() {
-            const select = document.getElementById('txTravelLink');
-            if (!select) return;
-            select.innerHTML = '<option value="">Ninguno</option>';
-            state.travels.forEach(trv => {
-                const opt = document.createElement('option');
-                opt.value = trv.id;
-                opt.innerText = trv.name;
-                select.appendChild(opt);
-            });
-        }
-
-        // GUARDAR MOVIMIENTO
         function handleSaveTx(e) {
             e.preventDefault();
             const type = document.getElementById('txType').value;
             const amount = parseFloat(document.getElementById('txAmount').value);
             const category = document.getElementById('txCategory').value;
-            const accountId = document.getElementById('txAccount').value;
-            const note = document.getElementById('txNote').value;
-            const travelId = document.getElementById('txTravelLink').value;
-            const recurring = document.getElementById('txRecurring').checked;
-            const isInstallment = document.getElementById('txIsInstallment').checked;
-            const currentInstallment = parseInt(document.getElementById('txCurrentInstallment').value) || 1;
-            const totalInstallments = parseInt(document.getElementById('txTotalInstallments').value) || 1;
+            const necessity = type === 'expense' ? document.getElementById('txNecessity').value : 'needed';
+            const desc = document.getElementById('txDesc').value || category;
+            const date = document.getElementById('txDate').value;
 
-            if (isNaN(amount) || amount <= 0) return;
-
-            const necessityRadios = document.getElementsByName('txNecessity');
-            let necessity = 'needed';
-            for (let r of necessityRadios) {
-                if (r.checked) necessity = r.value;
-            }
-
-            const newTx = {
-                id: 'tx_' + Date.now(),
-                type,
-                amount,
-                category,
-                accountId,
-                note,
-                travelId: travelId || null,
-                recurring,
-                isInstallment,
-                currentInstallment,
-                totalInstallments,
-                necessity: type === 'expense' ? necessity : 'needed',
-                date: new Date().toISOString(),
-                items: []
+            const tx = {
+                id: Date.now(),
+                type, amount, category, necessity, desc, date,
+                products: category === 'Supermercado' ? [{ name: 'Compra general', price: amount, necessity }] : []
             };
 
-            const accIndex = state.accounts.findIndex(a => a.id === accountId);
-            if (accIndex !== -1) {
-                if (type === 'income') {
-                    state.accounts[accIndex].balance += amount;
-                } else {
-                    state.accounts[accIndex].balance -= amount;
-                }
-            }
-
-            state.transactions.unshift(newTx);
+            db.transactions.unshift(tx);
+            saveData();
             closeModal('addTxModal');
             document.getElementById('txForm').reset();
-            document.getElementById('installmentWrapper').classList.add('hidden');
-            saveState();
+            renderAll();
         }
 
-        // DESGLOSE SUPERMERCADO
-        function openSuperItemsModal(txId) {
-            const tx = state.transactions.find(t => t.id === txId);
-            if (!tx) return;
-
-            document.getElementById('activeSuperTxId').value = txId;
-            document.getElementById('superItemTxDate').innerText = `Ticket $${parseFloat(tx.amount).toLocaleString('es-AR')} - ${new Date(tx.date).toLocaleDateString('es-ES')}`;
-            
-            renderSuperItemsList(tx);
-            openModal('superItemsModal');
-        }
-
-        function renderSuperItemsList(tx) {
-            const list = document.getElementById('superItemsList');
-            if (!list) return;
-            list.innerHTML = '';
-            
-            const items = tx.items || [];
-            let sum = 0;
-
-            if (items.length === 0) {
-                list.innerHTML = `<p class="text-xs text-gray-400 text-center py-3">No hay productos en este ticket aún.</p>`;
+        function openSupermarketModal(txId = null) {
+            if(!txId) {
+                // Crear un gasto de supermercado rápido nuevo
+                const tx = {
+                    id: Date.now(),
+                    type: 'expense',
+                    amount: 0,
+                    category: 'Supermercado',
+                    necessity: 'needed',
+                    desc: 'Compra Supermercado',
+                    date: new Date().toISOString().split('T')[0],
+                    products: []
+                };
+                db.transactions.unshift(tx);
+                currentActiveSmId = tx.id;
             } else {
-                items.forEach((item, idx) => {
-                    sum += parseFloat(item.price);
-                    const div = document.createElement('div');
-                    div.className = 'flex justify-between items-center p-2 bg-gray-50 dark:bg-slate-800 rounded-xl text-xs';
-                    const tag = item.necessity === 'unneeded' ? '<span class="text-[9px] text-rose-500 font-bold">🔴 Innecesario</span>' : '<span class="text-[9px] text-emerald-500 font-bold">🟢 Necesario</span>';
-                    
-                    div.innerHTML = `
+                currentActiveSmId = txId;
+            }
+            renderSmProductsModal();
+            document.getElementById('supermarketModal').classList.remove('hidden');
+        }
+
+        function addProductToSupermarket() {
+            const name = document.getElementById('smProductName').value;
+            const price = parseFloat(document.getElementById('smProductPrice').value);
+            const necessity = document.getElementById('smProductNecessity').value;
+            if(!name || isNaN(price)) return;
+
+            const tx = db.transactions.find(t => t.id === currentActiveSmId);
+            if(tx) {
+                tx.products.push({ name, price, necessity });
+                tx.amount = tx.products.reduce((acc, p) => acc + p.price, 0);
+                saveData();
+                document.getElementById('smProductName').value = '';
+                document.getElementById('smProductPrice').value = '';
+                renderSmProductsModal();
+            }
+        }
+
+        function removeSmProduct(index) {
+            const tx = db.transactions.find(t => t.id === currentActiveSmId);
+            if(tx) {
+                tx.products.splice(index, 1);
+                tx.amount = tx.products.reduce((acc, p) => acc + p.price, 0);
+                saveData();
+                renderSmProductsModal();
+            }
+        }
+
+        function renderSmProductsModal() {
+            const tx = db.transactions.find(t => t.id === currentActiveSmId);
+            const list = document.getElementById('smProductsList');
+            if(!tx) return;
+            list.innerHTML = tx.products.length === 0 ? '<p class="text-xs text-gray-400 text-center py-2">Sin productos agregados aún</p>' : '';
+            tx.products.forEach((p, idx) => {
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-gray-50 dark:bg-slate-800 p-2.5 rounded-xl text-xs">
                         <div>
-                            <span class="font-bold text-gray-900 dark:text-white">${item.name}</span>
-                            <div>${tag}</div>
+                            <p class="font-bold">${p.name}</p>
+                            <p class="text-[10px] text-gray-400">${p.necessity === 'needed' ? '✔️ Necesario' : '❌ Innecesario'}</p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="font-bold text-gray-900 dark:text-white">$${parseFloat(item.price).toLocaleString('es-AR')}</span>
-                            <button onclick="deleteSuperItem('${tx.id}', ${idx})" class="text-gray-300 hover:text-rose-500 p-1">
-                                <i class="fa-solid fa-trash-can text-[10px]"></i>
-                            </button>
+                            <span class="font-bold">$${p.price.toFixed(2)}</span>
+                            <button onclick="removeSmProduct(${idx})" class="text-rose-500 hover:text-rose-700 px-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
-                    `;
-                    list.appendChild(div);
-                });
-            }
-
-            document.getElementById('superItemsTotalSum').innerText = `Sumatoria: $${sum.toLocaleString('es-AR')}`;
+                    </div>
+                `;
+            });
         }
 
-        function deleteSuperItem(txId, itemIdx) {
-            const txIndex = state.transactions.findIndex(t => t.id === txId);
-            if (txIndex !== -1 && state.transactions[txIndex].items) {
-                state.transactions[txIndex].items.splice(itemIdx, 1);
-                saveState();
-                renderSuperItemsList(state.transactions[txIndex]);
-            }
+        function renderSupermarketList() {
+            const container = document.getElementById('supermarketList');
+            const smTxs = db.transactions.filter(t => t.category === 'Supermercado');
+            container.innerHTML = smTxs.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No hay tickets de supermercado cargados</p>' : '';
+            smTxs.forEach(t => {
+                container.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 space-y-2 shadow-sm">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-xs font-bold">${t.desc}</p>
+                                <p class="text-[10px] text-gray-400">${t.date}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-rose-500">$${t.amount.toFixed(2)}</span>
+                                <button onclick="openSupermarketModal(${t.id})" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 rounded-lg text-xs font-semibold">Editar items</button>
+                            </div>
+                        </div>
+                        <div class="text-[11px] text-gray-500 dark:text-gray-400 pt-1 border-t dark:border-slate-700">
+                            Productos: ${t.products ? t.products.map(p => p.name).join(', ') : 'Ninguno'}
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        function handleAddItemToSuper(e) {
-            e.preventDefault();
-            const txId = document.getElementById('activeSuperTxId').value;
-            const name = document.getElementById('itemName').value;
-            const price = parseFloat(document.getElementById('itemPrice').value);
-            const necessity = document.getElementById('itemNecessity').value;
+        function renderAll() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDateStr').innerText = now.toLocaleDateString('es-ES', options);
 
-            if (isNaN(price) || price <= 0) return;
-
-            const txIndex = state.transactions.findIndex(t => t.id === txId);
-            if (txIndex !== -1) {
-                if (!state.transactions[txIndex].items) {
-                    state.transactions[txIndex].items = [];
+            // Totales
+            let total = 0, mIncome = 0, mExpense = 0, neededTot = 0, unneededTot = 0;
+            db.transactions.forEach(t => {
+                if(t.type === 'income') {
+                    total += t.amount;
+                    mIncome += t.amount;
+                } else {
+                    total -= t.amount;
+                    mExpense += t.amount;
+                    if(t.necessity === 'needed') neededTot += t.amount;
+                    else unneededTot += t.amount;
                 }
-                state.transactions[txIndex].items.push({
-                    id: 'item_' + Date.now(),
-                    name,
-                    price,
-                    necessity
-                });
-
-                saveState();
-                renderSuperItemsList(state.transactions[txIndex]);
-                document.getElementById('itemName').value = '';
-                document.getElementById('itemPrice').value = '';
-            }
-        }
-
-        // NUEVO VIAJE
-        function openNewTravelModal() {
-            openModal('newTravelModal');
-        }
-
-        function handleCreateTravel(e) {
-            e.preventDefault();
-            const name = document.getElementById('travelName').value;
-            const budget = parseFloat(document.getElementById('travelBudget').value);
-
-            if (isNaN(budget) || budget <= 0) return;
-
-            state.travels.push({
-                id: 'trv_' + Date.now(),
-                name,
-                budget
             });
 
-            closeModal('newTravelModal');
-            document.getElementById('travelName').value = '';
-            document.getElementById('travelBudget').value = '';
-            saveState();
-        }
+            document.getElementById('totalBalance').innerText = db.balanceVisible ? total.toFixed(2) : '••••••';
+            document.getElementById('monthlyIncome').innerText = db.balanceVisible ? `$${mIncome.toFixed(2)}` : '••••';
+            document.getElementById('monthlyExpenses').innerText = db.balanceVisible ? `$${mExpense.toFixed(2)}` : '••••';
 
-        // NUEVO MEDIO DE PAGO
-        function openAddAccountModal() {
-            openModal('newAccountModal');
-        }
+            // Necesarios vs Innecesarios
+            document.getElementById('necessityNeededAmount').innerText = `$${neededTot.toFixed(2)}`;
+            document.getElementById('necessityUnneededAmount').innerText = `$${unneededTot.toFixed(2)}`;
+            const totalExp = neededTot + unneededTot;
+            const neededPct = totalExp > 0 ? (neededTot / totalExp) * 100 : 50;
+            const unneededPct = totalExp > 0 ? (unneededTot / totalExp) * 100 : 50;
+            document.getElementById('necessityNeededPct').innerText = `${neededPct.toFixed(0)}% del total`;
+            document.getElementById('necessityUnneededPct').innerText = `${unneededPct.toFixed(0)}% del total`;
+            document.getElementById('barNeeded').style.width = `${neededPct}%`;
+            document.getElementById('barUnneeded').style.width = `${unneededPct}%`;
 
-        function handleCreateAccount(e) {
-            e.preventDefault();
-            const name = document.getElementById('accName').value;
-            const balance = parseFloat(document.getElementById('accBalance').value) || 0;
-            const type = document.getElementById('accType').value;
-
-            let icon = 'fa-wallet';
-            if (type === 'bank') icon = 'fa-building-columns';
-            if (type === 'wallet') icon = 'fa-mobile-screen';
-            if (type === 'credit') icon = 'fa-credit-card';
-
-            state.accounts.push({
-                id: 'acc_' + Date.now(),
-                name,
-                balance,
-                type,
-                icon
+            // Últimos movimientos
+            const recentList = document.getElementById('recentTxList');
+            recentList.innerHTML = db.transactions.length === 0 ? '<p class="text-xs text-gray-400 text-center py-2">Sin movimientos recientes</p>' : '';
+            db.transactions.slice(0, 5).forEach(t => {
+                recentList.innerHTML += createTxItemHTML(t);
             });
 
-            closeModal('newAccountModal');
-            document.getElementById('accName').value = '';
-            document.getElementById('accBalance').value = '';
-            saveState();
+            renderHistory();
+            renderAccounts();
+            renderSavings();
         }
 
-        // NUEVA META DE AHORRO
-        function openAddSavingModal() {
-            openModal('newSavingModal');
+        function createTxItemHTML(t) {
+            const isInc = t.type === 'income';
+            return `
+                <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-3 rounded-2xl border border-gray-100 dark:border-slate-700/60 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full ${isInc ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40' : 'bg-rose-50 text-rose-600 dark:bg-rose-950/40'} flex items-center justify-center text-xs">
+                            <i class="fa-solid ${isInc ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">${t.desc}</p>
+                            <p class="text-[10px] text-gray-400">${t.category} • ${t.date}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold ${isInc ? 'text-emerald-600' : 'text-rose-600'}">${isInc ? '+' : '-'}$${t.amount.toFixed(2)}</span>
+                        <button onclick="deleteTx(${t.id})" class="text-gray-400 hover:text-rose-500 text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>
+            `;
         }
 
-        function handleCreateSaving(e) {
-            e.preventDefault();
-            const title = document.getElementById('svgTitle').value;
-            const target = parseFloat(document.getElementById('svgTarget').value) || 0;
-            const current = parseFloat(document.getElementById('svgCurrent').value) || 0;
+        function renderHistory() {
+            const list = document.getElementById('fullHistoryList');
+            const filter = document.getElementById('historyFilter').value;
+            const monthFilter = document.getElementById('historyMonthFilter').value;
 
-            if (target <= 0) return;
-
-            state.savings.push({
-                id: 'svg_' + Date.now(),
-                title,
-                target,
-                current
+            let filtered = db.transactions.filter(t => {
+                const tMonth = new Date(t.date).getMonth().toString();
+                if(monthFilter !== 'all' && tMonth !== monthFilter) return false;
+                if(filter === 'income' && t.type !== 'income') return false;
+                if(filter === 'expense' && t.type !== 'expense') return false;
+                if(filter === 'needed' && t.necessity !== 'needed') return false;
+                if(filter === 'unneeded' && t.necessity !== 'unneeded') return false;
+                if(filter === 'supermarket' && t.category !== 'Supermercado') return false;
+                return true;
             });
 
-            closeModal('newSavingModal');
-            document.getElementById('svgTitle').value = '';
-            document.getElementById('svgTarget').value = '';
-            document.getElementById('svgCurrent').value = '';
-            saveState();
+            list.innerHTML = filtered.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">No hay movimientos con este filtro</p>' : '';
+            filtered.forEach(t => {
+                list.innerHTML += createTxItemHTML(t);
+            });
         }
 
-        // PERFIL
-        function saveProfileName() {
-            const val = document.getElementById('profileNameInput').value.trim();
-            if (val) {
-                state.customTexts.userGreeting = val;
-                saveState();
-            }
+        function deleteTx(id) {
+            db.transactions = db.transactions.filter(t => t.id !== id);
+            saveData();
+            renderAll();
+        }
+
+        function renderAccounts() {
+            const grid = document.getElementById('accountsGrid');
+            grid.innerHTML = '';
+            db.accounts.forEach(acc => {
+                grid.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-1">
+                        <i class="fa-solid ${acc.icon} text-brand-600 text-lg mb-1"></i>
+                        <p class="text-xs font-bold text-gray-900 dark:text-white">${acc.name}</p>
+                        <p class="text-sm font-extrabold">$${acc.balance.toFixed(2)}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function renderSavings() {
+            const list = document.getElementById('savingsList');
+            list.innerHTML = db.savings.length === 0 ? '<p class="text-xs text-gray-400 text-center py-2">No hay metas de ahorro aún</p>' : '';
+            db.savings.forEach(s => {
+                list.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-2">
+                        <div class="flex justify-between items-center text-xs font-bold">
+                            <span>${s.name}</span>
+                            <span>$${s.current} / $${s.target}</span>
+                        </div>
+                        <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+                            <div class="bg-brand-500 h-full" style="width: ${Math.min(100, (s.current/s.target)*100)}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleBalanceVisibility() {
+            db.balanceVisible = !db.balanceVisible;
+            document.getElementById('eyeIcon').className = db.balanceVisible ? "fa-solid fa-eye text-sm" : "fa-solid fa-eye-slash text-sm";
+            renderAll();
         }
 
         function toggleTheme() {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                state.theme = 'light';
-            } else {
+            db.darkMode = !db.darkMode;
+            if(db.darkMode) {
                 document.documentElement.classList.add('dark');
-                state.theme = 'dark';
+            } else {
+                document.documentElement.classList.remove('dark');
             }
-            saveState();
+            saveData();
         }
 
-        function openAvatarModal() {
-            openModal('avatarModal');
-        }
-
-        function selectAvatar(url) {
-            state.avatar = url;
+        function openAvatarModal() { document.getElementById('avatarModal').classList.remove('hidden'); }
+        function selectAvatar(seed) {
+            db.avatarSeed = seed;
+            updateAvatarDisplay();
+            saveData();
             closeModal('avatarModal');
-            saveState();
+        }
+        function updateAvatarDisplay() {
+            document.getElementById('headerAvatar').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${db.avatarSeed}`;
         }
 
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    state.avatar = e.target.result;
-                    closeModal('avatarModal');
-                    saveState();
-                };
-                reader.readAsDataURL(file);
+        function saveProfileName() {
+            const val = document.getElementById('profileNameInput').value;
+            if(val) {
+                db.profileName = val;
+                document.getElementById('txt_userGreeting').innerText = `Hola, ${val}`;
+                saveData();
+                alert('¡Nombre de perfil guardado!');
             }
         }
 
-        // CATEGORÍAS PERSONALIZADAS
-        function addCustomCategory() {
-            const input = document.getElementById('newCategoryInput');
-            const catName = input.value.trim();
-            if (catName) {
-                state.categories.expense.push(catName);
-                input.value = '';
-                saveState();
+        function toggleAdminMode() {
+            db.adminMode = !db.adminMode;
+            const notice = document.getElementById('adminNotice');
+            const badge = document.getElementById('adminBadge');
+            const dot = document.getElementById('adminDot');
+            const btn = document.getElementById('adminToggleBtn');
+            const pencils = document.querySelectorAll('.admin-pencil');
+
+            if(db.adminMode) {
+                notice.classList.remove('hidden');
+                badge.classList.remove('hidden');
+                document.body.classList.add('admin-active');
+                dot.style.transform = 'translateX(24px)';
+                btn.classList.remove('bg-gray-300');
+                btn.classList.add('bg-amber-500');
+                pencils.forEach(p => p.classList.remove('hidden'));
+            } else {
+                notice.classList.add('hidden');
+                badge.classList.add('hidden');
+                document.body.classList.remove('admin-active');
+                dot.style.transform = 'translateX(0px)';
+                btn.classList.remove('bg-amber-500');
+                btn.classList.add('bg-gray-300');
+                pencils.forEach(p => p.classList.add('hidden'));
             }
         }
 
-        // RESETEAR DATOS AL ESTADO INICIAL VACÍO
+        function editAdminText(key, labelName) {
+            if(!db.adminMode) return;
+            const newVal = prompt(`Editar "${labelName}":`, document.getElementById(`txt_${key}`)?.innerText || '');
+            if(newVal !== null) {
+                const el = document.getElementById(`txt_${key}`);
+                if(el) el.innerText = newVal;
+            }
+        }
+
         function resetAllData() {
-            state = {
-                balanceHidden: false,
-                adminMode: false,
-                theme: 'light',
-                avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-                customTexts: { ...defaultState.customTexts },
-                accounts: [
-                    { id: 'acc1', name: 'Efectivo', type: 'cash', balance: 0, icon: 'fa-money-bill-wave' },
-                    { id: 'acc2', name: 'Banco / Débito', type: 'bank', balance: 0, icon: 'fa-building-columns' }
-                ],
-                categories: { ...defaultState.categories },
-                transactions: [],
-                travels: [],
-                savings: []
-            };
-            saveState();
+            if(confirm('¿Estás seguro de borrar todos tus datos y empezar de cero?')) {
+                localStorage.removeItem('mi_dinero_db');
+                location.reload();
+            }
         }
+
+        function openAddAccountModal() {
+            const name = prompt("Nombre del medio de pago (ej: Uala, Banco Galicia):");
+            if(name) {
+                db.accounts.push({ id: Date.now(), name, balance: 0, icon: 'fa-wallet' });
+                saveData();
+                renderAccounts();
+            }
+        }
+
+        function openAddSavingModal() {
+            const name = prompt("Nombre de la meta de ahorro (ej: Vacaciones):");
+            const target = parseFloat(prompt("Monto objetivo ($):"));
+            if(name && !isNaN(target)) {
+                db.savings.push({ id: Date.now(), name, target, current: 0 });
+                saveData();
+                renderSavings();
+            }
+        }
+
+        window.onload = loadData;
     </script>
 </body>
 </html>
