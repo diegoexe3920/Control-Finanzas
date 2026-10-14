@@ -136,20 +136,29 @@
                     </div>
                 </div>
 
-                <!-- ALERTA DE VENCIMIENTOS Y CONVERSOR DE MONEDA -->
+                <!-- ALERTA DE VENCIMIENTOS -->
                 <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 p-4 rounded-2xl space-y-2">
                     <div class="flex items-center justify-between">
                         <h3 class="font-bold text-xs text-amber-800 dark:text-amber-400 flex items-center gap-1.5">
                             <i class="fa-solid fa-bell text-amber-600"></i> <span id="txt_lblAlertsTitle" class="admin-editable" onclick="editAdminText('lblAlertsTitle', 'Titulo Alertas')">Alertas de Vencimiento</span>
                         </h3>
-                        <div class="flex items-center gap-2">
-                            <button onclick="openCalcModal()" title="Calculadora Conversora de Moneda" class="w-7 h-7 bg-amber-200/70 dark:bg-amber-900/50 text-amber-900 dark:text-amber-200 rounded-lg flex items-center justify-center text-xs hover:scale-105 transition">
-                                <i class="fa-solid fa-calculator"></i>
-                            </button>
-                            <button onclick="switchTab('bills')" class="text-[10px] text-amber-700 dark:text-amber-400 font-bold underline">Ver todos</button>
-                        </div>
+                        <button onclick="switchTab('bills')" class="text-[10px] text-amber-700 dark:text-amber-400 font-bold underline">Ver todos</button>
                     </div>
                     <div id="dashboardBillsAlerts" class="space-y-1.5"></div>
+                </div>
+
+                <!-- HERRAMIENTA INDEPENDIENTE: CONVERSOR DE MONEDA (PESO / DÓLAR) -->
+                <div onclick="openCalcModal()" class="bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-900/50 p-3.5 rounded-2xl flex justify-between items-center cursor-pointer hover:bg-sky-100/70 dark:hover:bg-sky-900/40 transition shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-sky-500 text-white flex items-center justify-center text-sm shadow-md">
+                            <i class="fa-solid fa-calculator"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs text-sky-900 dark:text-sky-300">Conversor Pesos / Dólares</h4>
+                            <p class="text-[10px] text-sky-700 dark:text-sky-400">Cotización Mercado en Vivo: <span id="dashRateMini" class="font-bold">1 USD = $1.250</span></p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-sky-600 dark:text-sky-400">Abrir ➔</span>
                 </div>
 
                 <!-- CALIDAD DE GASTOS MES -->
@@ -509,13 +518,13 @@
         <div id="calcModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
-                    <h3 class="font-bold text-base flex items-center gap-2"><i class="fa-solid fa-calculator text-amber-500"></i> Conversor Pesos / Dólares</h3>
+                    <h3 class="font-bold text-base flex items-center gap-2"><i class="fa-solid fa-calculator text-sky-500"></i> Conversor Pesos / Dólares</h3>
                     <button onclick="closeModal('calcModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 
-                <div class="bg-amber-50 dark:bg-amber-950/40 p-3 rounded-2xl border border-amber-200 dark:border-amber-900/40 space-y-1 text-center">
-                    <p class="text-[10px] text-amber-800 dark:text-amber-300 uppercase font-bold">Cotización Dólar Mercado (Blue)</p>
-                    <p id="calcRateDisplay" class="text-lg font-extrabold text-amber-900 dark:text-amber-200">1 USD = $1.250 ARS</p>
+                <div class="bg-sky-50 dark:bg-sky-950/40 p-3 rounded-2xl border border-sky-200 dark:border-sky-900/40 space-y-1 text-center">
+                    <p class="text-[10px] text-sky-800 dark:text-sky-300 uppercase font-bold">Cotización Dólar Mercado (Blue)</p>
+                    <p id="calcRateDisplay" class="text-lg font-extrabold text-sky-900 dark:text-sky-200">1 USD = $1.250 ARS</p>
                     <p id="calcRateUpdated" class="text-[9px] text-gray-400">Actualizando en vivo...</p>
                 </div>
 
@@ -735,16 +744,22 @@
                     if(data && data.venta) {
                         db.dolarRate = data.venta;
                         saveData();
+                        
                         const display = document.getElementById('calcRateDisplay');
                         const updated = document.getElementById('calcRateUpdated');
+                        const dashMini = document.getElementById('dashRateMini');
+
                         if(display) display.innerText = `1 USD = $${fmt(db.dolarRate)} ARS`;
                         if(updated) updated.innerText = `Actualizado: ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                        if(dashMini) dashMini.innerText = `1 USD = $${fmt(db.dolarRate)}`;
                         renderAll();
                     }
                 }
             } catch(e) {
                 const display = document.getElementById('calcRateDisplay');
+                const dashMini = document.getElementById('dashRateMini');
                 if(display) display.innerText = `1 USD = $${fmt(db.dolarRate)} ARS`;
+                if(dashMini) dashMini.innerText = `1 USD = $${fmt(db.dolarRate)}`;
             }
         }
 
