@@ -181,9 +181,7 @@
                         </h3>
                         <button onclick="addNewAccount()" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 rounded-lg text-[11px] font-bold hover:bg-brand-100 transition">+ Agregar</button>
                     </div>
-                    <div id="dashboardAccountsList" class="grid grid-cols-2 gap-2.5">
-                        <!-- Cuentas renderizadas aquí -->
-                    </div>
+                    <div id="dashboardAccountsList" class="grid grid-cols-2 gap-2.5"></div>
                 </div>
             </section>
 
@@ -460,7 +458,7 @@
             </div>
         </div>
 
-        <!-- MODAL: AJUSTES Y CONFIGURACIÓN MODO ADMIN -->
+        <!-- MODAL: AJUSTES Y MODO ADMIN -->
         <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
@@ -468,7 +466,6 @@
                     <button onclick="closeModal('settingsModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="space-y-4">
-                    <!-- NOMBRE PERFIL -->
                     <div>
                         <label class="block text-xs font-medium mb-1">Nombre de Perfil</label>
                         <div class="flex gap-2">
@@ -477,7 +474,6 @@
                         </div>
                     </div>
 
-                    <!-- INTERRUPTOR MODO ADMIN -->
                     <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
                         <div>
                             <p class="text-xs font-bold text-gray-900 dark:text-white">Modo Administrador</p>
@@ -488,7 +484,6 @@
                         </button>
                     </div>
 
-                    <!-- MODO OSCURO -->
                     <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
                         <p class="text-xs font-bold">Modo Oscuro</p>
                         <button onclick="toggleTheme()" class="w-12 h-6 bg-gray-300 dark:bg-brand-600 rounded-full p-1 transition duration-200">
@@ -496,7 +491,6 @@
                         </button>
                     </div>
 
-                    <!-- BORRADO SEGURO CON CONFIRMACIÓN -->
                     <div class="pt-2 border-t dark:border-slate-700">
                         <button onclick="resetAllData()" class="w-full py-2.5 bg-rose-500/10 text-rose-600 border border-rose-500/30 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-shield-halved"></i> Borrar Todo y Reiniciar (Seguro)
@@ -506,7 +500,7 @@
             </div>
         </div>
 
-        <!-- MODAL: AVATARES VARIADOS Y SUBIR FOTO -->
+        <!-- MODAL: AVATAR Y SUBIR FOTO -->
         <div id="avatarModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
@@ -514,7 +508,6 @@
                     <button onclick="closeModal('avatarModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <!-- OPCIÓN FOTO DESDE LA GALERÍA -->
                 <div class="p-3 bg-brand-50 dark:bg-slate-800 rounded-2xl border border-brand-200 dark:border-slate-700 flex justify-between items-center">
                     <div>
                         <p class="text-xs font-bold">Subir foto personal</p>
@@ -525,7 +518,6 @@
                     </label>
                 </div>
 
-                <!-- 10 AVATARES ANIMADOS -->
                 <div class="grid grid-cols-3 gap-3 pt-1">
                     <div onclick="selectAvatar('Bot')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Bot" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Robot</span></div>
                     <div onclick="selectAvatar('Cat')" class="cursor-pointer p-2 rounded-2xl hover:bg-brand-50 border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cat" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Gatito</span></div>
@@ -563,7 +555,7 @@
         const monthNamesShort = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
         function loadData() {
-            const saved = localStorage.getItem('mi_dinero_db_v6');
+            const saved = localStorage.getItem('mi_dinero_db_v7');
             if (saved) {
                 try { db = JSON.parse(saved); } catch(e) {}
             }
@@ -581,7 +573,7 @@
         }
 
         function saveData() {
-            localStorage.setItem('mi_dinero_db_v6', JSON.stringify(db));
+            localStorage.setItem('mi_dinero_db_v7', JSON.stringify(db));
         }
 
         function switchTab(tabId) {
@@ -775,16 +767,26 @@
             document.getElementById('installmentBox').classList.toggle('hidden', !isInst);
         }
 
+        /* --- ACTUALIZACIÓN DE CATEGORÍAS EXTENDIDAS --- */
         function updateTxCategories() {
             const type = document.getElementById('txType').value;
             const cat = document.getElementById('txCategory');
             const extra = document.getElementById('expenseExtraOptions');
             if(type === 'expense') {
                 cat.innerHTML = `
-                    <option value="Supermercado">🛒 Supermercado</option>
-                    <option value="Comida">🍔 Comida / Salidas</option>
                     <option value="Servicios">💡 Servicios</option>
-                    <option value="Transporte">🚗 Transporte</option>
+                    <option value="Casa">🏠 Casa</option>
+                    <option value="Préstamo">🏦 Préstamo</option>
+                    <option value="Combustible">⛽ Combustible</option>
+                    <option value="Supermercado">🛒 Supermercado</option>
+                    <option value="Panadería">🥖 Panadería</option>
+                    <option value="Comida">🍔 Comida</option>
+                    <option value="Verdulera">🥦 Verdulera</option>
+                    <option value="Kiosco">🍬 Kiosco</option>
+                    <option value="Ropa">👕 Ropa</option>
+                    <option value="Regalo">🎁 Regalo</option>
+                    <option value="Arreglo">🛠️ Arreglo</option>
+                    <option value="Ferretería">🔧 Ferretería</option>
                     <option value="Otros">📦 Otros</option>
                 `;
                 extra.classList.remove('hidden');
@@ -954,7 +956,7 @@
             }
         }
 
-        // --- GRÁFICO ANUAL DE GASTOS ---
+        // --- GRÁFICO ANUAL ---
         function renderAnnualChart() {
             const container = document.getElementById('annualChartBars');
             if(!container) return;
@@ -1196,14 +1198,13 @@
             }
         }
 
-        /* --- BORRADO SEGURO DE DATOS --- */
         function resetAllData() {
-            const confirmWord = prompt("⚠️ ACCIÓN DE SEGURIDAD:\nPara borrar absolutamente todos tus datos y reiniciar la app, escribe la palabra ELIMINAR en mayúsculas:");
+            const confirmWord = prompt("⚠️ ACCIÓN DE SEGURIDAD:\nPara borrar todos tus datos y reiniciar la app, escribe ELIMINAR en mayúsculas:");
             if(confirmWord === "ELIMINAR") {
-                localStorage.removeItem('mi_dinero_db_v6');
+                localStorage.removeItem('mi_dinero_db_v7');
                 location.reload();
             } else if (confirmWord !== null) {
-                alert("❌ La palabra ingresada no es correcta. No se borrarán los datos.");
+                alert("❌ Palabra incorrecta. No se realizaron cambios.");
             }
         }
 
