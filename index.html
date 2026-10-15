@@ -339,7 +339,7 @@
 
         </main>
 
-        <!-- BARRA DE NAVEGACIÓN INFERIOR -->
+        <!-- BARRA DE NAVEGACIÓN INFERIOR DEPURADA -->
         <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-md w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-200 dark:border-slate-800 px-3 py-2 flex justify-between items-center z-40">
             <button onclick="switchTab('incomes')" id="nav-incomes" class="flex flex-col items-center gap-1 text-gray-400 hover:text-emerald-600 transition px-2 py-1 rounded-xl">
                 <i class="fa-solid fa-circle-arrow-down text-lg"></i>
@@ -461,7 +461,7 @@
             </div>
         </div>
 
-        <!-- MODAL: OPERACIÓN AHORRO (SUMAR / RETIRAR) -->
+        <!-- MODAL: OPERACIÓN AHORRO -->
         <div id="savingOpModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
@@ -479,7 +479,7 @@
             </div>
         </div>
 
-        <!-- MODAL: NUEVO FRASCO DE AHORRO -->
+        <!-- MODAL: NUEVO FRASCO DE AHORRO CON PLACEHOLDER -->
         <div id="addSavingModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
@@ -507,7 +507,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold mb-1">Monto inicial</label>
-                        <input id="jarAmount" type="text" inputmode="decimal" oninput="formatCurrencyInput(this)" value="0,00" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
+                        <input id="jarAmount" type="text" inputmode="decimal" oninput="formatCurrencyInput(this)" placeholder="0,00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
                     </div>
                     <button type="submit" class="w-full py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold">Guardar Frasco</button>
                 </form>
@@ -591,7 +591,7 @@
                 <div class="space-y-3">
                     <div class="flex gap-2">
                         <input id="smProductName" type="text" placeholder="Producto" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
-                        <input id="smProductPrice" type="text" inputmode="decimal" oninput="formatCurrencyInput(this)" placeholder="Precio" class="w-28 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
+                        <input id="smProductPrice" type="text" inputmode="decimal" oninput="formatCurrencyInput(this)" placeholder="Precio (0,00)" class="w-28 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
                     </div>
                     <div class="flex gap-2">
                         <select id="smProductNecessity" class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
@@ -601,16 +601,25 @@
                         <button onclick="addProductToSupermarket()" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold">Añadir</button>
                     </div>
                 </div>
+
                 <div id="smProductsList" class="space-y-2 pt-2 border-t dark:border-slate-800"></div>
-                <div class="flex justify-between items-center pt-2 font-bold text-xs">
-                    <span>Monto Total del Ticket:</span>
-                    <span id="smModalTotalDisplay" class="text-rose-600 text-sm">$0,00</span>
+
+                <div class="p-3 bg-gray-50 dark:bg-slate-800/80 rounded-2xl border border-gray-200 dark:border-slate-700 space-y-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-gray-500 font-semibold">Monto Total del Ticket (Fijo):</span>
+                        <span id="smModalFixedTotalDisplay" class="font-extrabold text-rose-600 text-sm">$0,00</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[11px]">
+                        <span class="text-gray-400">Total Sumado en Productos:</span>
+                        <span id="smModalSummedDisplay" class="font-bold text-emerald-600">$0,00</span>
+                    </div>
                 </div>
-                <button onclick="saveSupermarketModal()" class="w-full py-2.5 bg-gray-900 dark:bg-slate-800 text-white rounded-xl text-xs font-semibold">Guardar Cambios en Ticket</button>
+
+                <button onclick="saveSupermarketModal()" class="w-full py-2.5 bg-gray-900 dark:bg-slate-800 text-white rounded-xl text-xs font-semibold">Guardar Desglose de Productos</button>
             </div>
         </div>
 
-        <!-- MODAL: CREAR VIAJE -->
+        <!-- MODAL: CREAR VIAJE CON 10 COLORES -->
         <div id="newTravelModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
@@ -627,14 +636,18 @@
                         <input id="travelBudgetInput" type="text" inputmode="decimal" oninput="formatCurrencyInput(this)" placeholder="0,00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium mb-1">Color Identificador</label>
+                        <label class="block text-xs font-medium mb-1">Color Identificador (10 Opciones)</label>
                         <select id="travelColorInput" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold">
                             <option value="#3b82f6">🟦 Azul Sky</option>
                             <option value="#10b981">🟩 Verde Esmeralda</option>
                             <option value="#ec4899">🟥 Rosa Fucsia</option>
                             <option value="#8b5cf6">🟪 Violeta Purple</option>
                             <option value="#f59e0b">🟧 Naranja Ámbar</option>
-                            <option value="#64748b">⬛ Gris Pizarra</option>
+                            <option value="#eab308">🟨 Amarillo Calidez</option>
+                            <option value="#854d0e">🟫 Marrón Chocolate</option>
+                            <option value="#06b6d4">🩵 Turquesa Neón</option>
+                            <option value="#64748b">🩶 Gris Pizarra</option>
+                            <option value="#1e293b">🖤 Negro Carbón</option>
                         </select>
                     </div>
                     <button onclick="saveNewTravel()" class="w-full py-2.5 bg-sky-600 text-white rounded-xl text-xs font-bold">Crear Viaje</button>
@@ -779,7 +792,7 @@
         }
 
         function loadData() {
-            const saved = localStorage.getItem('mi_dinero_db_v10');
+            const saved = localStorage.getItem('mi_dinero_db_v11');
             if (saved) {
                 try { db = JSON.parse(saved); } catch(e) {}
             }
@@ -806,7 +819,7 @@
         }
 
         function saveData() {
-            localStorage.setItem('mi_dinero_db_v10', JSON.stringify(db));
+            localStorage.setItem('mi_dinero_db_v11', JSON.stringify(db));
         }
 
         /* --- COTIZACIÓN DÓLAR EN VIVO --- */
@@ -862,6 +875,7 @@
             }
         }
 
+        /* --- CAMBIO Y SOMBREADO LIMPIO DE PESTAÑAS --- */
         function switchTab(tabId) {
             activeTab = tabId;
             ['dashboard', 'incomes', 'expenses', 'savings', 'bills'].forEach(t => {
@@ -869,12 +883,15 @@
                 if(el) el.classList.add('hidden');
                 const nav = document.getElementById(`nav-${t}`);
                 if(nav) {
-                    nav.classList.remove('bg-brand-500/10', 'text-brand-600', 'text-emerald-600', 'text-rose-600', 'text-amber-600', 'font-bold', 'border', 'border-gray-200', 'dark:border-slate-700');
+                    // Limpieza total del sombreado previo
+                    nav.classList.remove('bg-gray-100', 'dark:bg-slate-800', 'text-emerald-600', 'text-rose-600', 'text-brand-600', 'text-amber-600', 'font-bold');
                     nav.classList.add('text-gray-400');
                 }
             });
+
             const targetSec = document.getElementById(`sec-${tabId}`);
             if(targetSec) targetSec.classList.remove('hidden');
+
             const activeNav = document.getElementById(`nav-${tabId}`);
             if(activeNav && tabId !== 'dashboard') {
                 activeNav.classList.remove('text-gray-400');
@@ -1147,7 +1164,7 @@
                 const tx = {
                     id: Date.now(), type, currency, amount, account, category, necessity, isFixed, travelId,
                     isInstallment, currentInst, totalInst, desc, date,
-                    products: category === 'Supermercado' ? [{ name: 'Compra general', price: amount, necessity }] : []
+                    products: category === 'Supermercado' ? [] : []
                 };
                 db.transactions.unshift(tx);
             }
@@ -1217,7 +1234,7 @@
                 document.getElementById('savingModalTitle').innerText = 'Nuevo Frasco de Ahorro';
                 document.getElementById('jarName').value = '';
                 document.getElementById('jarCurrency').value = 'ARS';
-                document.getElementById('jarAmount').value = '0,00';
+                document.getElementById('jarAmount').value = ''; // En blanco con placeholder tenue
             }
             modal.classList.remove('hidden');
         }
@@ -1462,7 +1479,7 @@
             });
         }
 
-        // --- VIAJES CON COLOR E HISTORIAL FILTRADO ---
+        // --- VIAJES CON 10 COLORES ---
         function openNewTravelModal() { document.getElementById('newTravelModal').classList.remove('hidden'); }
         function saveNewTravel() {
             const name = document.getElementById('travelNameInput').value;
@@ -1530,7 +1547,7 @@
             document.getElementById('travelDetailBox').classList.add('hidden');
         }
 
-        // --- SUPERMERCADO Y DESGLOSE INTERACTIVO ---
+        // --- SUPERMERCADO Y MONTO TOTAL FIJO ---
         function openSupermarketModal(txId) {
             currentActiveSmId = txId;
             const tx = db.transactions.find(t => t.id === currentActiveSmId);
@@ -1552,12 +1569,6 @@
         }
 
         function saveSupermarketModal() {
-            if(currentActiveSmId) {
-                const tx = db.transactions.find(t => t.id === currentActiveSmId);
-                if(tx && tx.products && tx.products.length > 0) {
-                    tx.amount = tx.products.reduce((acc, p) => acc + p.price, 0);
-                }
-            }
             saveData();
             closeModal('supermarketModal');
             renderAll();
@@ -1589,7 +1600,8 @@
         function renderSmProductsModal() {
             const tx = db.transactions.find(t => t.id === currentActiveSmId);
             const list = document.getElementById('smProductsList');
-            const totalDisp = document.getElementById('smModalTotalDisplay');
+            const fixedTotalDisp = document.getElementById('smModalFixedTotalDisplay');
+            const summedDisp = document.getElementById('smModalSummedDisplay');
             if(!tx || !list) return;
             
             list.innerHTML = (!tx.products || tx.products.length === 0) ? '<p class="text-xs text-gray-400 text-center py-2">Sin productos desglosados en este ticket</p>' : '';
@@ -1610,7 +1622,10 @@
                     `;
                 });
             }
-            if(totalDisp) totalDisp.innerText = `$${fmt(currentSum)}`;
+
+            // El total del gasto se mantiene FIJO
+            if(fixedTotalDisp) fixedTotalDisp.innerText = `$${fmt(tx.amount)}`;
+            if(summedDisp) summedDisp.innerText = `$${fmt(currentSum)}`;
         }
 
         function renderSupermarketList() {
@@ -1819,7 +1834,7 @@
         function resetAllData() {
             const confirmWord = prompt("⚠️ ACCIÓN DE SEGURIDAD:\nPara borrar todos tus datos y reiniciar la app, escribe ELIMINAR en mayúsculas:");
             if(confirmWord === "ELIMINAR") {
-                localStorage.removeItem('mi_dinero_db_v10');
+                localStorage.removeItem('mi_dinero_db_v11');
                 location.reload();
             } else if (confirmWord !== null) {
                 alert("❌ Palabra incorrecta. No se realizaron cambios.");
