@@ -479,7 +479,7 @@
             </div>
         </div>
 
-        <!-- MODAL: NUEVO FRASCO DE AHORRO CON PLACEHOLDER -->
+        <!-- MODAL: NUEVO FRASCO DE AHORRO -->
         <div id="addSavingModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
@@ -671,6 +671,20 @@
                         </div>
                     </div>
 
+                    <!-- COPIAS DE SEGURIDAD (EXPORTAR E IMPORTAR) -->
+                    <div class="pt-2 border-t dark:border-slate-700 space-y-2">
+                        <p class="text-xs font-bold text-gray-900 dark:text-white">Copias de Seguridad de Datos</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="exportData()" class="py-2 bg-sky-50 dark:bg-slate-800 text-sky-600 rounded-xl text-xs font-bold border border-sky-200 dark:border-slate-700 hover:bg-sky-100 transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-download"></i> Exportar
+                            </button>
+                            <label class="py-2 bg-brand-50 dark:bg-slate-800 text-brand-600 rounded-xl text-xs font-bold border border-brand-200 dark:border-slate-700 hover:bg-brand-100 transition text-center cursor-pointer flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-upload"></i> Restaurar <input type="file" accept=".json" onchange="importData(event)" class="hidden">
+                            </label>
+                        </div>
+                        <p class="text-[10px] text-gray-400">Guarda un archivo de respaldo antes de actualizar la app.</p>
+                    </div>
+
                     <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
                         <div>
                             <p class="text-xs font-bold text-gray-900 dark:text-white">Modo Administrador</p>
@@ -734,6 +748,8 @@
 
     <!-- SCRIPT DE LÓGICA -->
     <script>
+        const STORAGE_KEY = 'mi_dinero_app_data';
+
         let db = {
             profileName: "Mi Dinero",
             avatarSeed: "Bot",
@@ -753,6 +769,41 @@
         let currentActiveSmId = null;
         let smModalBackupProducts = null;
         const monthNamesShort = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+
+        /* --- EXPORTAR E IMPORTAR RESPALDO DE DATOS --- */
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `mi_dinero_respaldo_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const parsed = JSON.parse(e.target.result);
+                        if(parsed && typeof parsed === 'object') {
+                            db = parsed;
+                            saveData();
+                            renderAll();
+                            closeModal('settingsModal');
+                            alert("¡Copia de seguridad restaurada con éxito!");
+                        } else {
+                            alert("El archivo no tiene un formato válido.");
+                        }
+                    } catch(err) {
+                        alert("Error al leer el archivo JSON.");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
 
         /* --- FORMATEO AUTOMÁTICO MIENTRAS SE ESCRIBE Y SOPORTE DE CENTAVOS --- */
         function formatCurrencyInput(input) {
@@ -792,10 +843,17 @@
         }
 
         function loadData() {
-            const saved = localStorage.getItem('mi_dinero_db_v11');
+            const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
                 try { db = JSON.parse(saved); } catch(e) {}
+            } else {
+                // Compatibilidad por si venían de versiones con clave anterior
+                const oldSaved = localStorage.getItem('mi_dinero_db_v10') || localStorage.getItem('mi_dinero_db_v9');
+                if(oldSaved) {
+                    try { db = JSON.parse(oldSaved); saveData(); } catch(e) {}
+                }
             }
+
             if (!db.savingsJars) db.savingsJars = [];
             if (!db.bills) db.bills = [];
             if (!db.travels) db.travels = [];
@@ -819,7 +877,7 @@
         }
 
         function saveData() {
-            localStorage.setItem('mi_dinero_db_v11', JSON.stringify(db));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
         }
 
         /* --- COTIZACIÓN DÓLAR EN VIVO --- */
@@ -883,7 +941,6 @@
                 if(el) el.classList.add('hidden');
                 const nav = document.getElementById(`nav-${t}`);
                 if(nav) {
-                    // Limpieza total del sombreado previo
                     nav.classList.remove('bg-gray-100', 'dark:bg-slate-800', 'text-emerald-600', 'text-rose-600', 'text-brand-600', 'text-amber-600', 'font-bold');
                     nav.classList.add('text-gray-400');
                 }
@@ -1234,7 +1291,7 @@
                 document.getElementById('savingModalTitle').innerText = 'Nuevo Frasco de Ahorro';
                 document.getElementById('jarName').value = '';
                 document.getElementById('jarCurrency').value = 'ARS';
-                document.getElementById('jarAmount').value = ''; // En blanco con placeholder tenue
+                document.getElementById('jarAmount').value = '';
             }
             modal.classList.remove('hidden');
         }
@@ -1623,7 +1680,6 @@
                 });
             }
 
-            // El total del gasto se mantiene FIJO
             if(fixedTotalDisp) fixedTotalDisp.innerText = `$${fmt(tx.amount)}`;
             if(summedDisp) summedDisp.innerText = `$${fmt(currentSum)}`;
         }
@@ -1694,7 +1750,6 @@
                         if(isThisMonth) {
                             mExpenseARS += t.amount;
                             
-                            // Si es supermercado con productos, tomar desglose
                             if(t.category === 'Supermercado' && t.products && t.products.length > 0) {
                                 t.products.forEach(p => {
                                     if(p.necessity === 'needed') neededTotARS += p.price;
@@ -1834,7 +1889,7 @@
         function resetAllData() {
             const confirmWord = prompt("⚠️ ACCIÓN DE SEGURIDAD:\nPara borrar todos tus datos y reiniciar la app, escribe ELIMINAR en mayúsculas:");
             if(confirmWord === "ELIMINAR") {
-                localStorage.removeItem('mi_dinero_db_v11');
+                localStorage.removeItem(STORAGE_KEY);
                 location.reload();
             } else if (confirmWord !== null) {
                 alert("❌ Palabra incorrecta. No se realizaron cambios.");
