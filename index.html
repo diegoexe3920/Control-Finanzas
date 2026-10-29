@@ -209,6 +209,21 @@
                     <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">Abrir ➔</span>
                 </div>
 
+                <!-- SECCIÓN DE RECORDATORIOS DE COBROS (UBICADA AQUÍ: ABAJO DE MIS TRANSFERENCIAS) -->
+                <div class="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 p-4 rounded-2xl space-y-3 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-xs text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> <span class="admin-editable">Recordatorios de Cobros (Mes)</span>
+                        </h3>
+                        <button onclick="openAddReminderModal()" class="px-2.5 py-1 bg-emerald-600 text-white rounded-lg text-[11px] font-bold hover:bg-emerald-700 transition">+ Nuevo Cobro</button>
+                    </div>
+                    <div id="dashboardRemindersList" class="space-y-2"></div>
+                    <div class="pt-2 border-t border-emerald-200/60 dark:border-emerald-900/40 flex justify-between items-center text-[11px]">
+                        <span class="text-emerald-700 dark:text-emerald-400 font-semibold">Historial de Cobros Recibidos:</span>
+                        <button onclick="openReminderHistoryModal()" class="text-emerald-800 dark:text-emerald-300 font-bold underline">Ver Historial ➔</button>
+                    </div>
+                </div>
+
                 <!-- CUENTAS Y MEDIOS DE PAGO -->
                 <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-3">
                     <div class="flex justify-between items-center">
@@ -420,7 +435,7 @@
             </button>
         </nav>
 
-        <!-- MODAL: MIS TRANSFERENCIAS (TEXTO MONTO EN BLANCO) -->
+        <!-- MODAL: MIS TRANSFERENCIAS -->
         <div id="transferModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
@@ -440,7 +455,6 @@
                     </div>
                     <div>
                         <label class="block text-[11px] font-semibold mb-1">Monto ($ ARS)</label>
-                        <!-- TEXTO EN BLANCO Y FONDO OSCURO EN EL INPUT DE MONTO -->
                         <input id="transferAmount" type="text" inputmode="decimal" oninput="formatCurrencyInput(this)" placeholder="0,00" class="w-full bg-slate-900 text-white border border-indigo-300/40 rounded-xl px-3 py-2 text-xs font-bold placeholder-gray-400">
                     </div>
                     <div>
@@ -533,7 +547,7 @@
             </div>
         </div>
 
-        <!-- MODAL: NUEVO / EDITAR VENCIMIENTO -->
+        <!-- MODAL: NUEVO / EDITAR VENCIMIENTO CON CUOTAS -->
         <div id="addBillModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
@@ -571,6 +585,25 @@
                             </select>
                         </div>
                     </div>
+                    
+                    <!-- OPCIÓN DE CUOTAS EN VENCIMIENTOS -->
+                    <div class="space-y-2 pt-1 border-t dark:border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <input id="billIsInstallment" type="checkbox" onchange="toggleBillInstallmentInputs()" class="w-4 h-4 text-amber-600 rounded">
+                            <label for="billIsInstallment" class="text-xs font-semibold">💳 Es un pago en cuotas</label>
+                        </div>
+                        <div id="billInstallmentBox" class="hidden grid grid-cols-2 gap-2 pt-1">
+                            <div>
+                                <label class="block text-[10px] font-semibold mb-1">Cuota N°</label>
+                                <input id="billCurrentInstallment" type="number" min="1" value="1" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-xs font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold mb-1">Total Cuotas</label>
+                                <input id="billTotalInstallments" type="number" min="1" value="3" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-xs font-bold">
+                            </div>
+                        </div>
+                    </div>
+
                     <div>
                         <label class="block text-xs font-semibold mb-1">Fecha de vencimiento</label>
                         <input id="billDate" type="date" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
@@ -620,6 +653,75 @@
 
                     <button onclick="confirmPayBill()" class="w-full py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold">Confirmar Pago y Descontar</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- MODAL: NUEVO / EDITAR RECORDATORIO DE COBRO -->
+        <div id="reminderModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 id="reminderModalTitle" class="font-bold text-base">Nuevo Cobro a Recibir</h3>
+                    <button onclick="closeModal('reminderModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form onsubmit="handleSaveReminder(event)" class="space-y-3">
+                    <input type="hidden" id="reminderEditId">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Concepto / Quién debe pagar</label>
+                        <input id="reminderName" type="text" required placeholder="Ej: Alquiler local, Préstamo Juan" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Monto a cobrar</label>
+                            <input id="reminderAmount" type="text" inputmode="decimal" oninput="formatCurrencyInput(this)" required placeholder="0,00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1">Moneda</label>
+                            <select id="reminderCurrency" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-emerald-600">
+                                <option value="ARS">$ ARS</option>
+                                <option value="USD">US$ USD</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Cuenta donde se recibirá el dinero</label>
+                        <select id="reminderAccount" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs"></select>
+                    </div>
+
+                    <!-- OPCIÓN DE CUOTAS EN RECORDATORIOS -->
+                    <div class="space-y-2 pt-1 border-t dark:border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <input id="reminderIsInstallment" type="checkbox" onchange="toggleReminderInstallmentInputs()" class="w-4 h-4 text-emerald-600 rounded">
+                            <label for="reminderIsInstallment" class="text-xs font-semibold">💳 Es un cobro en cuotas</label>
+                        </div>
+                        <div id="reminderInstallmentBox" class="hidden grid grid-cols-2 gap-2 pt-1">
+                            <div>
+                                <label class="block text-[10px] font-semibold mb-1">Cuota N° actual</label>
+                                <input id="reminderCurrentInstallment" type="number" min="1" value="1" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-xs font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold mb-1">Total Cuotas</label>
+                                <input id="reminderTotalInstallments" type="number" min="1" value="6" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-xs font-bold">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Fecha límite / programada</label>
+                        <input id="reminderDate" type="date" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold">Guardar Recordatorio</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: HISTORIAL DE RECORDATORIOS DE COBROS -->
+        <div id="reminderHistoryModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 class="font-bold text-base flex items-center gap-2"><i class="fa-solid fa-history text-emerald-500"></i> Historial de Cobros Recibidos</h3>
+                    <button onclick="closeModal('reminderHistoryModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="reminderHistoryList" class="space-y-2"></div>
             </div>
         </div>
 
@@ -733,6 +835,18 @@
                             <button onclick="saveProfileName()" class="px-3 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold">Guardar</button>
                         </div>
                     </div>
+
+                    <!-- MODO ADMIN INTERRUPTOR RESTAURADO -->
+                    <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
+                        <div>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">Modo Administrador</p>
+                            <p class="text-[10px] text-gray-400">Edita cualquier texto tocándolo</p>
+                        </div>
+                        <button onclick="toggleAdminMode()" id="adminToggleBtn" class="w-12 h-6 bg-gray-300 rounded-full p-1 transition duration-200">
+                            <div id="adminDot" class="w-4 h-4 bg-white rounded-full shadow-md transition transform translate-x-0"></div>
+                        </button>
+                    </div>
+
                     <div class="pt-2 border-t dark:border-slate-700 space-y-2">
                         <p class="text-xs font-bold text-gray-900 dark:text-white">Copias de Seguridad</p>
                         <div class="grid grid-cols-2 gap-2">
@@ -758,13 +872,31 @@
         <div id="avatarModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
-                    <h3 class="font-bold text-base">Elige tu Avatar</h3>
+                    <h3 class="font-bold text-base">Elige tu Avatar o Foto</h3>
                     <button onclick="closeModal('avatarModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
+                
+                <div class="p-3 bg-brand-50 dark:bg-slate-800 rounded-2xl border border-brand-200 dark:border-slate-700 flex justify-between items-center">
+                    <div>
+                        <p class="text-xs font-bold">Subir foto personal</p>
+                        <p class="text-[10px] text-gray-500">Desde la galería de tu dispositivo</p>
+                    </div>
+                    <label class="px-3 py-1.5 bg-brand-600 text-white rounded-xl text-xs font-bold cursor-pointer hover:bg-brand-700 transition">
+                        Subir <input type="file" id="customAvatarInput" accept="image/*" onchange="uploadCustomPhoto(event)" class="hidden">
+                    </label>
+                </div>
+
                 <div class="grid grid-cols-3 gap-3">
-                    <div onclick="selectAvatar('Bot')" class="cursor-pointer p-2 rounded-2xl border flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Bot" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Robot</span></div>
-                    <div onclick="selectAvatar('Cat')" class="cursor-pointer p-2 rounded-2xl border flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cat" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Gatito</span></div>
-                    <div onclick="selectAvatar('Smile')" class="cursor-pointer p-2 rounded-2xl border flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Smile" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Sonrisa</span></div>
+                    <div onclick="selectAvatar('Bot')" class="cursor-pointer p-2 rounded-2xl border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Bot" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Robot</span></div>
+                    <div onclick="selectAvatar('Cat')" class="cursor-pointer p-2 rounded-2xl border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cat" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Gatito</span></div>
+                    <div onclick="selectAvatar('Smile')" class="cursor-pointer p-2 rounded-2xl border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Smile" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Sonrisa</span></div>
+                    <div onclick="selectAvatar('Hero')" class="cursor-pointer p-2 rounded-2xl border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Hero" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Héroe</span></div>
+                    <div onclick="selectAvatar('Star')" class="cursor-pointer p-2 rounded-2xl border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Star" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Estrella</span></div>
+                    <div onclick="selectAvatar('Neon')" class="cursor-pointer p-2 rounded-2xl border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Neon" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Neón</span></div>
+                    <div onclick="selectAvatar('Owl')" class="cursor-pointer p-2 rounded-2xl border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Owl" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Búho</span></div>
+                    <div onclick="selectAvatar('Alien')" class="cursor-pointer p-2 rounded-2xl border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Alien" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Alien</span></div>
+                    <div onclick="selectAvatar('Monster')" class="cursor-pointer p-2 rounded-2xl border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Monster" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Monstruo</span></div>
+                    <div onclick="selectAvatar('Ninja')" class="cursor-pointer p-2 rounded-2xl border dark:border-slate-700 flex flex-col items-center"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=Ninja" class="w-12 h-12"><span class="text-[10px] mt-1 font-semibold">Ninja</span></div>
                 </div>
             </div>
         </div>
@@ -788,12 +920,13 @@
             savingsJars: [],
             bills: [],
             travels: [],
-            accounts: ["Efectivo", "Mercado Pago", "Banco"]
+            accounts: ["Efectivo", "Mercado Pago", "Banco"],
+            reminders: [],         // Nuevos recordatorios de cobro pendientes
+            reminderHistory: []    // Historial de cobros listos
         };
 
         let activeTab = 'dashboard';
         let billsSubtab = 'pending';
-        let currentActiveSmId = null;
         const monthNamesFull = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         const monthNamesShort = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
@@ -845,6 +978,8 @@
             if (!db.bills) db.bills = [];
             if (!db.travels) db.travels = [];
             if (!db.transfers) db.transfers = [];
+            if (!db.reminders) db.reminders = [];
+            if (!db.reminderHistory) db.reminderHistory = [];
             if (!db.accounts || db.accounts.length === 0) db.accounts = ["Efectivo", "Mercado Pago", "Banco"];
 
             if (db.darkMode) document.documentElement.classList.add('dark');
@@ -855,6 +990,7 @@
                 if(greeting) greeting.innerText = `Hola, ${db.profileName}`;
             }
 
+            updateAvatarDisplay();
             renderAccountsOptions();
             renderDashboardAccounts();
             fetchLiveDolarRate();
@@ -992,8 +1128,72 @@
         function openSettingsModal() { document.getElementById('settingsModal').classList.remove('hidden'); }
         function openAvatarModal() { document.getElementById('avatarModal').classList.remove('hidden'); }
 
+        /* --- AVATARES Y SUBIR FOTO --- */
+        function selectAvatar(seed) {
+            db.avatarSeed = seed;
+            db.customPhotoUrl = null;
+            updateAvatarDisplay();
+            saveData();
+            closeModal('avatarModal');
+        }
+
+        function uploadCustomPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    db.customPhotoUrl = e.target.result;
+                    updateAvatarDisplay();
+                    saveData();
+                    closeModal('avatarModal');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateAvatarDisplay() {
+            const avatar = document.getElementById('headerAvatar');
+            if(avatar) {
+                if(db.customPhotoUrl) {
+                    avatar.src = db.customPhotoUrl;
+                } else {
+                    avatar.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${db.avatarSeed}`;
+                }
+            }
+        }
+
+        /* --- MODO ADMIN --- */
+        function toggleAdminMode() {
+            db.adminMode = !db.adminMode;
+            const notice = document.getElementById('adminNotice');
+            const dot = document.getElementById('adminDot');
+            const btn = document.getElementById('adminToggleBtn');
+
+            if(db.adminMode) {
+                notice.classList.remove('hidden');
+                document.body.classList.add('admin-active');
+                if(dot) dot.style.transform = 'translateX(24px)';
+                if(btn) { btn.classList.remove('bg-gray-300'); btn.classList.add('bg-amber-500'); }
+            } else {
+                notice.classList.add('hidden');
+                document.body.classList.remove('admin-active');
+                if(dot) dot.style.transform = 'translateX(0px)';
+                if(btn) { btn.classList.remove('bg-amber-500'); btn.classList.add('bg-gray-300'); }
+            }
+        }
+
+        function editAdminText(key, labelName) {
+            if(!db.adminMode) return;
+            const el = document.getElementById(`txt_${key}`);
+            if(!el) return;
+            const newVal = prompt(`Editar "${labelName}":`, el.innerText);
+            if(newVal !== null && newVal.trim() !== "") {
+                el.innerText = newVal.trim();
+            }
+        }
+
         function renderAccountsOptions() {
-            ['txAccount', 'jarAccount', 'payBillAccount', 'transferFromAccount', 'transferToAccount'].forEach(id => {
+            ['txAccount', 'jarAccount', 'payBillAccount', 'transferFromAccount', 'transferToAccount', 'reminderAccount'].forEach(id => {
                 const select = document.getElementById(id);
                 if(select) {
                     select.innerHTML = '';
@@ -1066,172 +1266,205 @@
             }
         }
 
-        function openTransferModal() {
+        /* --- LÓGICA DE RECORDATORIOS DE COBROS CON CUOTAS AUTOMÁTICAS --- */
+        function openAddReminderModal(editId = null) {
             renderAccountsOptions();
-            document.getElementById('transferAmount').value = '';
-            document.getElementById('transferObs').value = '';
-            renderTransfersHistory();
-            document.getElementById('transferModal').classList.remove('hidden');
-        }
-
-        function executeTransfer() {
-            const fromAcc = document.getElementById('transferFromAccount').value;
-            const toAcc = document.getElementById('transferToAccount').value;
-            const amount = parseInputValue(document.getElementById('transferAmount').value);
-            const obs = document.getElementById('transferObs').value || 'Transferencia entre cuentas';
-
-            if(fromAcc === toAcc) { alert("Origen y destino deben ser distintos."); return; }
-            if(amount <= 0) { alert("Ingresa un monto válido."); return; }
-
-            const today = new Date().toISOString().split('T')[0];
-            db.transfers.unshift({
-                id: Date.now(),
-                fromAccount: fromAcc,
-                toAccount: toAcc,
-                amount: amount,
-                obs: obs,
-                date: today
-            });
-
-            saveData();
-            renderTransfersHistory();
-            renderDashboardAccounts();
-            renderAll();
-            document.getElementById('transferAmount').value = '';
-            document.getElementById('transferObs').value = '';
-            alert("¡Transferencia realizada!");
-        }
-
-        function deleteTransfer(id) {
-            if(confirm('¿Eliminar y deshacer esta transferencia?')) {
-                db.transfers = db.transfers.filter(tr => tr.id != id);
-                saveData();
-                renderTransfersHistory();
-                renderDashboardAccounts();
-                renderAll();
-            }
-        }
-
-        function renderTransfersHistory() {
-            const list = document.getElementById('transfersHistoryList');
-            if(!list) return;
-            list.innerHTML = db.transfers.length === 0 ? '<p class="text-xs text-gray-400 text-center py-3">Sin transferencias registradas</p>' : '';
-            db.transfers.forEach(tr => {
-                list.innerHTML += `
-                    <div class="bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-gray-200 dark:border-slate-700 text-xs flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-indigo-600 dark:text-indigo-400">${tr.fromAccount} ➔ ${tr.toAccount}</p>
-                            <p class="text-[10px] text-gray-400">${formatDateDMY(tr.date)} • ${tr.obs}</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-extrabold text-gray-900 dark:text-white">$${fmt(tr.amount)}</span>
-                            <button onclick="deleteTransfer(${tr.id})" class="text-rose-500 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function updateTxCategories() {
-            const type = document.getElementById('txType').value;
-            const cat = document.getElementById('txCategory');
-            const extra = document.getElementById('expenseExtraOptions');
-            if(type === 'expense') {
-                cat.innerHTML = `
-                    <option value="Servicios">💡 Servicios</option>
-                    <option value="Casa">🏠 Casa</option>
-                    <option value="Préstamo">🏦 Préstamo</option>
-                    <option value="Combustible">⛽ Combustible</option>
-                    <option value="Supermercado">🛒 Supermercado</option>
-                    <option value="Panadería">🥖 Panadería</option>
-                    <option value="Carnicería">🥩 Carnicería</option>
-                    <option value="Farmacia">💊 Farmacia</option>
-                    <option value="Comida">🍔 Comida</option>
-                    <option value="Verdulería">🥦 Verdulería</option>
-                    <option value="Kiosco">🍬 Kiosco</option>
-                    <option value="Ropa">👕 Ropa</option>
-                    <option value="Regalo">🎁 Regalo</option>
-                    <option value="Arreglo">🛠️ Arreglo</option>
-                    <option value="Ferretería">🔧 Ferretería</option>
-                    <option value="Otros">📦 Otros</option>
-                `;
-                extra.classList.remove('hidden');
-            } else {
-                cat.innerHTML = `
-                    <option value="Sueldo">💼 Sueldo</option>
-                    <option value="Ventas">📈 Ventas</option>
-                    <option value="Regalo">🎁 Regalo</option>
-                    <option value="Otros">📦 Otros</option>
-                `;
-                extra.classList.add('hidden');
-            }
-        }
-
-        function populateTravelSelect() {
-            const sel = document.getElementById('txTravelId');
-            const filterSel = document.getElementById('travelFilter');
-            if(!sel || !filterSel) return;
-            sel.innerHTML = '<option value="">Ninguno</option>';
-            filterSel.innerHTML = '<option value="all">🌴 Viaje (Todos)</option>';
-            db.travels.forEach(tr => {
-                sel.innerHTML += `<option value="${tr.id}">${tr.name}</option>`;
-                filterSel.innerHTML += `<option value="${tr.id}">${tr.name}</option>`;
-            });
-        }
-
-        function handleSaveTx(e) {
-            e.preventDefault();
-            const editId = document.getElementById('txEditId').value;
-            const type = document.getElementById('txType').value;
-            const currency = document.getElementById('txCurrency').value || 'ARS';
-            const amount = parseInputValue(document.getElementById('txAmount').value);
-            const account = document.getElementById('txAccount').value;
-            const category = document.getElementById('txCategory').value;
-            const desc = document.getElementById('txDesc').value || category;
-            const date = document.getElementById('txDate').value;
-            const necessity = type === 'expense' ? document.getElementById('txNecessity').value : 'needed';
-            const isFixed = type === 'expense' ? document.getElementById('txIsFixed').value === 'yes' : false;
-            const travelId = type === 'expense' ? document.getElementById('txTravelId').value : '';
-
+            const modal = document.getElementById('reminderModal');
             if(editId) {
-                const tx = db.transactions.find(t => t.id == editId);
-                if(tx) {
-                    tx.type = type; tx.currency = currency; tx.amount = amount; tx.account = account; tx.category = category;
-                    tx.necessity = necessity; tx.isFixed = isFixed; tx.travelId = travelId; tx.desc = desc; tx.date = date;
+                const r = db.reminders.find(x => x.id == editId);
+                if(r) {
+                    document.getElementById('reminderEditId').value = r.id;
+                    document.getElementById('reminderModalTitle').innerText = 'Editar Recordatorio de Cobro';
+                    document.getElementById('reminderName').value = r.name;
+                    document.getElementById('reminderAmount').value = fmt(r.amount);
+                    document.getElementById('reminderCurrency').value = r.currency || 'ARS';
+                    document.getElementById('reminderAccount').value = r.account || db.accounts[0];
+                    document.getElementById('reminderDate').value = r.date;
+                    document.getElementById('reminderIsInstallment').checked = !!r.isInstallment;
+                    toggleReminderInstallmentInputs();
+                    if(r.isInstallment) {
+                        document.getElementById('reminderCurrentInstallment').value = r.currentInst || 1;
+                        document.getElementById('reminderTotalInstallments').value = r.totalInst || 6;
+                    }
                 }
             } else {
-                db.transactions.unshift({
-                    id: Date.now(), type, currency, amount, account, category, necessity, isFixed, travelId, desc, date, products: []
+                document.getElementById('reminderEditId').value = '';
+                document.getElementById('reminderModalTitle').innerText = 'Nuevo Cobro a Recibir';
+                document.getElementById('reminderName').value = '';
+                document.getElementById('reminderAmount').value = '';
+                document.getElementById('reminderCurrency').value = 'ARS';
+                document.getElementById('reminderDate').valueAsDate = new Date();
+                document.getElementById('reminderIsInstallment').checked = false;
+                toggleReminderInstallmentInputs();
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function toggleReminderInstallmentInputs() {
+            const isInst = document.getElementById('reminderIsInstallment').checked;
+            document.getElementById('reminderInstallmentBox').classList.toggle('hidden', !isInst);
+        }
+
+        function handleSaveReminder(e) {
+            e.preventDefault();
+            const editId = document.getElementById('reminderEditId').value;
+            const name = document.getElementById('reminderName').value;
+            const amount = parseInputValue(document.getElementById('reminderAmount').value);
+            const currency = document.getElementById('reminderCurrency').value || 'ARS';
+            const account = document.getElementById('reminderAccount').value;
+            const date = document.getElementById('reminderDate').value;
+            const isInstallment = document.getElementById('reminderIsInstallment').checked;
+            const currentInst = isInstallment ? parseInt(document.getElementById('reminderCurrentInstallment').value) || 1 : 1;
+            const totalInst = isInstallment ? parseInt(document.getElementById('reminderTotalInstallments').value) || 1 : 1;
+
+            if(editId) {
+                const r = db.reminders.find(x => x.id == editId);
+                if(r) {
+                    r.name = name; r.amount = amount; r.currency = currency; r.account = account; r.date = date;
+                    r.isInstallment = isInstallment; r.currentInst = currentInst; r.totalInst = totalInst;
+                }
+            } else {
+                db.reminders.push({
+                    id: Date.now(), name, amount, currency, account, date, isInstallment, currentInst, totalInst
                 });
             }
 
             saveData();
-            closeModal('addTxModal');
-            document.getElementById('txForm').reset();
-            renderAll();
+            closeModal('reminderModal');
+            renderReminders();
         }
 
-        function editTx(id) {
-            const t = db.transactions.find(x => x.id == id);
-            if(!t) return;
-            openModal('addTxModal', t.type);
-            document.getElementById('txEditId').value = t.id;
-            document.getElementById('txType').value = t.type;
-            document.getElementById('txCurrency').value = t.currency || 'ARS';
-            updateTxCategories();
-            document.getElementById('txAmount').value = fmt(t.amount);
-            document.getElementById('txAccount').value = t.account;
-            document.getElementById('txCategory').value = t.category;
-            document.getElementById('txDesc').value = t.desc;
-            document.getElementById('txDate').value = t.date;
-        }
+        function markReminderDone(reminderId) {
+            const r = db.reminders.find(x => x.id === reminderId);
+            if(!r) return;
 
-        function deleteTx(id) {
-            if(confirm('¿Eliminar este movimiento?')) {
-                db.transactions = db.transactions.filter(t => t.id != id);
-                saveData();
-                renderAll();
+            const today = new Date().toISOString().split('T')[0];
+            const monthLabel = getMonthLabelFromIso(r.date);
+
+            // 1. Agregar como ingreso automático a la cuenta seleccionada
+            const txId = Date.now();
+            db.transactions.unshift({
+                id: txId, type: 'income', currency: r.currency || 'ARS', amount: r.amount, account: r.account || db.accounts[0],
+                category: 'Ventas', desc: `Cobro: ${r.name} ${r.isInstallment ? `(${r.currentInst}/${r.totalInst})` : ''}`, date: today, products: []
+            });
+
+            // 2. Registrar en historial de cobros con etiqueta de mes
+            if(!db.reminderHistory) db.reminderHistory = [];
+            db.reminderHistory.unshift({
+                id: txId, name: r.name, amount: r.amount, currency: r.currency, account: r.account,
+                date: today, monthLabel: monthLabel, isInstallment: r.isInstallment, currentInst: r.currentInst, totalInst: r.totalInst
+            });
+
+            // 3. Si es en cuotas y currentInst < totalInst, generar automáticamente el próximo pago (cuota siguiente)
+            if(r.isInstallment && r.currentInst < r.totalInst) {
+                let nextDateObj = new Date(r.date);
+                nextDateObj.setMonth(nextDateObj.getMonth() + 1);
+                const nextDateStr = nextDateObj.toISOString().split('T')[0];
+
+                db.reminders.push({
+                    id: Date.now() + 10,
+                    name: r.name,
+                    amount: r.amount,
+                    currency: r.currency,
+                    account: r.account,
+                    date: nextDateStr,
+                    isInstallment: true,
+                    currentInst: r.currentInst + 1,
+                    totalInst: r.totalInst
+                });
             }
+
+            // 4. Remover el recordatorio actual de la lista de pendientes
+            db.reminders = db.reminders.filter(x => x.id !== reminderId);
+
+            saveData();
+            renderReminders();
+            renderAll();
+            alert(`¡Cobro de $${fmt(r.amount)} registrado con éxito y sumado a ${r.account}!\n${r.isInstallment && r.currentInst < r.totalInst ? `Próxima cuota ${r.currentInst + 1}/${r.totalInst} programada automáticamente.` : ''}`);
+        }
+
+        function deleteReminder(id) {
+            if(confirm("¿Eliminar este recordatorio de cobro?")) {
+                db.reminders = db.reminders.filter(x => x.id != id);
+                saveData();
+                renderReminders();
+            }
+        }
+
+        function deleteReminderHistory(id) {
+            if(confirm("¿Eliminar este registro del historial?")) {
+                db.reminderHistory = db.reminderHistory.filter(x => x.id != id);
+                saveData();
+                renderReminderHistoryList();
+            }
+        }
+
+        function openReminderHistoryModal() {
+            renderReminderHistoryList();
+            document.getElementById('reminderHistoryModal').classList.remove('hidden');
+        }
+
+        function renderReminderHistoryList() {
+            const list = document.getElementById('reminderHistoryList');
+            if(!list) return;
+            list.innerHTML = (!db.reminderHistory || db.reminderHistory.length === 0) ? '<p class="text-xs text-gray-400 text-center py-4">Sin historial de cobros recibidos</p>' : '';
+            if(db.reminderHistory) {
+                db.reminderHistory.forEach(h => {
+                    const currSymbol = h.currency === 'USD' ? 'US$' : '$';
+                    list.innerHTML += `
+                        <div class="bg-gray-50 dark:bg-slate-800 p-3 rounded-2xl border border-gray-200 dark:border-slate-700 text-xs flex justify-between items-center">
+                            <div>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="font-bold text-emerald-600 dark:text-emerald-400">✔️ ${h.name}</span>
+                                    <span class="bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-[9px] px-2 py-0.5 rounded-full font-bold">🗓️ ${h.monthLabel}</span>
+                                    ${h.isInstallment ? `<span class="bg-sky-100 text-sky-800 text-[9px] px-1.5 py-0.5 rounded font-bold">Cuota ${h.currentInst}/${h.totalInst}</span>` : ''}
+                                </div>
+                                <p class="text-[10px] text-gray-400 mt-1">Cobrado el ${formatDateDMY(h.date)} en ${h.account}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-extrabold text-emerald-600">${currSymbol}${fmt(h.amount)}</span>
+                                <button onclick="deleteReminderHistory(${h.id})" class="text-rose-500 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function renderReminders() {
+            const container = document.getElementById('dashboardRemindersList');
+            if(!container) return;
+            container.innerHTML = (!db.reminders || db.reminders.length === 0) ? '<p class="text-xs text-gray-400 text-center py-2">No hay cobros pendientes anotados</p>' : '';
+            if(db.reminders) {
+                db.reminders.forEach(r => {
+                    const currSymbol = r.currency === 'USD' ? 'US$' : '$';
+                    const monthLabel = getMonthLabelFromIso(r.date);
+                    container.innerHTML += `
+                        <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-emerald-200 dark:border-emerald-900/50 shadow-sm flex justify-between items-center text-xs">
+                            <div>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="font-bold text-gray-900 dark:text-white">${r.name}</span>
+                                    <span class="bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-[9px] px-1.5 py-0.5 rounded-full font-bold">📅 ${monthLabel}</span>
+                                    ${r.isInstallment ? `<span class="bg-sky-100 text-sky-800 text-[9px] px-1.5 py-0.5 rounded font-bold">Cuota ${r.currentInst}/${r.totalInst}</span>` : ''}
+                                </div>
+                                <p class="text-[10px] text-gray-400 mt-0.5">Destino: ${r.account} • Vence: ${formatDateDMY(r.date)}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-extrabold text-emerald-600">${currSymbol}${fmt(r.amount)}</span>
+                                <button onclick="markReminderDone(${r.id})" class="px-2.5 py-1 bg-emerald-600 text-white rounded-lg text-[11px] font-bold hover:bg-emerald-700 shadow transition">Listo</button>
+                                <button onclick="openAddReminderModal(${r.id})" class="text-sky-600 p-1"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                                <button onclick="deleteReminder(${r.id})" class="text-rose-500 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        /* --- VENCIMIENTOS EN CUOTAS --- */
+        function toggleBillInstallmentInputs() {
+            const isInst = document.getElementById('billIsInstallment').checked;
+            document.getElementById('billInstallmentBox').classList.toggle('hidden', !isInst);
         }
 
         function openAddBillModal(editId = null) {
@@ -1247,6 +1480,12 @@
                     document.getElementById('billDate').value = bill.date;
                     document.getElementById('billObservation').value = bill.observation || '';
                     document.getElementById('billIsMonthly').checked = !!bill.isMonthly;
+                    document.getElementById('billIsInstallment').checked = !!bill.isInstallment;
+                    toggleBillInstallmentInputs();
+                    if(bill.isInstallment) {
+                        document.getElementById('billCurrentInstallment').value = bill.currentInst || 1;
+                        document.getElementById('billTotalInstallments').value = bill.totalInst || 3;
+                    }
                 }
             } else {
                 document.getElementById('billEditId').value = '';
@@ -1257,6 +1496,8 @@
                 document.getElementById('billDate').valueAsDate = new Date();
                 document.getElementById('billObservation').value = '';
                 document.getElementById('billIsMonthly').checked = false;
+                document.getElementById('billIsInstallment').checked = false;
+                toggleBillInstallmentInputs();
             }
             modal.classList.remove('hidden');
         }
@@ -1271,16 +1512,21 @@
             const date = document.getElementById('billDate').value;
             const observation = document.getElementById('billObservation').value;
             const isMonthly = document.getElementById('billIsMonthly').checked;
+            const isInstallment = document.getElementById('billIsInstallment').checked;
+            const currentInst = isInstallment ? parseInt(document.getElementById('billCurrentInstallment').value) || 1 : 1;
+            const totalInst = isInstallment ? parseInt(document.getElementById('billTotalInstallments').value) || 1 : 1;
 
             if(editId) {
                 const bill = db.bills.find(b => b.id == editId);
                 if(bill) { 
                     bill.name = name; bill.category = category; bill.amount = amount; 
-                    bill.currency = currency; bill.date = date; bill.observation = observation; bill.isMonthly = isMonthly; 
+                    bill.currency = currency; bill.date = date; bill.observation = observation; bill.isMonthly = isMonthly;
+                    bill.isInstallment = isInstallment; bill.currentInst = currentInst; bill.totalInst = totalInst;
                 }
             } else {
                 db.bills.push({ 
                     id: Date.now(), name, category, amount, currency, date, observation, isMonthly, 
+                    isInstallment, currentInst, totalInst,
                     paid: false, partialRemaining: 0, partialHistory: [] 
                 });
             }
@@ -1345,7 +1591,7 @@
             const txId = Date.now();
             db.transactions.unshift({
                 id: txId, type: 'expense', currency: bill.currency || 'ARS', amount: payAmount, account: account, category: bill.category,
-                necessity: 'needed', isFixed: false, travelId: '', desc: `Pago ${isPartial ? 'Parcial' : 'Total'}: ${bill.name}`, date: today, products: []
+                necessity: 'needed', isFixed: false, travelId: '', desc: `Pago ${isPartial ? 'Parcial' : 'Total'}: ${bill.name} ${bill.isInstallment ? `(Cuota ${bill.currentInst}/${bill.totalInst})` : ''}`, date: today, products: []
             });
 
             if(!bill.partialHistory) bill.partialHistory = [];
@@ -1379,6 +1625,9 @@
                         date: nextDateStr,
                         observation: bill.observation,
                         isMonthly: true,
+                        isInstallment: bill.isInstallment,
+                        currentInst: bill.isInstallment ? bill.currentInst + 1 : 1,
+                        totalInst: bill.totalInst,
                         paid: false,
                         partialRemaining: 0,
                         partialHistory: []
@@ -1476,6 +1725,7 @@
                                         <div class="flex items-center gap-1.5 flex-wrap">
                                             <span class="text-xs font-bold">${b.name}</span>
                                             <span class="bg-amber-100 text-amber-800 text-[9px] px-1.5 py-0.5 rounded-full font-bold">📅 ${monthLabel}</span>
+                                            ${b.isInstallment ? `<span class="bg-sky-100 text-sky-800 text-[9px] px-1.5 py-0.5 rounded font-bold">Cuota ${b.currentInst}/${b.totalInst}</span>` : ''}
                                             ${isFaltante ? '<span class="bg-rose-500 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">FALTANTE</span>' : ''}
                                             ${b.isMonthly ? '<span class="bg-indigo-100 text-indigo-700 text-[9px] px-1.5 py-0.5 rounded font-bold">Mensual</span>' : ''}
                                         </div>
@@ -1496,7 +1746,7 @@
                     });
                 }
             } 
-            // 2. MENSUALES (SIN BOTÓN DE PAGO DIRECTO, SOLO VISUALIZACIÓN E ETIQUETAS)
+            // 2. MENSUALES
             else if(billsSubtab === 'monthly') {
                 let monthlyList = filteredBills.filter(b => b.isMonthly && !b.paid);
 
@@ -1514,6 +1764,7 @@
                                         <div class="flex items-center gap-1.5 flex-wrap">
                                             <span class="text-xs font-bold">🔁 ${b.name}</span>
                                             <span class="bg-amber-500 text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-extrabold tracking-wide uppercase shadow-sm">🗓️ ${monthLabel}</span>
+                                            ${b.isInstallment ? `<span class="bg-sky-100 text-sky-800 text-[9px] px-1.5 py-0.5 rounded font-bold">Cuota ${b.currentInst}/${b.totalInst}</span>` : ''}
                                         </div>
                                         <p class="text-[10px] text-gray-400 mt-1">Fecha Vencimiento: ${formatDateDMY(b.date)} • ${b.category}</p>
                                         ${b.observation ? `<p class="text-[10px] text-indigo-500 italic">Obs: ${b.observation}</p>` : ''}
@@ -1542,13 +1793,14 @@
                             historyItems.push({
                                 billId: b.id, name: b.name, category: b.category, currency: b.currency, date: ph.date,
                                 amountPaid: ph.amountPaid, isPartial: ph.type === 'partial', remaining: ph.remainingAfter,
-                                account: ph.account, historyTxId: ph.id
+                                account: ph.account, historyTxId: ph.id, isInstallment: b.isInstallment, currentInst: b.currentInst, totalInst: b.totalInst
                             });
                         });
                     } else if(b.paid) {
                         historyItems.push({
                             billId: b.id, name: b.name, category: b.category, currency: b.currency, date: b.paidDate || b.date,
-                            amountPaid: b.amount, isPartial: false, account: b.paidAccount || 'Efectivo', historyTxId: null
+                            amountPaid: b.amount, isPartial: false, account: b.paidAccount || 'Efectivo', historyTxId: null,
+                            isInstallment: b.isInstallment, currentInst: b.currentInst, totalInst: b.totalInst
                         });
                     }
                 });
@@ -1567,6 +1819,7 @@
                                         <div class="flex items-center gap-1.5 flex-wrap">
                                             <span class="text-xs font-bold ${item.isPartial ? 'text-rose-600' : 'text-gray-900 dark:text-white'}">${item.isPartial ? '⚠️ Pago Parcial:' : '✔️'} ${item.name}</span>
                                             <span class="bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-300 text-[9px] px-2 py-0.5 rounded-full font-bold">🗓️ ${monthLabel}</span>
+                                            ${item.isInstallment ? `<span class="bg-sky-100 text-sky-800 text-[9px] px-1.5 py-0.5 rounded font-bold">Cuota ${item.currentInst}/${item.totalInst}</span>` : ''}
                                             ${item.isPartial ? '<span class="bg-rose-500 text-white text-[8px] px-1.5 py-0.5 rounded font-bold uppercase">FALTANTE $'+fmt(item.remaining)+'</span>' : ''}
                                         </div>
                                         <p class="text-[10px] text-gray-400">Abonado el ${formatDateDMY(item.date)} con ${item.account} • ${item.category}</p>
@@ -1663,6 +1916,7 @@
             renderHistory();
             renderSavingsJars();
             renderBills();
+            renderReminders();
             renderAnnualChart();
             renderDashboardAccounts();
             populateTravelSelect();
@@ -1866,6 +2120,41 @@
             if(confirmWord === "ELIMINAR") {
                 localStorage.removeItem(STORAGE_KEY);
                 location.reload();
+            }
+        }
+
+        /* --- EXPORTAR E IMPORTAR RESPALDO --- */
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `mi_dinero_respaldo_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const parsed = JSON.parse(e.target.result);
+                        if(parsed && typeof parsed === 'object') {
+                            db = parsed;
+                            saveData();
+                            renderAll();
+                            closeModal('settingsModal');
+                            alert("¡Copia de seguridad restaurada con éxito!");
+                        } else {
+                            alert("El archivo no tiene un formato válido.");
+                        }
+                    } catch(err) {
+                        alert("Error al leer el archivo JSON.");
+                    }
+                };
+                reader.readAsText(file);
             }
         }
 
