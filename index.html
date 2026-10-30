@@ -329,6 +329,19 @@
                             <option value="all">🌴 Viaje (Todos)</option>
                         </select>
                     </div>
+                    <div class="space-y-1 bg-gray-50 dark:bg-slate-800 p-2.5 rounded-2xl border border-gray-200 dark:border-slate-700">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase block">Rango de Fechas (Desde - Hasta)</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[9px] text-gray-400 block">Desde</label>
+                                <input id="dateFilterFrom" type="date" onchange="renderHistory()" class="w-full text-xs bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-2 py-1.5 font-medium">
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-gray-400 block">Hasta</label>
+                                <input id="dateFilterTo" type="date" onchange="renderHistory()" class="w-full text-xs bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-2 py-1.5 font-medium">
+                            </div>
+                        </div>
+                    </div>
                     <div id="fullHistoryList" class="space-y-2 pt-1"></div>
                 </div>
 
@@ -836,7 +849,6 @@
                         </div>
                     </div>
 
-                    <!-- MODO ADMIN INTERRUPTOR RESTAURADO -->
                     <div class="flex justify-between items-center pt-2 border-t dark:border-slate-700">
                         <div>
                             <p class="text-xs font-bold text-gray-900 dark:text-white">Modo Administrador</p>
@@ -1128,7 +1140,6 @@
         function openSettingsModal() { document.getElementById('settingsModal').classList.remove('hidden'); }
         function openAvatarModal() { document.getElementById('avatarModal').classList.remove('hidden'); }
 
-        // --- CORRECCIÓN BUG 1: CONTROL Y DESPLIEGUE DE CATEGORÍAS ---
         function updateTxCategories() {
             const type = document.getElementById('txType').value;
             const catSelect = document.getElementById('txCategory');
@@ -1302,7 +1313,7 @@
             }
         }
 
-        // --- CORRECCIÓN BUG 2: APERTURA Y FUNCIONALIDAD DE TRANSFERENCIAS ---
+        // --- MIS TRANSFERENCIAS ---
         function openTransferModal() {
             renderAccountsOptions();
             document.getElementById('transferAmount').value = '';
@@ -2010,6 +2021,7 @@
             db.bills.forEach(b => {
                 if(!b.paid) {
                     const diffDays = Math.ceil((new Date(b.date) - todayObj) / (1000 * 60 * 60 * 24));
+                    // MODIFICACIÓN 1: Notificaciones solo 1 día antes o el mismo día
                     if(diffDays <= 1 && diffDays >= 0) {
                         urgentCount++;
                         const currSymbol = (b.currency === 'USD') ? 'US$' : '$';
@@ -2098,6 +2110,7 @@
             const catFilter = document.getElementById('incomeCatFilter').value;
             const monthFilter = document.getElementById('incomeMonthFilter').value;
 
+            // MODIFICACIÓN 3: Exclusión explícita de transferencias del historial de ingresos
             let incomes = db.transactions.filter(t => t.type === 'income');
 
             if(catFilter !== 'all') incomes = incomes.filter(t => t.category === catFilter);
@@ -2131,19 +2144,27 @@
             const list = document.getElementById('fullHistoryList');
             if(!list) return;
             const filter = document.getElementById('historyFilter').value;
-            const catFilter = document.getElementById('historyCategoryFilter').value;
+            // MODIFICACIÓN 2: Filtro por categoría en Gastos
+            const catFilter = document.getElementById('historyCategoryFilter') ? document.getElementById('historyCategoryFilter').value : 'all';
             const monthFilter = document.getElementById('historyMonthFilter').value;
+            const dateFrom = document.getElementById('dateFilterFrom') ? document.getElementById('dateFilterFrom').value : '';
+            const dateTo = document.getElementById('dateFilterTo') ? document.getElementById('dateFilterTo').value : '';
+            const travelFilter = document.getElementById('travelFilter') ? document.getElementById('travelFilter').value : 'all';
 
             let filtered = db.transactions.filter(t => t.type === 'expense');
 
             if(catFilter !== 'all') filtered = filtered.filter(t => t.category === catFilter);
             if(monthFilter !== 'all') filtered = filtered.filter(t => new Date(t.date).getMonth().toString() === monthFilter);
+            if(dateFrom) filtered = filtered.filter(t => t.date >= dateFrom);
+            if(dateTo) filtered = filtered.filter(t => t.date <= dateTo);
+            if(travelFilter !== 'all') filtered = filtered.filter(t => t.travelId === travelFilter);
 
             if(filter === 'needed') filtered = filtered.filter(t => t.necessity === 'needed');
             if(filter === 'unneeded') filtered = filtered.filter(t => t.necessity === 'unneeded');
             if(filter === 'fixed') filtered = filtered.filter(t => t.isFixed);
+            if(filter === 'installment') filtered = filtered.filter(t => t.isInstallment);
 
-            list.innerHTML = filtered.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">Sin gastos guardados</p>' : '';
+            list.innerHTML = filtered.length === 0 ? '<p class="text-xs text-gray-400 text-center py-4">Sin gastos guardados con estos filtros</p>' : '';
             filtered.forEach(t => {
                 const currSymbol = (t.currency === 'USD') ? 'US$' : '$';
                 list.innerHTML += `
