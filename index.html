@@ -209,7 +209,7 @@
                     <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">Abrir ➔</span>
                 </div>
 
-                <!-- SECCIÓN DE RECORDATORIOS DE COBROS (UBICADA AQUÍ: ABAJO DE MIS TRANSFERENCIAS) -->
+                <!-- SECCIÓN DE RECORDATORIOS DE COBROS -->
                 <div class="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 p-4 rounded-2xl space-y-3 shadow-sm">
                     <div class="flex items-center justify-between">
                         <h3 class="font-bold text-xs text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
@@ -921,8 +921,8 @@
             bills: [],
             travels: [],
             accounts: ["Efectivo", "Mercado Pago", "Banco"],
-            reminders: [],         // Nuevos recordatorios de cobro pendientes
-            reminderHistory: []    // Historial de cobros listos
+            reminders: [],         
+            reminderHistory: []    
         };
 
         let activeTab = 'dashboard';
@@ -1128,7 +1128,44 @@
         function openSettingsModal() { document.getElementById('settingsModal').classList.remove('hidden'); }
         function openAvatarModal() { document.getElementById('avatarModal').classList.remove('hidden'); }
 
-        /* --- AVATARES Y SUBIR FOTO --- */
+        // --- CORRECCIÓN BUG 1: CONTROL Y DESPLIEGUE DE CATEGORÍAS ---
+        function updateTxCategories() {
+            const type = document.getElementById('txType').value;
+            const catSelect = document.getElementById('txCategory');
+            const extraOpts = document.getElementById('expenseExtraOptions');
+            if(!catSelect) return;
+
+            catSelect.innerHTML = '';
+            if(type === 'expense') {
+                if(extraOpts) extraOpts.classList.remove('hidden');
+                const expenseCats = [
+                    "Servicios", "Casa", "Préstamo", "Combustible", "Supermercado", 
+                    "Panadería", "Carnicería", "Farmacia", "Comida", "Verdulería", 
+                    "Kiosco", "Ropa", "Regalo", "Arreglo", "Ferretería", "Otros"
+                ];
+                expenseCats.forEach(c => {
+                    catSelect.innerHTML += `<option value="${c}">${c}</option>`;
+                });
+            } else {
+                if(extraOpts) extraOpts.classList.add('hidden');
+                const incomeCats = ["Sueldo", "Ventas", "Regalo", "Otros"];
+                incomeCats.forEach(c => {
+                    catSelect.innerHTML += `<option value="${c}">${c}</option>`;
+                });
+            }
+        }
+
+        function populateTravelSelect() {
+            const select = document.getElementById('txTravelId');
+            if(!select) return;
+            select.innerHTML = '<option value="">Ninguno</option>';
+            if(db.travels) {
+                db.travels.forEach(tr => {
+                    select.innerHTML += `<option value="${tr.id}">${tr.name}</option>`;
+                });
+            }
+        }
+
         function selectAvatar(seed) {
             db.avatarSeed = seed;
             db.customPhotoUrl = null;
@@ -1162,7 +1199,6 @@
             }
         }
 
-        /* --- MODO ADMIN --- */
         function toggleAdminMode() {
             db.adminMode = !db.adminMode;
             const notice = document.getElementById('adminNotice');
@@ -1266,7 +1302,147 @@
             }
         }
 
-        /* --- LÓGICA DE RECORDATORIOS DE COBROS CON CUOTAS AUTOMÁTICAS --- */
+        // --- CORRECCIÓN BUG 2: APERTURA Y FUNCIONALIDAD DE TRANSFERENCIAS ---
+        function openTransferModal() {
+            renderAccountsOptions();
+            document.getElementById('transferAmount').value = '';
+            document.getElementById('transferObs').value = '';
+            renderTransfersHistory();
+            document.getElementById('transferModal').classList.remove('hidden');
+        }
+
+        function executeTransfer() {
+            const fromAcc = document.getElementById('transferFromAccount').value;
+            const toAcc = document.getElementById('transferToAccount').value;
+            const amount = parseInputValue(document.getElementById('transferAmount').value);
+            const obs = document.getElementById('transferObs').value;
+
+            if(fromAcc === toAcc) {
+                alert("La cuenta de origen y destino no pueden ser la misma.");
+                return;
+            }
+            if(amount <= 0) {
+                alert("Ingresa un monto válido para transferir.");
+                return;
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            db.transfers.push({
+                id: Date.now(),
+                fromAccount: fromAcc,
+                toAccount: toAcc,
+                amount: amount,
+                obs: obs || 'Transferencia entre cuentas',
+                date: today
+            });
+
+            saveData();
+            renderTransfersHistory();
+            renderAll();
+            document.getElementById('transferAmount').value = '';
+            document.getElementById('transferObs').value = '';
+            alert("¡Transferencia realizada con éxito!");
+        }
+
+        function renderTransfersHistory() {
+            const list = document.getElementById('transfersHistoryList');
+            if(!list) return;
+            list.innerHTML = (!db.transfers || db.transfers.length === 0) ? '<p class="text-xs text-gray-400 text-center py-3">Sin transferencias registradas</p>' : '';
+            if(db.transfers) {
+                db.transfers.forEach(tr => {
+                    list.innerHTML += `
+                        <div class="bg-gray-50 dark:bg-slate-800 p-2.5 rounded-xl border border-gray-200 dark:border-slate-700 text-xs flex justify-between items-center">
+                            <div>
+                                <div class="flex items-center gap-1 font-bold text-indigo-600 dark:text-indigo-400">
+                                    <span>${tr.fromAccount}</span>
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                    <span>${tr.toAccount}</span>
+                                </div>
+                                <p class="text-[10px] text-gray-400">${tr.obs} • ${formatDateDMY(tr.date)}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-extrabold text-indigo-600">$${fmt(tr.amount)}</span>
+                                <button onclick="deleteTransfer(${tr.id})" class="text-rose-500 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function deleteTransfer(id) {
+            if(confirm("¿Eliminar este registro de transferencia?")) {
+                db.transfers = db.transfers.filter(tr => tr.id != id);
+                saveData();
+                renderTransfersHistory();
+                renderAll();
+            }
+        }
+
+        function handleSaveTx(e) {
+            e.preventDefault();
+            const editId = document.getElementById('txEditId').value;
+            const type = document.getElementById('txType').value;
+            const currency = document.getElementById('txCurrency').value;
+            const amount = parseInputValue(document.getElementById('txAmount').value);
+            const account = document.getElementById('txAccount').value;
+            const category = document.getElementById('txCategory').value;
+            const desc = document.getElementById('txDesc').value || (type === 'expense' ? 'Gasto' : 'Ingreso');
+            const date = document.getElementById('txDate').value;
+            const necessity = document.getElementById('txNecessity').value;
+            const isFixed = document.getElementById('txIsFixed').value === 'yes';
+            const travelId = document.getElementById('txTravelId').value;
+
+            if(editId) {
+                const t = db.transactions.find(x => x.id == editId);
+                if(t) {
+                    t.type = type; t.currency = currency; t.amount = amount; t.account = account;
+                    t.category = category; t.desc = desc; t.date = date; t.necessity = necessity;
+                    t.isFixed = isFixed; t.travelId = travelId;
+                }
+            } else {
+                db.transactions.unshift({
+                    id: Date.now(), type, currency, amount, account, category, desc, date,
+                    necessity: type === 'expense' ? necessity : 'needed',
+                    isFixed: type === 'expense' ? isFixed : false,
+                    travelId: type === 'expense' ? travelId : ''
+                });
+            }
+
+            saveData();
+            closeModal('addTxModal');
+            renderAll();
+        }
+
+        function editTx(id) {
+            const t = db.transactions.find(x => x.id === id);
+            if(!t) return;
+            openModal('addTxModal', t.type);
+            document.getElementById('txEditId').value = t.id;
+            document.getElementById('txType').value = t.type;
+            updateTxCategories();
+            document.getElementById('txCurrency').value = t.currency || 'ARS';
+            document.getElementById('txAmount').value = fmt(t.amount);
+            document.getElementById('txAccount').value = t.account;
+            document.getElementById('txCategory').value = t.category;
+            document.getElementById('txDesc').value = t.desc;
+            document.getElementById('txDate').value = t.date;
+            if(t.type === 'expense') {
+                document.getElementById('txNecessity').value = t.necessity || 'needed';
+                document.getElementById('txIsFixed').value = t.isFixed ? 'yes' : 'no';
+                document.getElementById('txTravelId').value = t.travelId || '';
+            }
+        }
+
+        function deleteTx(id) {
+            if(confirm("¿Eliminar este movimiento?")) {
+                db.transactions = db.transactions.filter(x => x.id !== id);
+                saveData();
+                renderAll();
+            }
+        }
+
+        // --- GESTIÓN DE RECORDATORIOS DE COBRO ---
         function openAddReminderModal(editId = null) {
             renderAccountsOptions();
             const modal = document.getElementById('reminderModal');
@@ -1341,21 +1517,18 @@
             const today = new Date().toISOString().split('T')[0];
             const monthLabel = getMonthLabelFromIso(r.date);
 
-            // 1. Agregar como ingreso automático a la cuenta seleccionada
             const txId = Date.now();
             db.transactions.unshift({
                 id: txId, type: 'income', currency: r.currency || 'ARS', amount: r.amount, account: r.account || db.accounts[0],
                 category: 'Ventas', desc: `Cobro: ${r.name} ${r.isInstallment ? `(${r.currentInst}/${r.totalInst})` : ''}`, date: today, products: []
             });
 
-            // 2. Registrar en historial de cobros con etiqueta de mes
             if(!db.reminderHistory) db.reminderHistory = [];
             db.reminderHistory.unshift({
                 id: txId, name: r.name, amount: r.amount, currency: r.currency, account: r.account,
                 date: today, monthLabel: monthLabel, isInstallment: r.isInstallment, currentInst: r.currentInst, totalInst: r.totalInst
             });
 
-            // 3. Si es en cuotas y currentInst < totalInst, generar automáticamente el próximo pago (cuota siguiente)
             if(r.isInstallment && r.currentInst < r.totalInst) {
                 let nextDateObj = new Date(r.date);
                 nextDateObj.setMonth(nextDateObj.getMonth() + 1);
@@ -1374,7 +1547,6 @@
                 });
             }
 
-            // 4. Remover el recordatorio actual de la lista de pendientes
             db.reminders = db.reminders.filter(x => x.id !== reminderId);
 
             saveData();
@@ -1461,7 +1633,7 @@
             }
         }
 
-        /* --- VENCIMIENTOS EN CUOTAS --- */
+        // --- VENCIMIENTOS ---
         function toggleBillInstallmentInputs() {
             const isInst = document.getElementById('billIsInstallment').checked;
             document.getElementById('billInstallmentBox').classList.toggle('hidden', !isInst);
@@ -1705,7 +1877,6 @@
             });
             if(monthTotalDisp) monthTotalDisp.innerText = `$${fmt(monthSpentTotal)}`;
 
-            // 1. PENDIENTES
             if(billsSubtab === 'pending') {
                 let pending = filteredBills.filter(b => !b.paid);
 
@@ -1746,7 +1917,6 @@
                     });
                 }
             } 
-            // 2. MENSUALES
             else if(billsSubtab === 'monthly') {
                 let monthlyList = filteredBills.filter(b => b.isMonthly && !b.paid);
 
@@ -1783,7 +1953,6 @@
                     });
                 }
             } 
-            // 3. HISTORIAL
             else if(billsSubtab === 'history') {
                 let historyItems = [];
                 
@@ -1837,7 +2006,6 @@
                 }
             }
 
-            // NOTIFICACIONES
             let urgentCount = 0;
             db.bills.forEach(b => {
                 if(!b.paid) {
@@ -2123,7 +2291,6 @@
             }
         }
 
-        /* --- EXPORTAR E IMPORTAR RESPALDO --- */
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
             const downloadAnchor = document.createElement('a');
