@@ -582,10 +582,11 @@
         <div id="transferModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
                 <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
-                    <h3 class="font-bold text-base">Nueva Transferencia</h3>
+                    <h3 id="transferModalTitle" class="font-bold text-base">Nueva Transferencia</h3>
                     <button onclick="closeModal('transferModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <form onsubmit="handleSaveTransfer(event)" class="space-y-3">
+                    <input type="hidden" id="transferEditId">
                     <div>
                         <label class="block text-xs font-semibold mb-1">Desde (Medio Origen)</label>
                         <select id="transferFrom" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs"></select>
@@ -602,7 +603,69 @@
                         <label class="block text-xs font-semibold mb-1">Observación (Opcional)</label>
                         <input id="transferNote" type="text" placeholder="Ej: Pasé dinero a Mercado Pago" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
                     </div>
-                    <button type="submit" class="w-full py-2.5 bg-sky-600 text-white font-bold rounded-xl text-xs shadow hover:bg-sky-700 transition">Realizar Transferencia</button>
+                    <button type="submit" class="w-full py-2.5 bg-sky-600 text-white font-bold rounded-xl text-xs shadow hover:bg-sky-700 transition">Guardar Transferencia</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: RECORDATORIO DE COBRO (REQUERIMIENTO 2) -->
+        <div id="receivableModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 id="receivableModalTitle" class="font-bold text-base">Nuevo Recordatorio de Cobro</h3>
+                    <button onclick="closeModal('receivableModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form onsubmit="handleSaveReceivable(event)" class="space-y-3">
+                    <input type="hidden" id="receivableEditId">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Nombre / Concepto (¿Quién te debe?)</label>
+                        <input id="recName" type="text" required placeholder="Ej: Juan de la oficina, Venta bicicleta" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Monto Total ($ ARS)</label>
+                        <input id="recAmount" type="text" inputmode="decimal" oninput="formatCurrencyInput(this)" required placeholder="0,00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold">
+                    </div>
+                    <div class="flex items-center gap-2 pt-1">
+                        <input type="checkbox" id="recIsInstallment" onchange="toggleReceivableInstallments()" class="w-4 h-4 rounded text-emerald-600">
+                        <label for="recIsInstallment" class="text-xs font-semibold">¿Es un pago en cuotas?</label>
+                    </div>
+                    <div id="recInstallmentBox" class="hidden grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-semibold mb-1">Cuota cobrada actual</label>
+                            <input id="recCurrentInst" type="number" min="1" value="1" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold mb-1">Límite / Total de Cuotas</label>
+                            <input id="recTotalInst" type="number" min="1" value="3" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-xs">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Fecha estimada de cobro</label>
+                        <input id="recDate" type="date" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-emerald-600 text-white font-bold rounded-xl text-xs shadow hover:bg-emerald-700 transition">Guardar Recordatorio</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: MARCAR COBRADO (ELEGIR MEDIO DE PAGO) -->
+        <div id="collectReceivableModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl">
+                <div class="flex justify-between items-center border-b dark:border-slate-800 pb-3">
+                    <h3 id="collectReceivableTitle" class="font-bold text-base">Registrar Cobro Realizado</h3>
+                    <button onclick="closeModal('collectReceivableModal')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form onsubmit="handleConfirmCollectReceivable(event)" class="space-y-3">
+                    <input type="hidden" id="collectReceivableId">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Monto Cobrado ($ ARS)</label>
+                        <input id="collectAmount" type="text" inputmode="decimal" oninput="formatCurrencyInput(this)" required placeholder="0,00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-emerald-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">¿A qué cuenta / medio de pago ingresa?</label>
+                        <select id="collectAccount" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-medium"></select>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-emerald-600 text-white font-bold rounded-xl text-xs shadow hover:bg-emerald-700 transition">Confirmar Cobro e Ingresar Saldo</button>
                 </form>
             </div>
         </div>
@@ -1562,7 +1625,7 @@
         }
 
         /* --- MIS TRANSFERENCIAS --- */
-        function openTransferModal() {
+        function openTransferModal(editId = null) {
             const fromSel = document.getElementById('transferFrom');
             const toSel = document.getElementById('transferTo');
             fromSel.innerHTML = '';
@@ -1571,14 +1634,30 @@
                 fromSel.innerHTML += `<option value="${acc}">${acc}</option>`;
                 toSel.innerHTML += `<option value="${acc}">${acc}</option>`;
             });
-            if (db.accounts.length > 1) toSel.selectedIndex = 1;
-            document.getElementById('transferAmount').value = '';
-            document.getElementById('transferNote').value = '';
+
+            if (editId) {
+                const tr = db.transfers.find(t => t.id === editId);
+                if(tr) {
+                    document.getElementById('transferEditId').value = tr.id;
+                    document.getElementById('transferModalTitle').innerText = 'Editar Transferencia';
+                    document.getElementById('transferFrom').value = tr.from;
+                    document.getElementById('transferTo').value = tr.to;
+                    document.getElementById('transferAmount').value = fmt(tr.amount);
+                    document.getElementById('transferNote').value = tr.note || '';
+                }
+            } else {
+                document.getElementById('transferEditId').value = '';
+                document.getElementById('transferModalTitle').innerText = 'Nueva Transferencia';
+                if (db.accounts.length > 1) toSel.selectedIndex = 1;
+                document.getElementById('transferAmount').value = '';
+                document.getElementById('transferNote').value = '';
+            }
             document.getElementById('transferModal').classList.remove('hidden');
         }
 
         function handleSaveTransfer(e) {
             e.preventDefault();
+            const editId = document.getElementById('transferEditId').value;
             const from = document.getElementById('transferFrom').value;
             const to = document.getElementById('transferTo').value;
             const amount = parseInputValue(document.getElementById('transferAmount').value);
@@ -1590,38 +1669,87 @@
             }
             if (amount <= 0) return;
 
-            const dateStr = new Date().toISOString().split('T')[0];
+            if (editId) {
+                const transferId = parseInt(editId);
+                const tr = db.transfers.find(t => t.id === transferId);
+                if(tr) {
+                    tr.from = from;
+                    tr.to = to;
+                    tr.amount = amount;
+                    tr.note = note;
 
-            db.transactions.unshift({
-                id: Date.now(),
-                type: 'expense',
-                currency: 'ARS',
-                amount: amount,
-                account: from,
-                category: 'Otros',
-                desc: `Transferencia a ${to}${note ? ` (${note})` : ''}`,
-                date: dateStr
-            });
+                    db.transactions = db.transactions.filter(t => t.transferId !== transferId);
 
-            db.transactions.unshift({
-                id: Date.now() + 1,
-                type: 'income',
-                currency: 'ARS',
-                amount: amount,
-                account: to,
-                category: 'Otros',
-                desc: `Transferencia desde ${from}${note ? ` (${note})` : ''}`,
-                date: dateStr
-            });
+                    db.transactions.unshift({
+                        id: Date.now(),
+                        transferId: transferId,
+                        type: 'expense',
+                        currency: 'ARS',
+                        amount: amount,
+                        account: from,
+                        category: 'Otros',
+                        desc: `Transferencia a ${to}${note ? ` (${note})` : ''}`,
+                        date: tr.date
+                    });
 
-            db.transfers.unshift({
-                id: Date.now(),
-                from, to, amount, note, date: dateStr
-            });
+                    db.transactions.unshift({
+                        id: Date.now() + 1,
+                        transferId: transferId,
+                        type: 'income',
+                        currency: 'ARS',
+                        amount: amount,
+                        account: to,
+                        category: 'Otros',
+                        desc: `Transferencia desde ${from}${note ? ` (${note})` : ''}`,
+                        date: tr.date
+                    });
+                }
+            } else {
+                const transferId = Date.now();
+                const dateStr = new Date().toISOString().split('T')[0];
+
+                db.transactions.unshift({
+                    id: Date.now(),
+                    transferId: transferId,
+                    type: 'expense',
+                    currency: 'ARS',
+                    amount: amount,
+                    account: from,
+                    category: 'Otros',
+                    desc: `Transferencia a ${to}${note ? ` (${note})` : ''}`,
+                    date: dateStr
+                });
+
+                db.transactions.unshift({
+                    id: Date.now() + 1,
+                    transferId: transferId,
+                    type: 'income',
+                    currency: 'ARS',
+                    amount: amount,
+                    account: to,
+                    category: 'Otros',
+                    desc: `Transferencia desde ${from}${note ? ` (${note})` : ''}`,
+                    date: dateStr
+                });
+
+                db.transfers.unshift({
+                    id: transferId,
+                    from, to, amount, note, date: dateStr
+                });
+            }
 
             saveData();
             closeModal('transferModal');
             renderAll();
+        }
+
+        function deleteTransfer(id) {
+            if(confirm("¿Eliminar esta transferencia y restaurar los saldos en ambas cuentas?")) {
+                db.transfers = db.transfers.filter(t => t.id !== id);
+                db.transactions = db.transactions.filter(t => t.transferId !== id);
+                saveData();
+                renderAll();
+            }
         }
 
         function renderTransfersHistory() {
@@ -1635,19 +1763,44 @@
                             <p class="font-bold flex items-center gap-1">${tr.from} ➔ ${tr.to}</p>
                             <p class="text-[10px] text-gray-400">${formatDateDMY(tr.date)} ${tr.note ? `• ${tr.note}` : ''}</p>
                         </div>
-                        <span class="font-bold text-sky-600">$${fmt(tr.amount)}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sky-600">$${fmt(tr.amount)}</span>
+                            <div class="flex gap-1 ml-1">
+                                <button onclick="openTransferModal(${tr.id})" class="text-sky-600 p-1"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                                <button onclick="deleteTransfer(${tr.id})" class="text-rose-500 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                            </div>
+                        </div>
                     </div>
                 `;
             });
         }
 
         /* --- RECORDATORIO DE COBROS --- */
-        function openReceivableModal() {
-            document.getElementById('recName').value = '';
-            document.getElementById('recAmount').value = '';
-            document.getElementById('recIsInstallment').checked = false;
-            document.getElementById('recInstallmentBox').classList.add('hidden');
-            document.getElementById('recDate').valueAsDate = new Date();
+        function openReceivableModal(editId = null) {
+            if (editId) {
+                const r = db.receivables.find(item => item.id === editId);
+                if (r) {
+                    document.getElementById('receivableEditId').value = r.id;
+                    document.getElementById('receivableModalTitle').innerText = 'Editar Recordatorio de Cobro';
+                    document.getElementById('recName').value = r.name;
+                    document.getElementById('recAmount').value = fmt(r.amount);
+                    document.getElementById('recIsInstallment').checked = !!r.isInstallment;
+                    document.getElementById('recInstallmentBox').classList.toggle('hidden', !r.isInstallment);
+                    if(r.isInstallment) {
+                        document.getElementById('recCurrentInst').value = r.currentInst || 1;
+                        document.getElementById('recTotalInst').value = r.totalInst || 1;
+                    }
+                    document.getElementById('recDate').value = r.date;
+                }
+            } else {
+                document.getElementById('receivableEditId').value = '';
+                document.getElementById('receivableModalTitle').innerText = 'Nuevo Recordatorio de Cobro';
+                document.getElementById('recName').value = '';
+                document.getElementById('recAmount').value = '';
+                document.getElementById('recIsInstallment').checked = false;
+                document.getElementById('recInstallmentBox').classList.add('hidden');
+                document.getElementById('recDate').valueAsDate = new Date();
+            }
             document.getElementById('receivableModal').classList.remove('hidden');
         }
 
@@ -1658,6 +1811,7 @@
 
         function handleSaveReceivable(e) {
             e.preventDefault();
+            const editId = document.getElementById('receivableEditId').value;
             const name = document.getElementById('recName').value;
             const amount = parseInputValue(document.getElementById('recAmount').value);
             const isInstallment = document.getElementById('recIsInstallment').checked;
@@ -1667,30 +1821,105 @@
 
             if(!name || amount <= 0) return;
 
-            db.receivables.push({
-                id: Date.now(),
-                name, amount, isInstallment, currentInst, totalInst, date, paid: false
-            });
+            if (editId) {
+                const r = db.receivables.find(item => item.id === parseInt(editId));
+                if (r) {
+                    r.name = name;
+                    r.amount = amount;
+                    r.isInstallment = isInstallment;
+                    r.currentInst = currentInst;
+                    r.totalInst = totalInst;
+                    r.date = date;
+                }
+            } else {
+                db.receivables.push({
+                    id: Date.now(),
+                    name, amount, isInstallment, currentInst, totalInst, date, paid: false
+                });
+            }
 
             saveData();
             closeModal('receivableModal');
             renderReceivablesList();
         }
 
-        function toggleReceivablePaid(id) {
+        function handleReceivableButtonClick(id) {
             const item = db.receivables.find(r => r.id === id);
-            if(item) {
-                item.paid = !item.paid;
-                saveData();
-                renderReceivablesList();
+            if (!item) return;
+
+            if (item.paid) {
+                if (confirm(`¿Deseas revertir el cobro de "${item.name}"?\nSe restará el dinero ($${fmt(item.amount)}) sumado a la cuenta "${item.collectedAccount || 'seleccionada'}" y el registro volverá a estar pendiente.`)) {
+                    item.paid = false;
+                    delete item.collectedAccount;
+                    db.transactions = db.transactions.filter(t => t.receivableId !== id);
+                    saveData();
+                    renderReceivablesList();
+                    renderAll();
+                }
+            } else {
+                openCollectReceivableModal(id);
             }
+        }
+
+        function openCollectReceivableModal(id) {
+            const item = db.receivables.find(r => r.id === id);
+            if(!item) return;
+
+            document.getElementById('collectReceivableId').value = item.id;
+            document.getElementById('collectReceivableTitle').innerText = `Cobrar: ${item.name}`;
+            document.getElementById('collectAmount').value = fmt(item.amount);
+
+            const accSelect = document.getElementById('collectAccount');
+            accSelect.innerHTML = '';
+            db.accounts.forEach(acc => {
+                accSelect.innerHTML += `<option value="${acc}">${acc}</option>`;
+            });
+
+            document.getElementById('collectReceivableModal').classList.remove('hidden');
+        }
+
+        function handleConfirmCollectReceivable(e) {
+            e.preventDefault();
+            const recId = parseInt(document.getElementById('collectReceivableId').value);
+            const item = db.receivables.find(r => r.id === recId);
+            if(!item) return;
+
+            const collectAmount = parseInputValue(document.getElementById('collectAmount').value);
+            const account = document.getElementById('collectAccount').value;
+
+            if (collectAmount <= 0) {
+                alert("Ingresa un monto válido.");
+                return;
+            }
+
+            item.paid = true;
+            item.collectedAccount = account;
+
+            db.transactions.unshift({
+                id: Date.now(),
+                type: 'income',
+                currency: 'ARS',
+                amount: collectAmount,
+                account: account,
+                category: 'Otros',
+                desc: `Cobro realizado: ${item.name}`,
+                date: new Date().toISOString().split('T')[0],
+                receivableId: recId
+            });
+
+            saveData();
+            closeModal('collectReceivableModal');
+            renderReceivablesList();
+            renderAll();
         }
 
         function deleteReceivable(id) {
             if(confirm('¿Eliminar este recordatorio de cobro?')) {
                 db.receivables = db.receivables.filter(r => r.id !== id);
+                db.transactions = db.transactions.filter(t => t.receivableId !== id);
                 saveData();
                 renderReceivablesList();
+                renderAll();
             }
         }
 
@@ -1706,11 +1935,12 @@
                                 <span class="font-bold ${r.paid ? 'line-through text-gray-400' : ''}">${r.name}</span>
                                 ${r.isInstallment ? `<span class="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">Cuota ${r.currentInst}/${r.totalInst}</span>` : ''}
                             </div>
-                            <p class="text-[10px] text-gray-400">Cobro estimado: ${formatDateDMY(r.date)}</p>
+                            <p class="text-[10px] text-gray-400">Cobro estimado: ${formatDateDMY(r.date)} ${r.collectedAccount ? `• Ingresado en: ${r.collectedAccount}` : ''}</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="font-bold text-emerald-600">$${fmt(r.amount)}</span>
-                            <button onclick="toggleReceivablePaid(${r.id})" class="px-2 py-1 text-[10px] rounded font-bold ${r.paid ? 'bg-gray-200 text-gray-600' : 'bg-emerald-600 text-white'}">${r.paid ? 'Cobrado' : 'Marcar Cobrado'}</button>
+                            <button onclick="handleReceivableButtonClick(${r.id})" class="px-2 py-1 text-[10px] rounded font-bold ${r.paid ? 'bg-gray-200 text-gray-600 hover:bg-rose-100 hover:text-rose-600' : 'bg-emerald-600 text-white'}">${r.paid ? 'Cobrado ✓' : 'Marcar Cobrado'}</button>
+                            <button onclick="openReceivableModal(${r.id})" class="text-sky-600 p-1"><i class="fa-solid fa-pen text-[10px]"></i></button>
                             <button onclick="deleteReceivable(${r.id})" class="text-rose-500 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
                         </div>
                     </div>
