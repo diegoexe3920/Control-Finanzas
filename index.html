@@ -2607,8 +2607,19 @@
 
             db.transactions.forEach(t => {
                 const isUSD = t.currency === 'USD';
-                const d = new Date(t.date);
-                const isThisMonth = d.getMonth() === curMonth && d.getFullYear() === curYear;
+                
+                // Parsear la fecha de la transacción (YYYY-MM-DD) usando tiempo local para evitar desfases de zona horaria
+                let dYear = curYear;
+                let dMonth = curMonth;
+                if (t.date) {
+                    const parts = t.date.split('-');
+                    if (parts.length === 3) {
+                        dYear = parseInt(parts[0], 10);
+                        dMonth = parseInt(parts[1], 10) - 1; // Mes base 0
+                    }
+                }
+                
+                const isThisMonth = dMonth === curMonth && dYear === curYear;
 
                 if(t.type === 'income') {
                     if(isUSD) { capitalUSD += t.amount; if(isThisMonth) mIncomeUSD += t.amount; }
